@@ -20,7 +20,13 @@ ScreenManager
             pos_hint: {"center_x": .5, "center_y": .5}
             on_release:
                 app.qrcode(food.text)
+    MDScreen:
+        name:"qr"
+        FloatLayout:
+            Image:
+                source:"qr_code.png"
 
 
 
+<ShowQr@MDCard>:
 
