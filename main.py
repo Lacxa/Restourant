@@ -24,7 +24,9 @@ class Main(MDApp):
 
         img.save("qr_code.png")
 
-        img.show()
+        sm = self.root
+        sm.current = "qr"
+
 
 
 Main().run()
