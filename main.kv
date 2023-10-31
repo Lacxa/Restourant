@@ -1,0 +1,26 @@
+#:import sm kivy.uix.screenmanager
+
+ScreenManager
+    id:manager
+    transition:sm.FadeTransition(duration=.0)
+    MDScreen:
+        name:"genesis"
+        MDTextField:
+            id:food
+            mode: "rectangle"
+            fill_color: 0, 0, 0, .4
+            size_hint: .8, .1
+            pos_hint:{'center_x':.5, 'center_y':.6}
+            hint_text:"Food oder:"
+            text_color: 0, 0, 0, 1
+            font_size: dp(25)
+
+        MDIconButton:
+            icon: "language-python"
+            pos_hint: {"center_x": .5, "center_y": .5}
+            on_release:
+                app.qrcode(food.text)
+
+
+
+
