@@ -4,20 +4,13 @@ ScreenManager
     id:manager
     transition:sm.FadeTransition(duration=.0)
     MDScreen:
-        name:"aq"
-        FloatLayout:
-            RowCard:
-                icon:"dog"
-                name:"00:15"
-                price:"3"
-    MDScreen:
         name:"home"
         FloatLayout:
             MDIcon:
                 icon:"account-tie-woman"
                 font_size:"85sp"
                 theme_text_color: "Custom"
-                text_color: 80 / 225, 136 / 225, 114 / 225, 1
+                text_color: "#ECA400"
                 pos_hint:{"center_x":.15, "center_y":.75}
             MDLabel:
                 text:'Welcome to the'
@@ -56,6 +49,14 @@ ScreenManager
                 md_bg_color: "#0F0A0A"
                 on_release:
                     app.login_waiter(phone.text, password.text)
+    MDScreen:
+        name:"aq"
+        FloatLayout:
+            RowCard:
+                icon:"dog"
+                name:"00:15"
+                price:"3"
+
     MDScreen:
         name:"orders"
         FloatLayout:
