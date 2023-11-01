@@ -4,6 +4,14 @@ ScreenManager
     id:manager
     transition:sm.FadeTransition(duration=.0)
     MDScreen:
+        name:"aq"
+        FloatLayout:
+            RowCard:
+                icon:"dog"
+                name:"00:15"
+                price:"3"
+
+    MDScreen:
         name:"home"
         FloatLayout:
             MDIcon:
@@ -59,7 +67,7 @@ ScreenManager
                 font_style:'H4'
                 pos_hint:{'center_x':.5, 'center_y':.93}
             MDIcon:
-                icon:"menu"
+                icon:"segment"
                 font_size:"45sp"
                 pos_hint:{"center_x":.9, "center_y":.93}
             MDFillRoundFlatButton:
@@ -141,6 +149,46 @@ ScreenManager
     md_bg_color:1, 1, 1, 1
     adaptive_height:True
     adaptive_width:True
+
+<RowCard>:
+    #orientation: "vertical"
+    md_bg_color: 1, 1, 1, 1
+    pos_hint:{"center_x":.5,"center_y":.3}
+    padding: "10dp"
+    #spacing: "5dp"
+    border_radius: 3
+    border_color_a: .5
+    border_color_a: 1
+    adaptive_height:True
+    radius: [10]
+    size_hint: None, None
+    size: app.size_x/1.5, app.size_y/11
+    focus_behavior: False
+    ripple_color:.9, .9, .95, 1
+    ripple_behavior: True
+    FloatLayout:
+        MDIcon:
+            icon:root.icon
+            badge_icon:"numeric-10"
+            font_size:"30sp"
+            theme_text_color:"Custom"
+            text_color: 1, .5, .5, 1
+            pos_hint:{"center_x":.08,"center_y":.5}
+        MDLabel:
+            text:root.name
+            font_size:"15sp"
+            halign:"center"
+            pos_hint:{"center_x":.4,"center_y":.5}
+        MDLabel:
+            text:root.price
+            halign:"center"
+            pos_hint:{"center_x":.65,"center_y":.5}
+        MDIcon:
+            icon:"chevron-right"
+			font_size:"41sp"
+			theme_text_color:"Custom"
+			text_color: 1, .5, .5, 1
+			pos_hint:{"center_x":.9,"center_y":.5}
 
 <Table@MDBoxLayout>:
     radius:10
