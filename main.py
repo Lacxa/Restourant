@@ -67,6 +67,10 @@ class Main(MDApp):
         sm = self.root
         sm.current = "qr"
 
+    def spinner(self):
+        spine = self.root.ids.spine_del
+        spine.active = False
+
     """ KEYBOARD INTEGRATION """
 
     def keyboard_hooker(self, *args):
