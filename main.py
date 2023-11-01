@@ -1,14 +1,22 @@
 import qrcode
 from kivy.base import EventLoop
 from kivy.graphics.svg import Window
+from kivy.properties import NumericProperty, StringProperty
 
 from kivymd.app import MDApp
 from kivymd.toast import toast
+from kivymd.uix.card import MDCard
 
 Window.size = [420, 740]
 
 
 class Main(MDApp):
+    size_x, size_y = Window.size
+
+    # APP
+    screens = ['home']
+    screens_size = NumericProperty(len(screens) - 1)
+    current = StringProperty(screens[len(screens) - 1])
 
     def qrcode(self, food):
         qr = qrcode.QRCode(
@@ -28,7 +36,6 @@ class Main(MDApp):
 
         sm = self.root
         sm.current = "qr"
-
 
     """ KEYBOARD INTEGRATION """
 
