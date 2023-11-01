@@ -7,11 +7,20 @@ from kivy.properties import NumericProperty, StringProperty
 
 from kivymd.app import MDApp
 from kivymd.toast import toast
+from kivymd.uix.card import MDCard
 from kivymd.uix.textfield import MDTextField
 
 from database import FireBase as FB
 
 Window.size = [420, 740]
+
+
+class RowCard(MDCard):
+    date = StringProperty("")
+    icon = StringProperty("")
+    cate = StringProperty("")
+    name = StringProperty("")
+    price = StringProperty("")
 
 
 class NumberOnlyField(MDTextField):
@@ -83,6 +92,7 @@ class Main(MDApp):
             LOGIN FUNCTIONS
     
     """
+
     def login_waiter(self, phone, password):
         data = FB.get_user(FB())
 
