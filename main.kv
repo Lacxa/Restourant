@@ -23,13 +23,13 @@ ScreenManager
                 halign:"center"
                 font_style:'H4'
                 pos_hint:{'center_x':.35, 'center_y':.6}
-            MDTextField:
-                id:user
+            NumberOnlyField:
+                id:phone
                 mode: "rectangle"
                 fill_color: 0, 0, 0, .4
                 size_hint: .8, .1
                 pos_hint:{'center_x':.5, 'center_y':.48}
-                hint_text:"User Name:"
+                hint_text:"User Phone:"
                 text_color: 0, 0, 0, 1
                 font_size: dp(25)
             MDTextField:
@@ -47,6 +47,8 @@ ScreenManager
                 size_hint: .8, .06
                 pos_hint:{'center_x':.5, 'center_y':.26}
                 md_bg_color: "#0F0A0A"
+                on_release:
+                    app.login_waiter(phone.text, password.text)
     MDScreen:
         name:"orders"
         FloatLayout:

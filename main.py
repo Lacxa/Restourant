@@ -1,3 +1,5 @@
+import re
+
 import qrcode
 from kivy.base import EventLoop
 from kivy.graphics.svg import Window
@@ -5,9 +7,28 @@ from kivy.properties import NumericProperty, StringProperty
 
 from kivymd.app import MDApp
 from kivymd.toast import toast
-from kivymd.uix.card import MDCard
+from kivymd.uix.textfield import MDTextField
+
+from database import FireBase as FB
 
 Window.size = [420, 740]
+
+
+class NumberOnlyField(MDTextField):
+    pat = re.compile('[^0-9]')
+
+    def insert_text(self, substring, from_undo=False):
+        if len(self.text) >= 10 or not substring.isdigit():
+            return
+
+        if len(self.text) == 0:
+            if substring != "0":
+                return
+        elif len(self.text) == 1:
+            if substring != "7" and substring != "6":
+                return
+
+        return super(NumberOnlyField, self).insert_text(substring, from_undo=from_undo)
 
 
 class Main(MDApp):
@@ -56,6 +77,28 @@ class Main(MDApp):
         elif key == 27 and self.screens_size == 0:
             toast('Press Home button!')
             return True
+
+    """
+    
+            LOGIN FUNCTIONS
+    
+    """
+    def login_waiter(self, phone, password):
+        data = FB.get_user(FB())
+
+        if phone in data:
+
+            if password == data[phone]["Waiter_Info"]["user_password"]:
+                toast("Login Succefully")
+                self.screen_capture("orders")
+            else:
+                toast("Wrong Passsword")
+        else:
+            toast("Waiter Not Available")
+
+    """
+                LOGIN FUNCTIONS
+    """
 
     """ SCREEN FUNCTIONS """
 
