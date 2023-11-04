@@ -1,9 +1,10 @@
 import re
+import time
 
 import qrcode
 from kivy.base import EventLoop
 from kivy.graphics.svg import Window
-from kivy.properties import NumericProperty, StringProperty
+from kivy.properties import NumericProperty, StringProperty, DictProperty
 
 from kivymd.app import MDApp
 from kivymd.toast import toast
@@ -68,8 +69,27 @@ class Main(MDApp):
         sm.current = "qr"
 
     def spinner(self):
-        spine = self.root.ids.spine_del
-        spine.active = False
+        spiner = self.root.ids.spine_del
+        spiner.active = True
+        print("user")
+
+    def end_spine(self):
+        spinier = self.root.ids.spine_del
+        spinier.active = False
+
+    def orders(self):
+        data = {"detail": {"time": "00:15", "icon": "table-chair", "price": "5"}}
+
+        for i, y in data.items():
+            self.root.ids.today.data.append(
+                {
+                    "viewclass": "RowCard",
+                    "name": y["time"],
+                    "icon": y["icon"],
+                    "price": y["price"]
+
+                }
+            )
 
     """ KEYBOARD INTEGRATION """
 
@@ -101,14 +121,14 @@ class Main(MDApp):
         data = FB.get_user(FB())
 
         if phone in data:
-
             if password == data[phone]["Waiter_Info"]["user_password"]:
-                toast("Login Succefully")
+                toast("Login Successfully")
                 self.screen_capture("orders")
             else:
-                toast("Wrong Passsword")
+                toast("Wrong Password")
         else:
             toast("Waiter Not Available")
+            self.end_spine()
 
     """
                 LOGIN FUNCTIONS

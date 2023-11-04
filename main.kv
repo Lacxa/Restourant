@@ -6,6 +6,13 @@ ScreenManager
     MDScreen:
         name:"home"
         FloatLayout:
+            MDSpinner:
+                id:spine_del
+                size_hint: None, None
+                size: dp(40), dp(40)
+                pos_hint: {'center_x': .5, 'center_y':.5}
+                active: False
+                color: "#0F0A0A"
             MDIcon:
                 icon:"account-tie-woman"
                 font_size:"85sp"
@@ -48,14 +55,8 @@ ScreenManager
                 pos_hint:{'center_x':.5, 'center_y':.26}
                 md_bg_color: "#0F0A0A"
                 on_release:
+                    app.spinner()
                     app.login_waiter(phone.text, password.text)
-    MDScreen:
-        name:"aq"
-        FloatLayout:
-            RowCard:
-                icon:"dog"
-                name:"00:15"
-                price:"3"
 
     MDScreen:
         name:"orders"
@@ -67,7 +68,7 @@ ScreenManager
                 font_style:'H4'
                 pos_hint:{'center_x':.5, 'center_y':.93}
             MDIcon:
-                icon:"menu"
+                icon:"segment"
                 font_size:"45sp"
                 pos_hint:{"center_x":.9, "center_y":.93}
             MDFillRoundFlatButton:
@@ -78,43 +79,61 @@ ScreenManager
                 md_bg_color: "#0F0A0A"
             Card
                 pos_hint:{'center_x':.5, 'center_y':.72}
-                MDLabel:
-                    bold:True
-                    text:"Pending(5)"
-                    halign:"center"
-                    pos_hint:{'center_x':.5}
-                MDLabel:
-                    bold:True
-                    text:"Preparing(2)"
-                    halign:"center"
-                    pos_hint:{'center_x':.5}
-                MDLabel:
-                    bold:True
-                    text:"Completed(0)"
-                    halign:"center"
-                    pos_hint:{'center_x':.5}
+
+            MDFlatButton:
+                text:"Pending(5)"
+                font_size:"18sp"
+                pos_hint:{'center_x':.18, 'center_y':.72}
+                on_release:
+                    app.orders()
+            MDFlatButton:
+                text:"Preparing(2)"
+                font_size:"18sp"
+                pos_hint:{'center_x':.5, 'center_y':.72}
+                on_release:
+                    app.screen_capture("qr")
+            MDFlatButton:
+                text:"Completed(0)"
+                font_size:"18sp"
+                pos_hint:{'center_x':.83, 'center_y':.72}
             MDLabel:
                 bold:True
                 text:"Table No"
                 halign:"center"
-                pos_hint:{'center_x':.15, 'center_y':.61}
+                pos_hint:{'center_x':.15, 'center_y':.63}
             MDLabel:
                 #bold:True
                 text:"Time"
                 halign:"center"
-                pos_hint:{'center_x':.4, 'center_y':.61}
+                pos_hint:{'center_x':.4, 'center_y':.63}
             MDLabel:
                 #bold:True
                 text:"Pending Items"
                 halign:"center"
-                pos_hint:{'center_x':.7, 'center_y':.61}
-            Card
-                pos_hint:{'center_x':.5, 'center_y':.53}
-                md_bg_color: "#4B4B4B"
-                Table
-                    MDIcon:
-                        icon:"table-chair"
+                pos_hint:{'center_x':.7, 'center_y':.63}
+            RecycleView:
+                id:today
+                key_viewclass: 'viewclass'
+                key_size: 'height'
+                pos_hint:{"top":.61}
+                RecycleBoxLayout:
+                    id:wa
+                    spacing:dp(4)
+                    padding: dp(10)
+                    default_size: None, dp(80)
+                    default_size_hint: 1, None
+                    size_hint_y: None
+                    height: self.minimum_height
+                    orientation: 'vertical'
 
+
+    MDScreen:
+        name:"aq"
+        FloatLayout:
+            RowCard:
+                icon:"dog"
+                name:"00:15"
+                price:"3"
 
 
     MDScreen:
@@ -140,6 +159,7 @@ ScreenManager
         FloatLayout:
             Image:
                 source:"qr_code.png"
+                pos_hint: {"center_x": .5, "center_y": .3}
 
 
 <Card@MDBoxLayout>:
@@ -153,7 +173,6 @@ ScreenManager
 <RowCard>:
     #orientation: "vertical"
     md_bg_color: 1, 1, 1, 1
-    pos_hint:{"center_x":.5,"center_y":.3}
     padding: "10dp"
     #spacing: "5dp"
     border_radius: 3
@@ -172,7 +191,7 @@ ScreenManager
             badge_icon:"numeric-10"
             font_size:"30sp"
             theme_text_color:"Custom"
-            text_color: 1, .5, .5, 1
+            text_color: "#FFBE0B"
             pos_hint:{"center_x":.08,"center_y":.5}
         MDLabel:
             text:root.name
@@ -187,7 +206,7 @@ ScreenManager
             icon:"chevron-right"
 			font_size:"41sp"
 			theme_text_color:"Custom"
-			text_color: 1, .5, .5, 1
+			text_color:"#FFBE0B"
 			pos_hint:{"center_x":.9,"center_y":.5}
 
 <Table@MDBoxLayout>:
