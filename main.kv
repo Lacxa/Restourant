@@ -3,6 +3,7 @@
 ScreenManager
     id:manager
     transition:sm.FadeTransition(duration=.0)
+
     MDScreen:
         name:"home"
         FloatLayout:
@@ -65,7 +66,7 @@ ScreenManager
                 bold:True
                 text:"ORDERS"
                 halign:"center"
-                font_style:'H4'
+                font_style:'H5'
                 pos_hint:{'center_x':.5, 'center_y':.93}
             MDIcon:
                 icon:"segment"
@@ -75,42 +76,45 @@ ScreenManager
                 id:order
                 text: "Make New Order"
                 size_hint: .8, .06
-                pos_hint:{'center_x':.5, 'center_y':.83}
+                pos_hint:{'center_x':.5, 'center_y':.85}
                 md_bg_color: "#0F0A0A"
             Card
-                pos_hint:{'center_x':.5, 'center_y':.72}
+                pos_hint:{'center_x':.5, 'center_y':.74}
 
             MDFlatButton:
+                id: pending
                 text:"Pending(5)"
                 font_size:"18sp"
-                pos_hint:{'center_x':.18, 'center_y':.72}
+                pos_hint:{'center_x':.18, 'center_y':.74}
                 on_release:
-                    app.orders()
+                    bold:True
             MDFlatButton:
+                id:prepare
                 text:"Preparing(2)"
                 font_size:"18sp"
-                pos_hint:{'center_x':.5, 'center_y':.72}
-                on_release:
-                    app.screen_capture("qr")
+                pos_hint:{'center_x':.5, 'center_y':.74}
+
             MDFlatButton:
+                id:complete
                 text:"Completed(0)"
                 font_size:"18sp"
-                pos_hint:{'center_x':.83, 'center_y':.72}
+                pos_hint:{'center_x':.83, 'center_y':.74}
             MDLabel:
                 bold:True
                 text:"Table No"
                 halign:"center"
-                pos_hint:{'center_x':.15, 'center_y':.63}
+                pos_hint:{'center_x':.15, 'center_y':.64}
             MDLabel:
                 #bold:True
                 text:"Time"
                 halign:"center"
-                pos_hint:{'center_x':.4, 'center_y':.63}
+                pos_hint:{'center_x':.4, 'center_y':.64}
             MDLabel:
                 #bold:True
                 text:"Pending Items"
                 halign:"center"
-                pos_hint:{'center_x':.7, 'center_y':.63}
+                pos_hint:{'center_x':.7, 'center_y':.64}
+        BoxLayout:
             RecycleView:
                 id:today
                 key_viewclass: 'viewclass'
@@ -120,7 +124,7 @@ ScreenManager
                     id:wa
                     spacing:dp(4)
                     padding: dp(10)
-                    default_size: None, dp(80)
+                    default_size: None, dp(60)
                     default_size_hint: 1, None
                     size_hint_y: None
                     height: self.minimum_height
