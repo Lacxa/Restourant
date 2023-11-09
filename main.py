@@ -24,6 +24,22 @@ class RowCard(MDCard):
     price = StringProperty("")
 
 
+class Order(MDCard):
+    pass
+
+
+class Table(MDCard):
+    time = StringProperty("00:20")
+    status = StringProperty("yet to order")
+    number = StringProperty("01")
+    guest = StringProperty("2 guest")
+    price = StringProperty("Tsh 10,000")
+
+
+class Empty(MDCard):
+    number = StringProperty("07")
+
+
 class NumberOnlyField(MDTextField):
     pat = re.compile('[^0-9]')
 
@@ -77,6 +93,33 @@ class Main(MDApp):
         spinier = self.root.ids.spine_del
         spinier.active = False
 
+    def pending(self):
+        pend = self.root.ids.pend
+        pre = self.root.ids.pre
+        comp = self.root.ids.comp
+
+        pend.md_bg_color = "#ECA400"
+        pre.md_bg_color = "white"
+        comp.md_bg_color = "white"
+
+    def prepare(self):
+        pend = self.root.ids.pend
+        pre = self.root.ids.pre
+        comp = self.root.ids.comp
+
+        pend.md_bg_color = "white"
+        pre.md_bg_color = "#ECA400"
+        comp.md_bg_color = "white"
+
+    def complete(self):
+        pend = self.root.ids.pend
+        pre = self.root.ids.pre
+        comp = self.root.ids.comp
+
+        pend.md_bg_color = "white"
+        pre.md_bg_color = "white"
+        comp.md_bg_color = "#ECA400"
+
     def orders(self):
         data = {"detail": {"time": "00:15", "icon": "table-chair", "price": "5"}}
 
@@ -87,6 +130,23 @@ class Main(MDApp):
                     "name": y["time"],
                     "icon": y["icon"],
                     "price": y["price"]
+
+                }
+            )
+
+    def table(self):
+        data = dict(detail={'time': "00:15", 'number': "01", 'price': "5000", 'guest': "2 guest", 'status': "served"},
+                    date={'time': "00:15", 'number': "01", 'price': "5000", 'guest': "2 guest", 'status': "served"})
+
+        for i, y in data.items():
+            self.root.ids.test.data.append(
+                {
+                    "viewclass": "Table",
+                    "number": y["number"],
+                    "guest": y["guest"],
+                    "price": y["price"],
+                    "time": y["time"],
+                    "status": y["status"]
 
                 }
             )

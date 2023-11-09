@@ -3,9 +3,9 @@
 ScreenManager
     id:manager
     transition:sm.FadeTransition(duration=.0)
-
     MDScreen:
         name:"home"
+        md_bg_color: "#f4f5f7"
         FloatLayout:
             MDSpinner:
                 id:spine_del
@@ -61,12 +61,13 @@ ScreenManager
 
     MDScreen:
         name:"orders"
+        md_bg_color: "#f4f5f7"
         FloatLayout:
             MDLabel:
                 bold:True
                 text:"ORDERS"
                 halign:"center"
-                font_style:'H5'
+                font_style:'H4'
                 pos_hint:{'center_x':.5, 'center_y':.93}
             MDIcon:
                 icon:"segment"
@@ -82,23 +83,30 @@ ScreenManager
                 pos_hint:{'center_x':.5, 'center_y':.74}
 
             MDFlatButton:
-                id: pending
+                id:pend
+                md_bg_color: "white"
                 text:"Pending(5)"
                 font_size:"18sp"
                 pos_hint:{'center_x':.18, 'center_y':.74}
                 on_release:
-                    bold:True
+                    app.pending()
+                    #app.orders()
             MDFlatButton:
-                id:prepare
+                id:pre
+                md_bg_color: "white"
                 text:"Preparing(2)"
                 font_size:"18sp"
                 pos_hint:{'center_x':.5, 'center_y':.74}
-
+                on_release:
+                    app.prepare()
             MDFlatButton:
-                id:complete
+                id:comp
+                md_bg_color: "white"
                 text:"Completed(0)"
                 font_size:"18sp"
                 pos_hint:{'center_x':.83, 'center_y':.74}
+                on_release:
+                    app.complete()
             MDLabel:
                 bold:True
                 text:"Table No"
@@ -130,6 +138,162 @@ ScreenManager
                     height: self.minimum_height
                     orientation: 'vertical'
 
+    MDScreen:
+        name:"in_table"
+        md_bg_color: "#f4f5f7"
+        FloatLayout:
+            MDIcon:
+                icon:"chevron-left"
+                font_size:"45sp"
+                pos_hint:{'center_x':.08, 'center_y':.93}
+
+            MDIcon:
+                icon:"message-outline"
+                font_size:"45sp"
+                pos_hint:{'center_x':.75, 'center_y':.93}
+
+            MDIcon:
+                icon:"segment"
+                font_size:"45sp"
+                pos_hint:{"center_x":.9, "center_y":.93}
+
+            Order
+                pos_hint:{"center_x":.5, "center_y":.83}
+                size:app.size_x/2.1, app.size_y/7.5
+                FloatLayout:
+                    MDIcon:
+                        icon: "account-group"
+                        font_size:"30sp"
+                        theme_text_color: "Custom"
+                        text_color: "#ffd241"
+                        pos_hint:{'center_x':.13, 'center_y':.8}
+                    MDLabel:
+                        text:"2/6"
+                        halign:"center"
+                        font_size:"18sp"
+                        pos_hint:{'center_x':.13, 'center_y':.3}
+                    MDIcon:
+                        icon: "clock"
+                        font_size:"30sp"
+                        theme_text_color: "Custom"
+                        text_color: "#ffd241"
+                        pos_hint:{'center_x':.5, 'center_y':.8}
+                    MDLabel:
+                        text:"00:40"
+                        halign:"center"
+                        font_size:"18sp"
+                        pos_hint:{'center_x':.5, 'center_y':.3}
+                    MDIcon:
+                        icon: "table-chair"
+                        font_size:"30sp"
+                        theme_text_color: "Custom"
+                        text_color: "#ffd241"
+                        pos_hint:{'center_x':.88, 'center_y':.8}
+                    MDLabel:
+                        text:"06"
+                        bold:True
+                        halign:"center"
+                        font_size:"20sp"
+                        pos_hint:{'center_x':.89, 'center_y':.3}
+            MDLabel:
+                bold:True
+                text:"Item"
+                halign:"center"
+                pos_hint:{'center_x':.1, 'center_y':.73}
+            MDLabel:
+                bold:True
+                text:"Status"
+                halign:"center"
+                pos_hint:{'center_x':.5, 'center_y':.73}
+            MDLabel:
+                bold:True
+                text:"Price"
+                halign:"center"
+                pos_hint:{'center_x':.88, 'center_y':.73}
+
+            MDFillRoundFlatButton:
+                id:order
+                text: "Add Order"
+                size_hint: .8, .06
+                pos_hint:{'center_x':.5, 'center_y':.2}
+                md_bg_color: "#0F0A0A"
+
+
+
+
+
+    MDScreen:
+        name:"test"
+        on_enter:
+            app.table()
+        md_bg_color: "#f4f5f7"
+        FloatLayout:
+        BoxLayout:
+            RecycleView:
+                id:test
+                key_viewclass: 'viewclass'
+                key_size: 'height'
+                pos_hint:{"top":.8}
+                RecycleBoxLayout:
+                    id:wa
+                    spacing:dp(4)
+                    padding: dp(10)
+                    default_size: None, dp(60)
+                    default_size_hint: 1, None
+                    cols: 3
+                    size_hint_y: None
+                    height: self.minimum_height
+                    orientation: 'vertical'
+
+
+    MDScreen:
+        name:"tables"
+        md_bg_color: "#f4f5f7"
+        FloatLayout:
+            MDLabel:
+                bold:True
+                text:"TABLES"
+                halign:"center"
+                font_style:'H4'
+                pos_hint:{'center_x':.5, 'center_y':.93}
+            MDIcon:
+                icon:"segment"
+                font_size:"45sp"
+                pos_hint:{"center_x":.9, "center_y":.93}
+            Table
+                pos_hint:{"center_x":.2, "center_y":.8}
+            Table
+                pos_hint:{"center_x":.5, "center_y":.8}
+            Table
+                pos_hint:{"center_x":.8, "center_y":.8}
+
+            Table
+                pos_hint:{"center_x":.2, "center_y":.63}
+            Empty
+                pos_hint:{"center_x":.5, "center_y":.63}
+            Table
+                pos_hint:{"center_x":.8, "center_y":.63}
+
+            Table
+                pos_hint:{"center_x":.2, "center_y":.46}
+            Table
+                pos_hint:{"center_x":.5, "center_y":.46}
+            Table
+                pos_hint:{"center_x":.8, "center_y":.46}
+
+            Empty
+                pos_hint:{"center_x":.2, "center_y":.29}
+            Table
+                pos_hint:{"center_x":.5, "center_y":.29}
+            Table
+                pos_hint:{"center_x":.8, "center_y":.29}
+
+            Table
+                pos_hint:{"center_x":.2, "center_y":.12}
+            Table
+                pos_hint:{"center_x":.5, "center_y":.12}
+            Empty
+                pos_hint:{"center_x":.8, "center_y":.12}
 
     MDScreen:
         name:"aq"
@@ -142,6 +306,7 @@ ScreenManager
 
     MDScreen:
         name:"genesis"
+        md_bg_color: "#f4f5f7"
         MDTextField:
             id:food
             mode: "rectangle"
@@ -174,6 +339,22 @@ ScreenManager
     adaptive_height:True
     adaptive_width:True
 
+<Order>:
+    #orientation: "vertical"
+    md_bg_color: 1, 1, 1, 1
+    padding: "10dp"
+    #spacing: "5dp"
+    border_radius: 3
+    border_color_a: .5
+    border_color_a: 1
+    adaptive_height:True
+    radius: [10]
+    size_hint: None, None
+    size: app.size_x/1.5, app.size_y/11
+    focus_behavior: False
+    ripple_color:.9, .9, .95, 1
+    ripple_behavior: True
+
 <RowCard>:
     #orientation: "vertical"
     md_bg_color: 1, 1, 1, 1
@@ -195,7 +376,7 @@ ScreenManager
             badge_icon:"numeric-10"
             font_size:"30sp"
             theme_text_color:"Custom"
-            text_color: "#FFBE0B"
+            text_color: "#ffd241"
             pos_hint:{"center_x":.08,"center_y":.5}
         MDLabel:
             text:root.name
@@ -210,14 +391,75 @@ ScreenManager
             icon:"chevron-right"
 			font_size:"41sp"
 			theme_text_color:"Custom"
-			text_color:"#FFBE0B"
+			text_color:"#ffd241"
 			pos_hint:{"center_x":.9,"center_y":.5}
 
-<Table@MDBoxLayout>:
-    radius:10
-    #height:240
-    size:app.size_x/2,app.size_y/9.9
-    md_bg_color:1, 1, 1, 1
-    adaptive_height:True
-    adaptive_width:True
 
+<Table>
+    orientation: "vertical"
+    size_hint: None, None
+    size: app.size_x/7, app.size_y/5.5
+    radius: [13]
+    elevation: 2
+    md_bg_color: "#f4f5f7"
+    focus_behavior: False
+    ripple_color:.9, .9, .95, 1
+    ripple_behavior: True
+    FloatLayout:
+        MDIcon:
+            icon:"account-group"
+            #badge_icon:"numeric-10"
+            font_size:"30sp"
+            theme_text_color:"Custom"
+            text_color: "#ffd241"
+            pos_hint:{"center_x":.2,"center_y":.8}
+        MDLabel:
+            text:root.number
+            font_style:"H6"
+            halign:"center"
+            pos_hint:{"center_x":.8,"center_y":.8}
+        MDLabel:
+            text:root.guest
+            halign:"center"
+            font_size:"10sp"
+            pos_hint:{"center_x":.2,"center_y":.6}
+        MDLabel:
+            text:root.status
+            bold:True
+            halign:"center"
+            font_size:"12sp"
+            pos_hint:{"center_x":.5,"center_y":.4}
+        MDLabel:
+            text:root.time
+            halign:"center"
+            font_size:"10sp"
+            pos_hint:{"center_x":.2,"center_y":.12}
+        MDLabel:
+            text:root.price
+            halign:"center"
+            font_size:"10sp"
+            pos_hint:{"center_x":.7,"center_y":.12}
+
+
+<Empty>
+    orientation: "vertical"
+    size_hint: None, None
+    size: app.size_x/7, app.size_y/5.5
+    radius: [13]
+    elevation: 2
+    focus_behavior: False
+    ripple_color:.9, .9, .95, 1
+    ripple_behavior: True
+    FloatLayout:
+        MDLabel:
+            text:root.number
+            font_style:"H6"
+            halign:"center"
+            pos_hint:{"center_x":.8,"center_y":.8}
+        MDLabel:
+            text:"Empty"
+            theme_text_color: "Custom"
+            text_color:"gray"
+            halign:"center"
+            font_size:"20sp"
+            pos_hint:{"center_x":.5,"center_y":.5}
