@@ -9,6 +9,7 @@ from kivy.properties import NumericProperty, StringProperty, DictProperty
 from kivymd.app import MDApp
 from kivymd.toast import toast
 from kivymd.uix.card import MDCard
+from kivymd.uix.list import OneLineIconListItem, OneLineListItem
 from kivymd.uix.textfield import MDTextField
 
 from database import FireBase as FB
@@ -98,7 +99,7 @@ class Main(MDApp):
         pre = self.root.ids.pre
         comp = self.root.ids.comp
 
-        pend.md_bg_color = "#ECA400"
+        pend.md_bg_color = "#ffd241"
         pre.md_bg_color = "white"
         comp.md_bg_color = "white"
 
@@ -108,7 +109,7 @@ class Main(MDApp):
         comp = self.root.ids.comp
 
         pend.md_bg_color = "white"
-        pre.md_bg_color = "#ECA400"
+        pre.md_bg_color = "#ffd241"
         comp.md_bg_color = "white"
 
     def complete(self):
@@ -118,7 +119,7 @@ class Main(MDApp):
 
         pend.md_bg_color = "white"
         pre.md_bg_color = "white"
-        comp.md_bg_color = "#ECA400"
+        comp.md_bg_color = "#ffd241"
 
     def orders(self):
         data = {"detail": {"time": "00:15", "icon": "table-chair", "price": "5"}}

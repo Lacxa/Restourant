@@ -18,7 +18,7 @@ ScreenManager
                 icon:"account-tie-woman"
                 font_size:"85sp"
                 theme_text_color: "Custom"
-                text_color: "#ECA400"
+                text_color: "#ffd241"
                 pos_hint:{"center_x":.15, "center_y":.75}
             MDLabel:
                 text:'Welcome to the'
@@ -69,9 +69,9 @@ ScreenManager
                 halign:"center"
                 font_style:'H4'
                 pos_hint:{'center_x':.5, 'center_y':.93}
-            MDIcon:
+            MDIconButton:
                 icon:"segment"
-                font_size:"45sp"
+                icon_size: "45sp"
                 pos_hint:{"center_x":.9, "center_y":.93}
             MDFillRoundFlatButton:
                 id:order
@@ -84,7 +84,7 @@ ScreenManager
 
             MDFlatButton:
                 id:pend
-                md_bg_color: "white"
+                md_bg_color: "#ffd241"
                 text:"Pending(5)"
                 font_size:"18sp"
                 pos_hint:{'center_x':.18, 'center_y':.74}
@@ -142,21 +142,16 @@ ScreenManager
         name:"in_table"
         md_bg_color: "#f4f5f7"
         FloatLayout:
-            MDIcon:
+            MDIconButton:
                 icon:"chevron-left"
-                font_size:"45sp"
+                icon_size: "45sp"
                 pos_hint:{'center_x':.08, 'center_y':.93}
-
-            MDIcon:
-                icon:"message-outline"
-                font_size:"45sp"
-                pos_hint:{'center_x':.75, 'center_y':.93}
-
-            MDIcon:
+                on_release:
+                    app.screen_capture("tables")
+            MDIconButton:
                 icon:"segment"
-                font_size:"45sp"
+                icon_size: "45sp"
                 pos_hint:{"center_x":.9, "center_y":.93}
-
             Order
                 pos_hint:{"center_x":.5, "center_y":.83}
                 size:app.size_x/2.1, app.size_y/7.5
@@ -173,7 +168,7 @@ ScreenManager
                         font_size:"18sp"
                         pos_hint:{'center_x':.13, 'center_y':.3}
                     MDIcon:
-                        icon: "clock"
+                        icon: "clock-outline"
                         font_size:"30sp"
                         theme_text_color: "Custom"
                         text_color: "#ffd241"
@@ -195,6 +190,97 @@ ScreenManager
                         halign:"center"
                         font_size:"20sp"
                         pos_hint:{'center_x':.89, 'center_y':.3}
+            Order
+                pos_hint:{"center_x":.5, "center_y":.65}
+                size:app.size_x/2.1, app.size_y/7.5
+                md_bg_color: "#f4f5f7"
+                radius: [12]
+                FloatLayout:
+                    MDSeparator:
+                        pos_hint:{'center_x':.5, 'center_y':1.15}
+                    MDLabel:
+                        text:"Large pizza"
+                        halign:"left"
+                        font_size:"18sp"
+                        pos_hint:{'center_x':.51, 'center_y':.8}
+                    MDLabel:
+                        text:"1x"
+                        halign:"left"
+                        font_size:"18sp"
+                        pos_hint:{'center_x':.51, 'center_y':.3}
+                    MDLabel:
+                        text:"Pending"
+                        halign:"center"
+                        font_size:"18sp"
+                        pos_hint:{'center_x':.5, 'center_y':.8}
+                    MDLabel:
+                        text:"$20"
+                        halign:"center"
+                        font_size:"18sp"
+                        pos_hint:{'center_x':.89, 'center_y':.8}
+                    MDChip:
+                        text:"Mark Served"
+                        md_bg_color:"#ffd241"
+                        theme_text_color: "Custom"
+                        text_color: "#0F0A0A"
+                        pos_hint:{'center_x':.5, 'center_y':.3}
+                    MDSeparator:
+                        pos_hint:{'center_x':.5, 'center_y':-.15}
+            Order
+                pos_hint:{"center_x":.5, "center_y":.55}
+                size:app.size_x/2.1, app.size_y/7.5
+                md_bg_color: "#f4f5f7"
+                radius: [12]
+                FloatLayout:
+                    MDSeparator:
+                        pos_hint:{'center_x':.5, 'center_y':1.15}
+                    MDLabel:
+                        text:"Bugger"
+                        halign:"left"
+                        font_size:"18sp"
+                        pos_hint:{'center_x':.51, 'center_y':.8}
+                    MDLabel:
+                        text:"3x"
+                        halign:"left"
+                        font_size:"18sp"
+                        pos_hint:{'center_x':.51, 'center_y':.3}
+                    MDIcon:
+                        icon:"check-circle"
+                        font_size:"18sp"
+                        theme_text_color: "Custom"
+                        text_color: "#108a00"
+                        pos_hint:{'center_x':.62, 'center_y':.8}
+                    MDLabel:
+                        text:"Served"
+                        halign:"center"
+                        font_size:"18sp"
+                        pos_hint:{'center_x':.5, 'center_y':.8}
+                    MDLabel:
+                        text:"$25"
+                        halign:"center"
+                        font_size:"18sp"
+                        pos_hint:{'center_x':.89, 'center_y':.8}
+                    MDSeparator:
+                        pos_hint:{'center_x':.5, 'center_y':-.15}
+            Order
+                pos_hint:{"center_x":.5, "center_y":.4}
+                size:app.size_x/2.1, app.size_y/7.5
+                md_bg_color: "#f4f5f7"
+                radius: [12]
+                MDSeparator:
+                    pos_hint:{'center_x':.5, 'center_y':1.15}
+                MDLabel:
+                    text:"Total"
+                    halign:"center"
+                    font_size:"18sp"
+                    pos_hint:{'center_x':.5, 'center_y':.5}
+                MDLabel:
+                    text:"$45"
+                    halign:"center"
+                    font_size:"18sp"
+                    pos_hint:{'center_x':.89, 'center_y':.5}
+                MDSeparator:
+                    pos_hint:{'center_x':.5, 'center_y':-.15}
             MDLabel:
                 bold:True
                 text:"Item"
@@ -217,6 +303,14 @@ ScreenManager
                 size_hint: .8, .06
                 pos_hint:{'center_x':.5, 'center_y':.2}
                 md_bg_color: "#0F0A0A"
+
+            MDFillRoundFlatButton:
+                id:order
+                text: "Confirm  Payment"
+                size_hint: .8, .06
+                pos_hint:{'center_x':.5, 'center_y':.1}
+                md_bg_color: "#0F0A0A"
+
 
 
 
@@ -256,9 +350,9 @@ ScreenManager
                 halign:"center"
                 font_style:'H4'
                 pos_hint:{'center_x':.5, 'center_y':.93}
-            MDIcon:
+            MDIconButton:
                 icon:"segment"
-                font_size:"45sp"
+                icon_size: "45sp"
                 pos_hint:{"center_x":.9, "center_y":.93}
             Table
                 pos_hint:{"center_x":.2, "center_y":.8}
