@@ -3,61 +3,7 @@
 ScreenManager
     id:manager
     transition:sm.FadeTransition(duration=.0)
-    MDScreen:
-        name:"home"
-        md_bg_color: "#f4f5f7"
-        FloatLayout:
-            MDSpinner:
-                id:spine_del
-                size_hint: None, None
-                size: dp(40), dp(40)
-                pos_hint: {'center_x': .5, 'center_y':.5}
-                active: False
-                color: "#0F0A0A"
-            MDIcon:
-                icon:"account-tie-woman"
-                font_size:"85sp"
-                theme_text_color: "Custom"
-                text_color: "#ffd241"
-                pos_hint:{"center_x":.15, "center_y":.75}
-            MDLabel:
-                text:'Welcome to the'
-                halign:"center"
-                font_style:'H4'
-                pos_hint:{'center_x':.35, 'center_y':.65}
-            MDLabel:
-                bold:True
-                text:'WAITER APP'
-                halign:"center"
-                font_style:'H4'
-                pos_hint:{'center_x':.35, 'center_y':.6}
-            NumberOnlyField:
-                id:phone
-                mode: "rectangle"
-                fill_color: 0, 0, 0, .4
-                size_hint: .8, .1
-                pos_hint:{'center_x':.5, 'center_y':.48}
-                hint_text:"User Phone:"
-                text_color: 0, 0, 0, 1
-                font_size: dp(25)
-            MDTextField:
-                id:password
-                mode: "rectangle"
-                fill_color: 0, 0, 0, .4
-                size_hint: .8, .1
-                pos_hint:{'center_x':.5, 'center_y':.38}
-                hint_text:"Password:"
-                text_color: 0, 0, 0, 1
-                font_size: dp(25)
-            MDFillRoundFlatButton:
-                id:login
-                text: "Sign in"
-                size_hint: .8, .06
-                pos_hint:{'center_x':.5, 'center_y':.26}
-                md_bg_color: "#0F0A0A"
-                on_release:
-                    app.spinner()
-                    app.login_waiter(phone.text, password.text)
+
 
     MDScreen:
         name:"orders"
@@ -79,6 +25,8 @@ ScreenManager
                 size_hint: .8, .06
                 pos_hint:{'center_x':.5, 'center_y':.85}
                 md_bg_color: "#0F0A0A"
+                on_release:
+                    app.screen_capture("tables")
             Card
                 pos_hint:{'center_x':.5, 'center_y':.74}
 
@@ -89,7 +37,7 @@ ScreenManager
                 font_size:"18sp"
                 pos_hint:{'center_x':.18, 'center_y':.74}
                 on_release:
-                    app.pending()
+                    app.button_color(self)
                     #app.orders()
             MDFlatButton:
                 id:pre
@@ -98,7 +46,7 @@ ScreenManager
                 font_size:"18sp"
                 pos_hint:{'center_x':.5, 'center_y':.74}
                 on_release:
-                    app.prepare()
+                    app.button_color(self)
             MDFlatButton:
                 id:comp
                 md_bg_color: "white"
@@ -106,7 +54,7 @@ ScreenManager
                 font_size:"18sp"
                 pos_hint:{'center_x':.83, 'center_y':.74}
                 on_release:
-                    app.complete()
+                    app.button_color(self)
             MDLabel:
                 bold:True
                 text:"Table No"
@@ -147,7 +95,7 @@ ScreenManager
                 icon_size: "45sp"
                 pos_hint:{'center_x':.08, 'center_y':.93}
                 on_release:
-                    app.screen_capture("tables")
+                    app.screen_leave()
             MDIconButton:
                 icon:"segment"
                 icon_size: "45sp"
@@ -503,40 +451,46 @@ ScreenManager
                 icon:"segment"
                 icon_size: "45sp"
                 pos_hint:{"center_x":.9, "center_y":.93}
-            Table
-                pos_hint:{"center_x":.2, "center_y":.8}
-            Table
-                pos_hint:{"center_x":.5, "center_y":.8}
-            Table
-                pos_hint:{"center_x":.8, "center_y":.8}
 
-            Table
-                pos_hint:{"center_x":.2, "center_y":.63}
-            Empty
-                pos_hint:{"center_x":.5, "center_y":.63}
-            Table
-                pos_hint:{"center_x":.8, "center_y":.63}
+            Table:
+                on_release:
+                    app.screen_capture("in_table")
+                pos_hint:{"center_x":.25, "center_y":.75}
+            Table:
+                guest:"6"
+                number:"02"
+                pos_hint:{"center_x":.7, "center_y":.75}
 
-            Table
-                pos_hint:{"center_x":.2, "center_y":.46}
-            Table
-                pos_hint:{"center_x":.5, "center_y":.46}
-            Table
-                pos_hint:{"center_x":.8, "center_y":.46}
+            Table:
+                guest:"2"
+                number:"03"
+                pos_hint:{"center_x":.25, "center_y":.55}
+            Table:
+                guest:"3"
+                number:"04"
+                pos_hint:{"center_x":.7, "center_y":.55}
 
-            Empty
-                pos_hint:{"center_x":.2, "center_y":.29}
-            Table
-                pos_hint:{"center_x":.5, "center_y":.29}
-            Table
-                pos_hint:{"center_x":.8, "center_y":.29}
+            Table:
+                guest:"2"
+                number:"05"
+                pos_hint:{"center_x":.25, "center_y":.35}
+            Table:
+                guest:"3"
+                number:"06"
+                pos_hint:{"center_x":.7, "center_y":.35}
 
-            Table
-                pos_hint:{"center_x":.2, "center_y":.12}
-            Table
-                pos_hint:{"center_x":.5, "center_y":.12}
-            Empty
-                pos_hint:{"center_x":.8, "center_y":.12}
+            Table:
+                guest:"2"
+                number:"07"
+                pos_hint:{"center_x":.25, "center_y":.15}
+            Table:
+                guest:"3"
+                number:"08"
+                pos_hint:{"center_x":.7, "center_y":.15}
+
+
+
+
 
     MDScreen:
         name:"aq"
@@ -577,7 +531,7 @@ ScreenManager
 <Card@MDBoxLayout>:
     radius:10
     #height:240
-    size:app.size_x/2,app.size_y/9.9
+    size:app.size_x/1,app.size_y/9.9
     md_bg_color:1, 1, 1, 1
     adaptive_height:True
     adaptive_width:True
@@ -601,6 +555,7 @@ ScreenManager
 <RowCard>:
     #orientation: "vertical"
     md_bg_color: 1, 1, 1, 1
+    pos_hint:{"center_x":.5,"center_y":.3}
     padding: "10dp"
     #spacing: "5dp"
     border_radius: 3
@@ -638,16 +593,17 @@ ScreenManager
 			pos_hint:{"center_x":.9,"center_y":.5}
 
 
-<Table>
-    orientation: "vertical"
-    size_hint: None, None
-    size: app.size_x/7, app.size_y/5.5
-    radius: [13]
-    elevation: 2
-    md_bg_color: "#f4f5f7"
-    focus_behavior: False
-    ripple_color:.9, .9, .95, 1
+<Table>:
+    adaptive_height:True
+    md_bg_color:"#f4f5f7"
+    size_hint:None, None
+    size:app.size_x/3, app.size_y/6
+    radius:10
+    ripple_color:"#ffd241"
+    line_color:0.2, 0.2, 0.2, 0.8
     ripple_behavior: True
+    name: ""
+    grade: ""
     FloatLayout:
         MDIcon:
             icon:"account-group"
@@ -658,30 +614,35 @@ ScreenManager
             pos_hint:{"center_x":.2,"center_y":.8}
         MDLabel:
             text:root.number
-            font_style:"H6"
+            markup:True
+            bold:True
             halign:"center"
+            font_size:sp(20)
             pos_hint:{"center_x":.8,"center_y":.8}
         MDLabel:
-            text:root.guest
+            text:root.guest + " " + "guest"
+            markup:True
             halign:"center"
-            font_size:"10sp"
+            font_size:sp(10)
             pos_hint:{"center_x":.2,"center_y":.6}
         MDLabel:
             text:root.status
-            bold:True
+            markup:True
             halign:"center"
-            font_size:"12sp"
+            font_size:sp(14)
             pos_hint:{"center_x":.5,"center_y":.4}
         MDLabel:
             text:root.time
+            markup:True
             halign:"center"
-            font_size:"10sp"
-            pos_hint:{"center_x":.2,"center_y":.12}
+            font_size:sp(10)
+            pos_hint:{"center_x":.2,"center_y":.15}
         MDLabel:
             text:root.price
+            markup:True
             halign:"center"
-            font_size:"10sp"
-            pos_hint:{"center_x":.7,"center_y":.12}
+            font_size:sp(10)
+            pos_hint:{"center_x":.8,"center_y":.15}
 
 
 <Empty>
