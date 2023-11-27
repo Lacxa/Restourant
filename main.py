@@ -33,8 +33,9 @@ class Table(MDCard):
     time = StringProperty("00:20")
     status = StringProperty("yet to order")
     number = StringProperty("01")
-    guest = StringProperty("2 guest")
-    price = StringProperty("Tsh 10,000")
+    guest_num = NumericProperty(0)
+    guest = StringProperty("0")
+    price = StringProperty("10,000Tsh")
 
 
 class Empty(MDCard):
@@ -61,6 +62,7 @@ class NumberOnlyField(MDTextField):
 class Main(MDApp):
     size_x, size_y = Window.size
 
+    design_link = "https://dribbble.com/shots/13927167-Waiter-App-contactless-dinning-experience/attachments/5537475?mode=media"
     # APP
     screens = ['home']
     screens_size = NumericProperty(len(screens) - 1)
@@ -94,7 +96,7 @@ class Main(MDApp):
         spinier = self.root.ids.spine_del
         spinier.active = False
 
-    def pending(self):
+    """"def pending(self):
         pend = self.root.ids.pend
         pre = self.root.ids.pre
         comp = self.root.ids.comp
@@ -119,7 +121,23 @@ class Main(MDApp):
 
         pend.md_bg_color = "white"
         pre.md_bg_color = "white"
-        comp.md_bg_color = "#ffd241"
+        comp.md_bg_color = "#ffd241"""""
+
+    def button_color(self, button_name):
+        pend = self.root.ids.pend
+        pre = self.root.ids.pre
+        comp = self.root.ids.comp
+
+        pend.md_bg_color = "white"
+        pre.md_bg_color = "white"
+        comp.md_bg_color = "white"
+
+        if "Pending" in button_name.text:
+            pend.md_bg_color = "#ffd241"
+        elif "Complete" in button_name.text:
+            comp.md_bg_color = "#ffd241"
+        elif "Preparing" in button_name.text:
+            pre.md_bg_color = "#ffd241"
 
     def orders(self):
         data = {"detail": {"time": "00:15", "icon": "table-chair", "price": "5"}}
@@ -193,6 +211,27 @@ class Main(MDApp):
 
     """
                 LOGIN FUNCTIONS
+    """
+
+    """
+            ORDER FUNCTIONS
+    
+    """
+
+    def add_item(self):
+        for i in range(3):
+            self.root.ids.customers.data.append(
+                {
+                    "viewclass": "RowCard",
+                    "name": str(i),
+                    "price": "3",
+                    "id": i
+                }
+            )
+
+    """
+            END ORDER FUNCTIONS
+    
     """
 
     """ SCREEN FUNCTIONS """
