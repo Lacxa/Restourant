@@ -3,9 +3,9 @@ import time
 
 import qrcode
 from kivy.base import EventLoop
-from kivy.graphics.svg import Window
+#from kivy.graphics.svg import Window
+from kivy.core.window import Window
 from kivy.properties import NumericProperty, StringProperty, DictProperty
-
 from kivymd.app import MDApp
 from kivymd.toast import toast
 from kivymd.uix.card import MDCard
@@ -14,8 +14,8 @@ from kivymd.uix.textfield import MDTextField
 
 from database import FireBase as FB
 
-Window.size = [1280, 800]
-
+#Window.size = [1280, 800]
+Window.size = [1000, 520]
 
 class RowCard(MDCard):
     date = StringProperty("")
