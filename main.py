@@ -14,7 +14,7 @@ from kivymd.uix.textfield import MDTextField
 
 from database import FireBase as FB
 
-Window.size = [420, 740]
+Window.size = [1280, 800]
 
 
 class RowCard(MDCard):
@@ -138,6 +138,19 @@ class Main(MDApp):
             comp.md_bg_color = "#ffd241"
         elif "Preparing" in button_name.text:
             pre.md_bg_color = "#ffd241"
+
+    def order_category(self, button_name):
+        fod = self.root.ids.fod
+        drnk = self.root.ids.drnk
+
+        fod.md_bg_color = "white"
+        drnk.md_bg_color = "white"
+
+        if "Food" in button_name.text:
+            fod.md_bg_color = "#ffd241"
+        elif "Drinks" in button_name.text:
+            drnk.md_bg_color = "#ffd241"
+
 
     def orders(self):
         data = {"detail": {"time": "00:15", "icon": "table-chair", "price": "5"}}
