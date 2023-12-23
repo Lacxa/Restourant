@@ -1,0 +1,44 @@
+{
+  "users": [
+    {
+      "username": "john_doe",
+      "password": "1111"
+    },
+    {
+      "username": "jane_smith",
+      "password": "1111"
+    },
+    {
+      "username": "bob_jones",
+      "password": "1111"
+    },
+    {
+      "username": "alice_carter",
+      "password": "1111"
+    },
+    {
+      "username": "charlie_brown",
+      "password": "1111"
+    },
+    {
+      "username": "linda_wilson",
+      "password": "1111"
+    },
+    {
+      "username": "david_miller",
+      "password": "1111"
+    },
+    {
+      "username": "susan_jackson",
+      "password": "1111"
+    },
+    {
+      "username": "kevin_thompson",
+      "password": "1111"
+    },
+    {
+      "username": "emily_rodriguez",
+      "password": "1111"
+    }
+  ]
+}

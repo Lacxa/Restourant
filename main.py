@@ -1,21 +1,21 @@
+import json
 import re
-import time
 
-import qrcode
 from kivy.base import EventLoop
-#from kivy.graphics.svg import Window
+# from kivy.graphics.svg import Window
 from kivy.core.window import Window
 from kivy.properties import NumericProperty, StringProperty, DictProperty
+from kivy.uix.floatlayout import FloatLayout
 from kivymd.app import MDApp
 from kivymd.toast import toast
 from kivymd.uix.card import MDCard
-from kivymd.uix.list import OneLineIconListItem, OneLineListItem
 from kivymd.uix.textfield import MDTextField
 
 from database import FireBase as FB
 
-#Window.size = [1280, 800]
+# Window.size = [1280, 800]
 Window.size = [1000, 520]
+
 
 class RowCard(MDCard):
     date = StringProperty("")
@@ -26,6 +26,14 @@ class RowCard(MDCard):
 
 
 class Order(MDCard):
+    pass
+
+
+class NumericKeyboardLayout(FloatLayout):
+    pass
+
+
+class Deco(MDCard):
     pass
 
 
@@ -63,65 +71,79 @@ class Main(MDApp):
     size_x, size_y = Window.size
 
     design_link = "https://dribbble.com/shots/13927167-Waiter-App-contactless-dinning-experience/attachments/5537475?mode=media"
+
     # APP
     screens = ['home']
     screens_size = NumericProperty(len(screens) - 1)
     current = StringProperty(screens[len(screens) - 1])
 
-    def qrcode(self, food):
-        qr = qrcode.QRCode(
-            version=1,
-            error_correction=qrcode.constants.ERROR_CORRECT_L,
-            box_size=10,
-            border=4,
-        )
+    # sign in
+    password = StringProperty("")
+    username = StringProperty("")
 
-        data = food
-        qr.add_data(data)
-        qr.make(fit=True)
+    def update_text(self, button_text):
+        text_input = self.root.ids.input
+        current_text = text_input.text
+        text_input.text = current_text + button_text
 
-        img = qr.make_image(fill_color="green", back_color="white")
+    def delete_last_digit(self):
+        text_input = self.root.ids.input
+        current_text = text_input.text
+        text_input.text = current_text[:-1]
 
-        img.save("qr_code.png")
+    def on_start(self):
+        self.display_users()
 
-        sm = self.root
-        sm.current = "qr"
+    def get_user_data(self):
+        # Load user data from the JSON file
+        with open('users.json', 'r') as file:
+            data = json.load(file)
 
-    def spinner(self):
-        spiner = self.root.ids.spine_del
-        spiner.active = True
-        print("user")
+        return data
 
-    def end_spine(self):
-        spinier = self.root.ids.spine_del
-        spinier.active = False
+    def print(self):
+        user_data = self.get_user_data()
 
-    """"def pending(self):
-        pend = self.root.ids.pend
-        pre = self.root.ids.pre
-        comp = self.root.ids.comp
+        for user in user_data:
+            print(f"Username: {user['username']}, Password: {user['password']}")
 
-        pend.md_bg_color = "#ffd241"
-        pre.md_bg_color = "white"
-        comp.md_bg_color = "white"
+    def display_users(self):
+        self.root.ids.studs.data = {}
+        users_data = self.get_user_data()
 
-    def prepare(self):
-        pend = self.root.ids.pend
-        pre = self.root.ids.pre
-        comp = self.root.ids.comp
+        if not users_data:
+            self.root.ids.studs.data.append(
+                {
+                    "viewclass": "Deco",
+                    "name": "No student Yet!",
+                }
+            )
+        else:
+            users = users_data["users"]
+            for i, user in enumerate(users):
+                self.root.ids.studs.data.append(
+                    {
+                        "viewclass": "Deco",
+                        "name": user["username"],
+                        "id": str(i)
+                    }
+                )
 
-        pend.md_bg_color = "white"
-        pre.md_bg_color = "#ffd241"
-        comp.md_bg_color = "white"
+    def check(self, input):
+        self.get_data()
 
-    def complete(self):
-        pend = self.root.ids.pend
-        pre = self.root.ids.pre
-        comp = self.root.ids.comp
+        if len(input) > 3:
+            if input == self.password:
+                self.screen_capture("orders")
+            else:
+                toast("Wrong password")
 
-        pend.md_bg_color = "white"
-        pre.md_bg_color = "white"
-        comp.md_bg_color = "#ffd241"""""
+    def get_data(self):
+        with open('users.json', 'r') as file:
+            data = json.load(file)
+            user = next((user for user in data.get('users', []) if user['username'] == self.username), None)
+
+            self.password = user["password"]
 
     def button_color(self, button_name):
         pend = self.root.ids.pend
@@ -150,38 +172,6 @@ class Main(MDApp):
             fod.md_bg_color = "#ffd241"
         elif "Drinks" in button_name.text:
             drnk.md_bg_color = "#ffd241"
-
-
-    def orders(self):
-        data = {"detail": {"time": "00:15", "icon": "table-chair", "price": "5"}}
-
-        for i, y in data.items():
-            self.root.ids.today.data.append(
-                {
-                    "viewclass": "RowCard",
-                    "name": y["time"],
-                    "icon": y["icon"],
-                    "price": y["price"]
-
-                }
-            )
-
-    def table(self):
-        data = dict(detail={'time': "00:15", 'number': "01", 'price': "5000", 'guest': "2 guest", 'status': "served"},
-                    date={'time': "00:15", 'number': "01", 'price': "5000", 'guest': "2 guest", 'status': "served"})
-
-        for i, y in data.items():
-            self.root.ids.test.data.append(
-                {
-                    "viewclass": "Table",
-                    "number": y["number"],
-                    "guest": y["guest"],
-                    "price": y["price"],
-                    "time": y["time"],
-                    "status": y["status"]
-
-                }
-            )
 
     """ KEYBOARD INTEGRATION """
 
