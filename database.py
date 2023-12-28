@@ -30,4 +30,29 @@ class FireBase:
             except:
                 return "No Internet!"
 
+    def register(self, category, name, quantity, price):
+        import firebase_admin
+        firebase_admin._apps.clear()
+        from firebase_admin import credentials, initialize_app, db
+        if not firebase_admin._apps:
+            cred = credentials.Certificate("credential/farmzon-abdcb-c4c57249e43b.json")
+            initialize_app(cred, {'databaseURL': 'https://farmzon-abdcb.firebaseio.com/'})
+            ref = db.reference("Restaurant").child("Products").child(category)
+            data = ref.get()
+            if data and category in data:
+                return False
+
+            else:
+                ref = db.reference("Restaurant").child("Products").child(category).child(name)
+                print("uploaded")
+                ref.set(
+                    {
+                        "name": name,
+                        "quantity": quantity,
+                        "price": price,
+
+                    }
+                )
+        return True
+
 

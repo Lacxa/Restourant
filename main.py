@@ -2,15 +2,16 @@ import json
 import re
 
 from kivy.base import EventLoop
-# from kivy.graphics.svg import Window
 from kivy.core.window import Window
 from kivy.properties import NumericProperty, StringProperty, DictProperty
 from kivy.uix.floatlayout import FloatLayout
 from kivymd.app import MDApp
 from kivymd.toast import toast
 from kivymd.uix.card import MDCard
+from kivymd.uix.list import OneLineIconListItem
 from kivymd.uix.textfield import MDTextField
 
+import network
 from database import FireBase as FB
 
 # Window.size = [1280, 800]
@@ -28,6 +29,8 @@ class RowCard(MDCard):
 class Order(MDCard):
     pass
 
+class IconListItem(OneLineIconListItem):
+    icon = StringProperty()
 
 class NumericKeyboardLayout(FloatLayout):
     pass
@@ -92,7 +95,8 @@ class Main(MDApp):
         text_input.text = current_text[:-1]
 
     def on_start(self):
-        self.display_users()
+        pass
+        # self.display_users()
 
     def get_user_data(self):
         # Load user data from the JSON file
@@ -231,6 +235,36 @@ class Main(MDApp):
                     "id": i
                 }
             )
+
+    """def build(self):
+        self.theme_cls.primary_palette = "Orange"
+        self.theme_cls.theme_style = "Dark"""""
+
+    def add_product(self,category, name, quantity, price):
+        if network.ping_net():
+            if category == "":
+                toast("Please select category")
+            elif name == "":
+                toast("Please enter name")
+            elif quantity == "":
+                toast("Please enter quantity")
+            elif price == "":
+                toast("Please enter price")
+
+            else:
+                if FB.register(FB(), category, name, quantity, price):
+                    toast("Product Added successfully")
+                    self.clear_form()
+                else:
+                    toast("Product already exist")
+        else:
+            toast("No internet")
+
+    def clear_form(self):
+        # Iterate through input fields and reset their values
+        for input_field_id in ['category', 'price', 'quantity', 'name']:
+            input_field = self.root.ids[input_field_id]
+            input_field.text = ""
 
     """
             END ORDER FUNCTIONS

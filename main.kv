@@ -5,6 +5,76 @@ ScreenManager
     transition:sm.FadeTransition(duration=.0)
 
     MDScreen:
+        name:'add'
+        FloatLayout:
+            orientation:'vertical'
+            MDLabel:
+                bold:True
+                text:'Fill Product Information'
+                halign:"center"
+                font_style:'H6'
+                pos_hint:{'center_x':.5, 'center_y':.85}
+                theme_text_color: "Custom"
+                text_color: 80 / 225, 136 / 225, 114 / 225, 1
+                height: self.texture_size[1]
+                width: self.texture_size[1]
+            MDLabel:
+                halign: "center"
+                text: "category"
+                pos_hint:{'center_x':.5, 'center_y':.76}
+            MDTextField:
+                id:category
+                mode: "line"
+                fill_color: 0, 0, 0, .4
+                size_hint: .4, .13
+                pos_hint:{'center_x':.5, 'center_y':.76}
+                hint_text:"Category:"
+                font_size: dp(16)
+                multiline: False
+            MDTextField:
+                id:name
+                mode: "line"
+                fill_color: 0, 0, 0, .4
+                size_hint: .4, .13
+                pos_hint:{'center_x':.5, 'center_y':.64}
+                hint_text:"Product Name:"
+                font_size: dp(16)
+                multiline: False
+            MDTextField:
+                id: quantity
+                mode: "line"
+                fill_color: 0, 0, 0, .4
+                size_hint: .4, .13
+                hint_text: "Quantity:"
+                pos_hint: {'center_x': .5, 'center_y': .52}
+                font_size: dp(16)
+                input_filter: "int"
+                multiline: False
+            MDTextField:
+                id:price
+                mode: "line"
+                fill_color: 0, 0, 0, .4
+                size_hint: .4, .13
+                hint_text:"Price Tsh:"
+                pos_hint:{'center_x':.5, 'center_y':.4}
+                font_size: dp(16)
+                input_filter: "int"
+                multiline: False
+
+
+            MDFillRoundFlatButton:
+                id:additem
+                text: "Add Product"
+                size_hint: .4, .06
+                text_color: 1, 1, 1, 1
+                pos_hint:{'center_x':.5, 'center_y':.15}
+                md_bg_color:80 / 225, 136 / 225, 114 / 225, 1
+                elevation:5
+                on_release:
+                    app.add_product(category.text, name.text, quantity.text, price.text)
+
+
+    MDScreen:
         name:"home"
         md_bg_color: "#f4f5f7"
         FloatLayout:
@@ -38,7 +108,7 @@ ScreenManager
         FloatLayout:
             MDLabel:
                 bold:True
-                text:"Sign In"
+                text:app.username
                 halign:"center"
                 font_style:'H6'
                 pos_hint:{'center_x':.5, 'center_y':.93}
