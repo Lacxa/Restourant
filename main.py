@@ -8,7 +8,9 @@ from kivy.uix.floatlayout import FloatLayout
 from kivymd.app import MDApp
 from kivymd.toast import toast
 from kivymd.uix.card import MDCard
+from kivymd.uix.floatlayout import MDFloatLayout
 from kivymd.uix.list import OneLineIconListItem
+from kivymd.uix.tab import MDTabsBase
 from kivymd.uix.textfield import MDTextField
 
 import network
@@ -16,6 +18,10 @@ from database import FireBase as FB
 
 # Window.size = [1280, 800]
 Window.size = [1000, 520]
+
+
+class Tab(MDFloatLayout, MDTabsBase):
+    '''Class implementing content for a tab.'''
 
 
 class RowCard(MDCard):
@@ -29,8 +35,10 @@ class RowCard(MDCard):
 class Order(MDCard):
     pass
 
+
 class IconListItem(OneLineIconListItem):
     icon = StringProperty()
+
 
 class NumericKeyboardLayout(FloatLayout):
     pass
@@ -95,8 +103,7 @@ class Main(MDApp):
         text_input.text = current_text[:-1]
 
     def on_start(self):
-        pass
-        # self.display_users()
+        self.display_users()
 
     def get_user_data(self):
         # Load user data from the JSON file
@@ -240,7 +247,7 @@ class Main(MDApp):
         self.theme_cls.primary_palette = "Orange"
         self.theme_cls.theme_style = "Dark"""""
 
-    def add_product(self,category, name, quantity, price):
+    def add_product(self, category, name, quantity, price):
         if network.ping_net():
             if category == "":
                 toast("Please select category")
