@@ -5,18 +5,10 @@ ScreenManager
     transition:sm.FadeTransition(duration=.0)
 
     MDScreen:
-        name:"food"
+        name:"Menu"
         #md_bg_color: "#424242", #3e3e42
         md_bg_color: "#f4f5f7"
         FloatLayout:
-            MDIconButton:
-                icon:"chevron-left"
-                icon_size: "45sp"
-                pos_hint:{'center_x':.08, 'center_y':.85}
-            MDIconButton:
-                icon:"segment"
-                icon_size: "45sp"
-                pos_hint:{"center_x":.9, "center_y":.85}
             MDTabs:
                 allow_stretch:False
                 background_color:1, 1, 1, 1
@@ -28,30 +20,68 @@ ScreenManager
                 Tab:
                     title: "Food"
                     FloatLayout:
+                        Order
+                            pos_hint:{"center_x":.25, "center_y":.95}
+                            size:app.size_x/2.1, app.size_y/17
+                            ripple_behavior: False
+                            #md_bg_color: "#3e3e42"
+                            radius: [0]
+                            FloatLayout:
+                                Card
+                                    pos_hint:{'center_x':.5, 'center_y':.3}
+                                    size:app.size_x/2.1, app.size_y/17
+                                MDFlatButton:
+                                    id:one
+                                    md_bg_color: "#ffd241"
+                                    text:"Main Dish"
+                                    font_size:"18sp"
+                                    pos_hint:{'center_x':.25, 'center_y':.5}
+                                    on_release:
+                                        app.button_color(self)
+                                        #app.orders()
+                                MDFlatButton:
+                                    id:two
+                                    md_bg_color: "white"
+                                    text:"Extra"
+                                    font_size:"18sp"
+                                    pos_hint:{'center_x':.5, 'center_y':.5}
+                                    on_release:
+                                        app.button_color(self)
+                                MDFlatButton:
+                                    id:three
+                                    md_bg_color: "white"
+                                    text:"Fish"
+                                    font_size:"18sp"
+                                    pos_hint:{'center_x':.75, 'center_y':.5}
+                                    on_release:
+                                        app.button_color(self)
+
                         RecycleView:
                             id: food
                             key_viewclass: 'viewclass'
                             key_size: 'height'
-                            pos_hint:{"top":.9}
-                            RecycleBoxLayout:
-                                id:wali
-                                spacing:dp(5)
+		                    pos_hint:{"center_x":.55,"top":.9}
+                            #pos_hint:{"center_x":.25, "center_y":.60}
+                            RecycleGridLayout:
+                                id:grid
+                                cols:1
+                                spacing:dp(10)
                                 padding: dp(10)
-                                default_size: None, dp(80)
-                                default_size_hint: 1, None
+                                default_size: None, dp(45)
+                                default_size_hint: None, None
                                 size_hint_y: None
                                 height: self.minimum_height
-                                orientation: 'vertical'
+
                         MDSeparator:
-                            orientation:"vertical"
-                            pos_hint:{"center_x":.5, "center_y":.9}
+                            pos_hint:{"center_x":.5, "center_y":.5}
                             color:80 / 225, 136 / 225, 114 / 225, 1
                             width:2
-                            size_hint:.9, None
+                            size_hint:None, .5
+
 
 
                         Order
-                            pos_hint:{"center_x":.75, "center_y":.78}
+                            pos_hint:{"center_x":.75, "center_y":.95}
                             size:app.size_x/2.1, app.size_y/12
                             ripple_behavior: False
                             md_bg_color: "#f4f5f7"
@@ -63,186 +93,6 @@ ScreenManager
                                     font_size:"20sp"
                                     pos_hint:{'center_x':.84, 'center_y':.5}
 
-                        Order
-                            pos_hint:{"center_x":.25, "center_y":.78}
-                            size:app.size_x/2.1, app.size_y/17
-                            ripple_behavior: False
-                            #md_bg_color: "#3e3e42"
-                            radius: [0]
-                            FloatLayout:
-                                Card
-                                    pos_hint:{'center_x':.5, 'center_y':.3}
-                                    size:app.size_x/2.1, app.size_y/17
-                                MDFlatButton:
-                                    id:fod
-                                    md_bg_color: "#ffd241"
-                                    text:"Main Dish"
-                                    font_size:"18sp"
-                                    pos_hint:{'center_x':.25, 'center_y':.5}
-                                    on_release:
-                                        app.order_category(self)
-                                        #app.orders()
-                                MDFlatButton:
-                                    id:drnk
-                                    md_bg_color: "white"
-                                    text:"Extra"
-                                    font_size:"18sp"
-                                    pos_hint:{'center_x':.5, 'center_y':.5}
-                                    on_release:
-                                        app.order_category(self)
-                                MDFlatButton:
-                                    id:pp
-                                    md_bg_color: "white"
-                                    text:"Fish"
-                                    font_size:"18sp"
-                                    pos_hint:{'center_x':.75, 'center_y':.5}
-                                    on_release:
-                                        app.order_category(self)
-
-                        Order
-                            pos_hint:{"center_x":.25, "center_y":.68}
-                            size:app.size_x/2.1, app.size_y/12
-                            ripple_behavior: False
-                            md_bg_color: "#f4f5f7"
-                            radius: [12]
-                            FloatLayout:
-                                MDLabel:
-                                    text:"Chicken Tandoor"
-                                    halign:"left"
-                                    font_size:"20sp"
-                                    pos_hint:{'center_x':.51, 'center_y':.5}
-                                MDLabel:
-                                    text:"$25"
-                                    halign:"center"
-                                    font_size:"16sp"
-                                    pos_hint:{'center_x':.5, 'center_y':.5}
-                                MDFillRoundFlatButton:
-                                    id:add
-                                    text:"Add"
-                                    size_hint: .2, .02
-                                    theme_text_color: "Custom"
-                                    text_color: "#0F0A0A"
-                                    md_bg_color:"#ffd241"
-                                    pos_hint:{'center_x':.89, 'center_y':.5}
-                                    on_release:
-                                        add.pos_hint = {'center_x':.89, 'center_y':88}
-                                        minus.pos_hint = {"center_x":.82, "center_y":.5}
-                                        no.pos_hint =  {'center_x':.89, 'center_y':.5}
-                                        plus.pos_hint = {"center_x":.95, "center_y":.5}
-                                MDIconButton:
-                                    id:minus
-                                    icon:"minus-circle"
-                                    icon_size: "20sp"
-                                    pos_hint:{"center_x":.82, "center_y":88}
-                                MDLabel:
-                                    id:no
-                                    text:"01"
-                                    halign:"center"
-                                    font_size:"16sp"
-                                    pos_hint:{'center_x':.89, 'center_y':88}
-                                MDIconButton:
-                                    id:plus
-                                    icon:"plus-circle"
-                                    icon_size: "20sp"
-                                    pos_hint:{"center_x":.95, "center_y":88}
-                        Order
-                            pos_hint:{"center_x":.25, "center_y":.60}
-                            size:app.size_x/2.1, app.size_y/12
-                            ripple_behavior: False
-                            md_bg_color: "#f4f5f7"
-                            radius: [12]
-                            FloatLayout:
-                                MDLabel:
-                                    text:"Fry Fish"
-                                    halign:"left"
-                                    font_size:"20sp"
-                                    pos_hint:{'center_x':.51, 'center_y':.5}
-                                MDLabel:
-                                    text:"$15"
-                                    halign:"center"
-                                    font_size:"16sp"
-                                    pos_hint:{'center_x':.5, 'center_y':.5}
-                                MDFillRoundFlatButton:
-                                    id:ad
-                                    text:"Add"
-                                    size_hint: .2, .02
-                                    theme_text_color: "Custom"
-                                    text_color: "#0F0A0A"
-                                    md_bg_color:"#ffd241"
-                                    pos_hint:{'center_x':.89, 'center_y':.5}
-                                    on_release:
-                                        ad.pos_hint = {'center_x':.89, 'center_y':88}
-                                        minu.pos_hint = {"center_x":.82, "center_y":.5}
-                                        n.pos_hint =  {'center_x':.89, 'center_y':.5}
-                                        plu.pos_hint = {"center_x":.95, "center_y":.5}
-                                MDIconButton:
-                                    id:minu
-                                    icon:"minus-circle"
-                                    icon_size: "20sp"
-                                    pos_hint:{"center_x":.82, "center_y":88}
-                                MDLabel:
-                                    id:n
-                                    text:"01"
-                                    halign:"center"
-                                    font_size:"16sp"
-                                    pos_hint:{'center_x':.89, 'center_y':88}
-                                MDIconButton:
-                                    id:plu
-                                    icon:"plus-circle"
-                                    icon_size: "20sp"
-                                    pos_hint:{"center_x":.95, "center_y":88}
-
-                        Order
-                            pos_hint:{"center_x":.75, "center_y":.71}
-                            size:app.size_x/2.1, app.size_y/12
-                            ripple_behavior: False
-                            md_bg_color: "#f4f5f7"
-                            radius: [12]
-                            FloatLayout:
-                                MDLabel:
-                                    text:"Chicken Tandoor"
-                                    halign:"left"
-                                    font_size:"20sp"
-                                    pos_hint:{'center_x':.51, 'center_y':.5}
-                                MDLabel:
-                                    text:"$25"
-                                    halign:"center"
-                                    font_size:"16sp"
-                                    pos_hint:{'center_x':.5, 'center_y':.5}
-                                MDFillRoundFlatButton:
-                                    id:a
-                                    text:"Remove"
-                                    size_hint: .2, .02
-                                    theme_text_color: "Custom"
-                                    text_color: "#0F0A0A"
-                                    md_bg_color:"#ffd241"
-                                    pos_hint:{'center_x':.89, 'center_y':.5}
-
-                        Order
-                            pos_hint:{"center_x":.75, "center_y":.63}
-                            size:app.size_x/2.1, app.size_y/12
-                            ripple_behavior: False
-                            md_bg_color: "#f4f5f7"
-                            radius: [12]
-                            FloatLayout:
-                                MDLabel:
-                                    text:"Fry Fish"
-                                    halign:"left"
-                                    font_size:"20sp"
-                                    pos_hint:{'center_x':.51, 'center_y':.5}
-                                MDLabel:
-                                    text:"$15"
-                                    halign:"center"
-                                    font_size:"16sp"
-                                    pos_hint:{'center_x':.5, 'center_y':.5}
-                                MDFillRoundFlatButton:
-                                    id:b
-                                    text:"Remove"
-                                    size_hint: .2, .02
-                                    theme_text_color: "Custom"
-                                    text_color: "#0F0A0A"
-                                    md_bg_color:"#ffd241"
-                                    pos_hint:{'center_x':.89, 'center_y':.5}
 
                         Order
                             pos_hint:{"center_x":.75, "center_y":.05}
@@ -275,19 +125,24 @@ ScreenManager
                     title: "Drinks"
                     FloatLayout:
                         RecycleView:
-                            id: attendi
+                            id: drink
                             key_viewclass: 'viewclass'
                             key_size: 'height'
                             pos_hint:{"top":.9}
-                            RecycleBoxLayout:
-                                id:wali
-                                spacing:dp(4)
+                            key_size: 'height'
+		                    pos_hint:{"center_x":.5,"top":.8}
+                            #pos_hint:{"center_x":.25, "center_y":.60}
+                            RecycleGridLayout:
+                                id:grid
+                                cols:1
+                                spacing:dp(10)
                                 padding: dp(10)
-                                default_size: None, dp(80)
-                                default_size_hint: 1, None
+                                default_size: None, dp(40)
+                                default_size_hint: None, None
                                 size_hint_y: None
                                 height: self.minimum_height
-                                orientation: 'vertical'
+                                #orientation: 'vertical'
+
 
                         MDSeparator:
                             orientation:"vertical"
@@ -295,270 +150,7 @@ ScreenManager
                             color:80 / 225, 136 / 225, 114 / 225, 1
                             width:2
                             size_hint:.9, None
-                        MDRaisedButton:
-                            id:start
-                            text: "date"
-                            pos_hint:{'center_x':.5, 'center_y':.95}
-                            md_bg_color: 80/255, 136/255, 114/255, 1
-                            elevation:9
 
-    MDScreen:
-        name:"design"
-        FloatLayout:
-            MDIconButton:
-                icon:"chevron-left"
-                icon_size: "45sp"
-                pos_hint:{'center_x':.08, 'center_y':.93}
-            MDIconButton:
-                icon:"segment"
-                icon_size: "45sp"
-                pos_hint:{"center_x":.9, "center_y":.93}
-
-            Order
-                pos_hint:{"center_x":.75, "center_y":.78}
-                size:app.size_x/2.1, app.size_y/12
-                ripple_behavior: False
-                md_bg_color: "#f4f5f7"
-                radius: [12]
-                FloatLayout:
-                    MDLabel:
-                        text:"Selected Items"
-                        halign:"left"
-                        font_size:"20sp"
-                        pos_hint:{'center_x':.84, 'center_y':.5}
-
-            Order
-                pos_hint:{"center_x":.5, "center_y":.85}
-                size:app.size_x/1.8, app.size_y/14
-                ripple_behavior: False
-                md_bg_color: "#f4f5f7"
-                radius: [0]
-                FloatLayout:
-                    Card
-                        pos_hint:{'center_x':.5, 'center_y':.74}
-                        size:app.size_x/1.2, app.size_y/12
-                    MDFlatButton:
-		                id:fod
-		                md_bg_color: "#ffd241"
-		                text:"Food"
-		                font_size:"18sp"
-		                pos_hint:{'center_x':.35, 'center_y':.74}
-		                on_release:
-		                    app.order_category(self)
-		                    #app.orders()
-		            MDFlatButton:
-		                id:drnk
-		                md_bg_color: "white"
-		                text:"Drinks"
-		                font_size:"18sp"
-		                pos_hint:{'center_x':.75, 'center_y':.74}
-		                on_release:
-		                    app.order_category(self)
-			Order
-                pos_hint:{"center_x":.25, "center_y":.78}
-                size:app.size_x/2.1, app.size_y/17
-                ripple_behavior: False
-                #md_bg_color: "#3e3e42"
-                radius: [0]
-				FloatLayout:
-	                Card
-	                    pos_hint:{'center_x':.5, 'center_y':.3}
-	                    size:app.size_x/2.1, app.size_y/17
-	                MDFlatButton:
-		                id:fod
-		                md_bg_color: "#ffd241"
-		                text:"Main Dish"
-		                font_size:"18sp"
-		                pos_hint:{'center_x':.25, 'center_y':.5}
-		                on_release:
-		                    app.order_category(self)
-		                    #app.orders()
-		            MDFlatButton:
-		                id:drnk
-		                md_bg_color: "white"
-		                text:"Extra"
-		                font_size:"18sp"
-		                pos_hint:{'center_x':.5, 'center_y':.5}
-		                on_release:
-		                    app.order_category(self)
-                    MDFlatButton:
-		                id:pp
-		                md_bg_color: "white"
-		                text:"Fish"
-		                font_size:"18sp"
-		                pos_hint:{'center_x':.75, 'center_y':.5}
-		                on_release:
-		                    app.order_category(self)
-
-            Order
-                pos_hint:{"center_x":.25, "center_y":.68}
-                size:app.size_x/2.1, app.size_y/12
-                ripple_behavior: False
-                md_bg_color: "#f4f5f7"
-                radius: [12]
-                FloatLayout:
-                    MDLabel:
-                        text:"Chicken Tandoor"
-                        halign:"left"
-                        font_size:"20sp"
-                        pos_hint:{'center_x':.51, 'center_y':.5}
-                    MDLabel:
-                        text:"$25"
-                        halign:"center"
-                        font_size:"16sp"
-                        pos_hint:{'center_x':.5, 'center_y':.5}
-                    MDFillRoundFlatButton:
-                        id:add
-                        text:"Add"
-                        size_hint: .2, .02
-                        theme_text_color: "Custom"
-                        text_color: "#0F0A0A"
-                        md_bg_color:"#ffd241"
-                        pos_hint:{'center_x':.89, 'center_y':.5}
-                        on_release:
-                            add.pos_hint = {'center_x':.89, 'center_y':88}
-                            minus.pos_hint = {"center_x":.82, "center_y":.5}
-                            no.pos_hint =  {'center_x':.89, 'center_y':.5}
-                            plus.pos_hint = {"center_x":.95, "center_y":.5}
-                    MDIconButton:
-                        id:minus
-                        icon:"minus-circle"
-                        icon_size: "20sp"
-                        pos_hint:{"center_x":.82, "center_y":88}
-                    MDLabel:
-                        id:no
-                        text:"01"
-                        halign:"center"
-                        font_size:"16sp"
-                        pos_hint:{'center_x':.89, 'center_y':88}
-                    MDIconButton:
-                        id:plus
-                        icon:"plus-circle"
-                        icon_size: "20sp"
-                        pos_hint:{"center_x":.95, "center_y":88}
-            Order
-                pos_hint:{"center_x":.25, "center_y":.60}
-                size:app.size_x/2.1, app.size_y/12
-                ripple_behavior: False
-                md_bg_color: "#f4f5f7"
-                radius: [12]
-                FloatLayout:
-                    MDLabel:
-                        text:"Fry Fish"
-                        halign:"left"
-                        font_size:"20sp"
-                        pos_hint:{'center_x':.51, 'center_y':.5}
-                    MDLabel:
-                        text:"$15"
-                        halign:"center"
-                        font_size:"16sp"
-                        pos_hint:{'center_x':.5, 'center_y':.5}
-                    MDFillRoundFlatButton:
-                        id:ad
-                        text:"Add"
-                        size_hint: .2, .02
-                        theme_text_color: "Custom"
-                        text_color: "#0F0A0A"
-                        md_bg_color:"#ffd241"
-                        pos_hint:{'center_x':.89, 'center_y':.5}
-                        on_release:
-                            ad.pos_hint = {'center_x':.89, 'center_y':88}
-                            minu.pos_hint = {"center_x":.82, "center_y":.5}
-                            n.pos_hint =  {'center_x':.89, 'center_y':.5}
-                            plu.pos_hint = {"center_x":.95, "center_y":.5}
-                    MDIconButton:
-                        id:minu
-                        icon:"minus-circle"
-                        icon_size: "20sp"
-                        pos_hint:{"center_x":.82, "center_y":88}
-                    MDLabel:
-                        id:n
-                        text:"01"
-                        halign:"center"
-                        font_size:"16sp"
-                        pos_hint:{'center_x':.89, 'center_y':88}
-                    MDIconButton:
-                        id:plu
-                        icon:"plus-circle"
-                        icon_size: "20sp"
-                        pos_hint:{"center_x":.95, "center_y":88}
-
-            Order
-                pos_hint:{"center_x":.75, "center_y":.71}
-                size:app.size_x/2.1, app.size_y/12
-                ripple_behavior: False
-                md_bg_color: "#f4f5f7"
-                radius: [12]
-                FloatLayout:
-                    MDLabel:
-                        text:"Chicken Tandoor"
-                        halign:"left"
-                        font_size:"20sp"
-                        pos_hint:{'center_x':.51, 'center_y':.5}
-                    MDLabel:
-                        text:"$25"
-                        halign:"center"
-                        font_size:"16sp"
-                        pos_hint:{'center_x':.5, 'center_y':.5}
-                    MDFillRoundFlatButton:
-                        id:a
-                        text:"Remove"
-                        size_hint: .2, .02
-                        theme_text_color: "Custom"
-                        text_color: "#0F0A0A"
-                        md_bg_color:"#ffd241"
-                        pos_hint:{'center_x':.89, 'center_y':.5}
-
-            Order
-                pos_hint:{"center_x":.75, "center_y":.63}
-                size:app.size_x/2.1, app.size_y/12
-                ripple_behavior: False
-                md_bg_color: "#f4f5f7"
-                radius: [12]
-                FloatLayout:
-                    MDLabel:
-                        text:"Fry Fish"
-                        halign:"left"
-                        font_size:"20sp"
-                        pos_hint:{'center_x':.51, 'center_y':.5}
-                    MDLabel:
-                        text:"$15"
-                        halign:"center"
-                        font_size:"16sp"
-                        pos_hint:{'center_x':.5, 'center_y':.5}
-                    MDFillRoundFlatButton:
-                        id:b
-                        text:"Remove"
-                        size_hint: .2, .02
-                        theme_text_color: "Custom"
-                        text_color: "#0F0A0A"
-                        md_bg_color:"#ffd241"
-                        pos_hint:{'center_x':.89, 'center_y':.5}
-
-            Order
-                pos_hint:{"center_x":.75, "center_y":.05}
-                size:app.size_x/2.2, app.size_y/14
-                ripple_behavior: False
-                #md_bg_color: "#f4f5f7"
-                radius: [0]
-                FloatLayout:
-                    MDLabel:
-                        text:"1 item"
-                        halign:"left"
-                        font_size:"20sp"
-                        pos_hint:{'center_x':.55, 'center_y':.5}
-                    MDLabel:
-                        text:"TOTAL"
-                        bold:True
-                        halign:"center"
-                        font_size:"16sp"
-                        pos_hint:{'center_x':.7, 'center_y':.5}
-                    MDLabel:
-                        id:no
-                        text:"$45"
-                        halign:"center"
-                        font_size:"20sp"
-                        pos_hint:{'center_x':.89, 'center_y':.5}
 
     MDScreen:
         name:"home"
@@ -809,267 +401,6 @@ ScreenManager
                         halign:"center"
                         font_size:"20sp"
                         pos_hint:{'center_x':.89, 'center_y':.3}
-            
-
-    MDScreen:
-        name:"food"
-        #md_bg_color: "#424242", #3e3e42
-        md_bg_color: "#f4f5f7"
-        FloatLayout:
-            MDIconButton:
-                icon:"chevron-left"
-                icon_size: "45sp"
-                pos_hint:{'center_x':.08, 'center_y':.93}
-            MDIconButton:
-                icon:"segment"
-                icon_size: "45sp"
-                pos_hint:{"center_x":.9, "center_y":.93}
-
-            Order
-                pos_hint:{"center_x":.75, "center_y":.78}
-                size:app.size_x/2.1, app.size_y/12
-                ripple_behavior: False
-                md_bg_color: "#f4f5f7"
-                radius: [12]
-                FloatLayout:
-                    MDLabel:
-                        text:"Selected Items"
-                        halign:"left"
-                        font_size:"20sp"
-                        pos_hint:{'center_x':.84, 'center_y':.5}
-
-            Order
-                pos_hint:{"center_x":.5, "center_y":.85}
-                size:app.size_x/1.8, app.size_y/14
-                ripple_behavior: False
-                md_bg_color: "#f4f5f7"
-                radius: [0]
-                FloatLayout:
-                    Card
-                        pos_hint:{'center_x':.5, 'center_y':.74}
-                        size:app.size_x/1.2, app.size_y/12
-                    MDFlatButton:
-		                id:fod
-		                md_bg_color: "#ffd241"
-		                text:"Food"
-		                font_size:"18sp"
-		                pos_hint:{'center_x':.35, 'center_y':.74}
-		                on_release:
-		                    app.order_category(self)
-		                    #app.orders()
-		            MDFlatButton:
-		                id:drnk
-		                md_bg_color: "white"
-		                text:"Drinks"
-		                font_size:"18sp"
-		                pos_hint:{'center_x':.75, 'center_y':.74}
-		                on_release:
-		                    app.order_category(self)
-			Order
-                pos_hint:{"center_x":.25, "center_y":.78}
-                size:app.size_x/2.1, app.size_y/17
-                ripple_behavior: False
-                #md_bg_color: "#3e3e42"
-                radius: [0]
-				FloatLayout:
-	                Card
-	                    pos_hint:{'center_x':.5, 'center_y':.3}
-	                    size:app.size_x/2.1, app.size_y/17
-	                MDFlatButton:
-		                id:fod
-		                md_bg_color: "#ffd241"
-		                text:"Main Dish"
-		                font_size:"18sp"
-		                pos_hint:{'center_x':.25, 'center_y':.5}
-		                on_release:
-		                    app.order_category(self)
-		                    #app.orders()
-		            MDFlatButton:
-		                id:drnk
-		                md_bg_color: "white"
-		                text:"Extra"
-		                font_size:"18sp"
-		                pos_hint:{'center_x':.5, 'center_y':.5}
-		                on_release:
-		                    app.order_category(self)
-                    MDFlatButton:
-		                id:pp
-		                md_bg_color: "white"
-		                text:"Fish"
-		                font_size:"18sp"
-		                pos_hint:{'center_x':.75, 'center_y':.5}
-		                on_release:
-		                    app.order_category(self)
-
-            Order
-                pos_hint:{"center_x":.25, "center_y":.68}
-                size:app.size_x/2.1, app.size_y/12
-                ripple_behavior: False
-                md_bg_color: "#f4f5f7"
-                radius: [12]
-                FloatLayout:
-                    MDLabel:
-                        text:"Chicken Tandoor"
-                        halign:"left"
-                        font_size:"20sp"
-                        pos_hint:{'center_x':.51, 'center_y':.5}
-                    MDLabel:
-                        text:"$25"
-                        halign:"center"
-                        font_size:"16sp"
-                        pos_hint:{'center_x':.5, 'center_y':.5}
-                    MDFillRoundFlatButton:
-                        id:add
-                        text:"Add"
-                        size_hint: .2, .02
-                        theme_text_color: "Custom"
-                        text_color: "#0F0A0A"
-                        md_bg_color:"#ffd241"
-                        pos_hint:{'center_x':.89, 'center_y':.5}
-                        on_release:
-                            add.pos_hint = {'center_x':.89, 'center_y':88}
-                            minus.pos_hint = {"center_x":.82, "center_y":.5}
-                            no.pos_hint =  {'center_x':.89, 'center_y':.5}
-                            plus.pos_hint = {"center_x":.95, "center_y":.5}
-                    MDIconButton:
-                        id:minus
-                        icon:"minus-circle"
-                        icon_size: "20sp"
-                        pos_hint:{"center_x":.82, "center_y":88}
-                    MDLabel:
-                        id:no
-                        text:"01"
-                        halign:"center"
-                        font_size:"16sp"
-                        pos_hint:{'center_x':.89, 'center_y':88}
-                    MDIconButton:
-                        id:plus
-                        icon:"plus-circle"
-                        icon_size: "20sp"
-                        pos_hint:{"center_x":.95, "center_y":88}
-            Order
-                pos_hint:{"center_x":.25, "center_y":.60}
-                size:app.size_x/2.1, app.size_y/12
-                ripple_behavior: False
-                md_bg_color: "#f4f5f7"
-                radius: [12]
-                FloatLayout:
-                    MDLabel:
-                        text:"Fry Fish"
-                        halign:"left"
-                        font_size:"20sp"
-                        pos_hint:{'center_x':.51, 'center_y':.5}
-                    MDLabel:
-                        text:"$15"
-                        halign:"center"
-                        font_size:"16sp"
-                        pos_hint:{'center_x':.5, 'center_y':.5}
-                    MDFillRoundFlatButton:
-                        id:ad
-                        text:"Add"
-                        size_hint: .2, .02
-                        theme_text_color: "Custom"
-                        text_color: "#0F0A0A"
-                        md_bg_color:"#ffd241"
-                        pos_hint:{'center_x':.89, 'center_y':.5}
-                        on_release:
-                            ad.pos_hint = {'center_x':.89, 'center_y':88}
-                            minu.pos_hint = {"center_x":.82, "center_y":.5}
-                            n.pos_hint =  {'center_x':.89, 'center_y':.5}
-                            plu.pos_hint = {"center_x":.95, "center_y":.5}
-                    MDIconButton:
-                        id:minu
-                        icon:"minus-circle"
-                        icon_size: "20sp"
-                        pos_hint:{"center_x":.82, "center_y":88}
-                    MDLabel:
-                        id:n
-                        text:"01"
-                        halign:"center"
-                        font_size:"16sp"
-                        pos_hint:{'center_x':.89, 'center_y':88}
-                    MDIconButton:
-                        id:plu
-                        icon:"plus-circle"
-                        icon_size: "20sp"
-                        pos_hint:{"center_x":.95, "center_y":88}
-
-            Order
-                pos_hint:{"center_x":.75, "center_y":.71}
-                size:app.size_x/2.1, app.size_y/12
-                ripple_behavior: False
-                md_bg_color: "#f4f5f7"
-                radius: [12]
-                FloatLayout:
-                    MDLabel:
-                        text:"Chicken Tandoor"
-                        halign:"left"
-                        font_size:"20sp"
-                        pos_hint:{'center_x':.51, 'center_y':.5}
-                    MDLabel:
-                        text:"$25"
-                        halign:"center"
-                        font_size:"16sp"
-                        pos_hint:{'center_x':.5, 'center_y':.5}
-                    MDFillRoundFlatButton:
-                        id:a
-                        text:"Remove"
-                        size_hint: .2, .02
-                        theme_text_color: "Custom"
-                        text_color: "#0F0A0A"
-                        md_bg_color:"#ffd241"
-                        pos_hint:{'center_x':.89, 'center_y':.5}
-
-            Order
-                pos_hint:{"center_x":.75, "center_y":.63}
-                size:app.size_x/2.1, app.size_y/12
-                ripple_behavior: False
-                md_bg_color: "#f4f5f7"
-                radius: [12]
-                FloatLayout:
-                    MDLabel:
-                        text:"Fry Fish"
-                        halign:"left"
-                        font_size:"20sp"
-                        pos_hint:{'center_x':.51, 'center_y':.5}
-                    MDLabel:
-                        text:"$15"
-                        halign:"center"
-                        font_size:"16sp"
-                        pos_hint:{'center_x':.5, 'center_y':.5}
-                    MDFillRoundFlatButton:
-                        id:b
-                        text:"Remove"
-                        size_hint: .2, .02
-                        theme_text_color: "Custom"
-                        text_color: "#0F0A0A"
-                        md_bg_color:"#ffd241"
-                        pos_hint:{'center_x':.89, 'center_y':.5}
-
-            Order
-                pos_hint:{"center_x":.75, "center_y":.05}
-                size:app.size_x/2.2, app.size_y/14
-                ripple_behavior: False
-                #md_bg_color: "#f4f5f7"
-                radius: [0]
-                FloatLayout:
-                    MDLabel:
-                        text:"1 item"
-                        halign:"left"
-                        font_size:"20sp"
-                        pos_hint:{'center_x':.55, 'center_y':.5}
-                    MDLabel:
-                        text:"TOTAL"
-                        bold:True
-                        halign:"center"
-                        font_size:"16sp"
-                        pos_hint:{'center_x':.7, 'center_y':.5}
-                    MDLabel:
-                        id:no
-                        text:"$45"
-                        halign:"center"
-                        font_size:"20sp"
-                        pos_hint:{'center_x':.89, 'center_y':.5}
 
     MDScreen:
         name:"test"
@@ -1165,7 +496,7 @@ ScreenManager
         name:"genesis"
         md_bg_color: "#f4f5f7"
         MDTextField:
-            id:food
+            id:foods
             mode: "rectangle"
             fill_color: 0, 0, 0, .4
             size_hint: .8, .1
@@ -1211,6 +542,119 @@ ScreenManager
     focus_behavior: False
     ripple_color:.9, .9, .95, 1
     ripple_behavior: True
+
+<Food@MDCard>:
+    #orientation: "vertical"
+    padding: "10dp"
+    md_bg_color: "#f4f5f7"
+    #spacing: "5dp"
+    border_radius: 3
+    border_color_a: .5
+    border_color_a: 1
+    adaptive_height:True
+    radius: [12]
+    name: ""
+    size_hint: None, None
+    size:app.size_x/2.1, app.size_y/12
+    focus_behavior: False
+    ripple_color:.9, .9, .95, 1
+    ripple_behavior: False
+
+    FloatLayout:
+        MDLabel:
+            id: fname
+            text:root.name
+            halign:"left"
+            font_size:"20sp"
+            pos_hint:{'center_x':.51, 'center_y':.5}
+        MDLabel:
+            id:fprice
+            text:"$15"
+            halign:"center"
+            font_size:"16sp"
+            pos_hint:{'center_x':.5, 'center_y':.5}
+        MDFillRoundFlatButton:
+            id:ad
+            text:"Add"
+            size_hint: .2, .02
+            theme_text_color: "Custom"
+            text_color: "#0F0A0A"
+            md_bg_color:"#ffd241"
+            pos_hint:{'center_x':.89, 'center_y':.5}
+            on_release:
+                app.add_to_order(root.name, quantity.text, fprice.text)
+                ad.pos_hint = {'center_x':.89, 'center_y':88}
+                minu.pos_hint = {"center_x":.82, "center_y":.5}
+                quantity.pos_hint =  {'center_x':.89, 'center_y':.5}
+                plu.pos_hint = {"center_x":.95, "center_y":.5}
+        MDIconButton:
+            id:minu
+            icon:"minus-circle"
+            icon_size: "20sp"
+            pos_hint:{"center_x":.82, "center_y":88}
+            on_release:
+                app.quantity(self)
+                app.add_to_order(root.name, quantity.text, fprice.text)
+        MDLabel:
+            id:quantity
+            text:app.quantity_text
+            halign:"center"
+            font_size:"16sp"
+            pos_hint:{'center_x':.89, 'center_y':88}
+        MDIconButton:
+            id:plu
+            icon:"plus-circle"
+            icon_size: "20sp"
+            pos_hint:{"center_x":.95, "center_y":88}
+            on_release:
+                app.quantity(self)
+                app.add_to_order(root.name, quantity.text, fprice.text)
+
+<Selected@MDCard>:
+    #orientation: "vertical"
+    padding: "10dp"
+    md_bg_color: "#f4f5f7"
+    #spacing: "5dp"
+    border_radius: 3
+    border_color_a: .5
+    border_color_a: 1
+    adaptive_height:True
+    radius: [12]
+    name: ""
+    size_hint: None, None
+    size:app.size_x/2.1, app.size_y/12
+    focus_behavior: False
+    ripple_color:.9, .9, .95, 1
+    ripple_behavior: False
+
+    FloatLayout:
+        MDLabel:
+            id: fname
+            text:"root.name"
+            halign:"left"
+            font_size:"20sp"
+            pos_hint:{'center_x':.51, 'center_y':.5}
+        MDLabel:
+            id:fprice
+            text:"$15"
+            halign:"center"
+            font_size:"16sp"
+            pos_hint:{'center_x':.5, 'center_y':.5}
+
+        MDLabel:
+            id:fprice
+            text:"x2"
+            halign:"center"
+            font_size:"16sp"
+            pos_hint:{'center_x':.7, 'center_y':.5}
+
+        MDFillRoundFlatButton:
+            text:"Remove"
+            size_hint: .2, .02
+            theme_text_color: "Custom"
+            text_color: "#0F0A0A"
+            md_bg_color:"#ffd241"
+            pos_hint:{'center_x':.89, 'center_y':.5}
 
 <RowCard>:
     #orientation: "vertical"

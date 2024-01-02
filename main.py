@@ -92,6 +92,9 @@ class Main(MDApp):
     password = StringProperty("")
     username = StringProperty("")
 
+    # product
+    quantity_text = StringProperty("1")
+
     def update_text(self, button_text):
         text_input = self.root.ids.input
         current_text = text_input.text
@@ -104,6 +107,8 @@ class Main(MDApp):
 
     def on_start(self):
         self.display_users()
+        self.display_food()
+        self.selected_item()
 
     def get_user_data(self):
         # Load user data from the JSON file
@@ -126,7 +131,7 @@ class Main(MDApp):
             self.root.ids.studs.data.append(
                 {
                     "viewclass": "Deco",
-                    "name": "No student Yet!",
+                    "name": "No data Yet!",
                 }
             )
         else:
@@ -139,6 +144,83 @@ class Main(MDApp):
                         "id": str(i)
                     }
                 )
+
+    def display_food(self):
+        self.root.ids.food.data = {}
+        users_data = self.get_user_data()
+
+        if not users_data:
+            self.root.ids.food.data.append(
+                {
+                    "viewclass": "Food",
+                    "name": "No data Yet!",
+                }
+            )
+        else:
+            users = users_data["users"]
+            for i, user in enumerate(users):
+                self.root.ids.food.data.append(
+                    {
+                        "viewclass": "Food",
+                        "name": user["username"],
+                        "id": str(i)
+                    }
+                )
+
+    def selected_item(self):
+        self.root.ids.selected.data = {}
+        users_data = self.orders
+
+        if not users_data:
+            self.root.ids.selected.data.append(
+                {
+                    "viewclass": "Selected",
+                    "name": "No data Yet!",
+                }
+            )
+        else:
+            for i in users_data:
+                self.root.ids.selected.data.append(
+                    {
+                        "viewclass": "Selected",
+                        "name": i["product_name"],
+                        "id": str(i)
+                    }
+                )
+
+    def quantity(self, id):
+        if "minus-circle" in id.icon:
+            if int(self.quantity_text) == 1:
+                toast("Cant be below 1")
+
+            else:
+                self.quantity_text = str(int(self.quantity_text) - 1)
+
+        else:
+            self.quantity_text = str(int(self.quantity_text) + 1)
+
+    def __init__(self, **kwargs):
+        # Initialize an empty list to store orders
+        super().__init__(**kwargs)
+        self.orders = []
+
+    def add_to_order(self, product_name, quantity, price):
+        # Check if the product is already in the order
+        for order_item in self.orders:
+            if order_item['product_name'] == product_name:
+                # Update the quantity if the product is found
+                order_item['quantity'] = quantity
+                print(self.orders)
+                return
+
+        # If the product is not in the order, add a new entry
+        order_item = {
+            'product_name': product_name,
+            'quantity': "1",
+            'price': price
+        }
+        self.orders.append(order_item)
+        print(self.orders)
 
     def check(self, input):
         self.get_data()
@@ -157,32 +239,20 @@ class Main(MDApp):
             self.password = user["password"]
 
     def button_color(self, button_name):
-        pend = self.root.ids.pend
-        pre = self.root.ids.pre
-        comp = self.root.ids.comp
+        pend = self.root.ids.one
+        pre = self.root.ids.two
+        comp = self.root.ids.three
 
         pend.md_bg_color = "white"
         pre.md_bg_color = "white"
         comp.md_bg_color = "white"
 
-        if "Pending" in button_name.text:
+        if "Main Dish" in button_name.text:
             pend.md_bg_color = "#ffd241"
-        elif "Complete" in button_name.text:
+        elif "Fish" in button_name.text:
             comp.md_bg_color = "#ffd241"
-        elif "Preparing" in button_name.text:
+        elif "Extra" in button_name.text:
             pre.md_bg_color = "#ffd241"
-
-    def order_category(self, button_name):
-        fod = self.root.ids.fod
-        drnk = self.root.ids.drnk
-
-        fod.md_bg_color = "white"
-        drnk.md_bg_color = "white"
-
-        if "Food" in button_name.text:
-            fod.md_bg_color = "#ffd241"
-        elif "Drinks" in button_name.text:
-            drnk.md_bg_color = "#ffd241"
 
     """ KEYBOARD INTEGRATION """
 
