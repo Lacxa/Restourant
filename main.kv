@@ -93,6 +93,22 @@ ScreenManager
                                     font_size:"20sp"
                                     pos_hint:{'center_x':.84, 'center_y':.5}
 
+                        RecycleView:
+                            id: selected
+                            key_viewclass: 'viewclass'
+                            key_size: 'height'
+		                    pos_hint:{"center_x":1.05,"top":.9}
+		                    #pos_hint:{"center_x":.75, "center_y":.95}
+                            #pos_hint:{"center_x":.25, "center_y":.60}
+                            RecycleGridLayout:
+                                id:grid
+                                cols:1
+                                spacing:dp(10)
+                                padding: dp(10)
+                                default_size: None, dp(45)
+                                default_size_hint: None, None
+                                size_hint_y: None
+                                height: self.minimum_height
 
                         Order
                             pos_hint:{"center_x":.75, "center_y":.05}
@@ -102,23 +118,29 @@ ScreenManager
                             radius: [0]
                             FloatLayout:
                                 MDLabel:
-                                    text:"1 item"
+                                    text:app.item_selected + "Item"
                                     halign:"left"
-                                    font_size:"20sp"
+                                    font_size:"16sp"
                                     pos_hint:{'center_x':.55, 'center_y':.5}
                                 MDLabel:
                                     text:"TOTAL"
                                     bold:True
                                     halign:"center"
                                     font_size:"16sp"
-                                    pos_hint:{'center_x':.7, 'center_y':.5}
+                                    pos_hint:{'center_x':.5, 'center_y':.5}
                                 MDLabel:
                                     id:no
-                                    text:"$45"
+                                    text:app.total_price + "/Tsh"
                                     halign:"center"
-                                    font_size:"20sp"
-                                    pos_hint:{'center_x':.89, 'center_y':.5}
-
+                                    font_size:"16sp"
+                                    pos_hint:{'center_x':.76, 'center_y':.5}
+                        MDIconButton:
+                            icon: "printer-wireless"
+                            icon_size: "40sp"
+                            pos_hint:{'center_x':.962, 'center_y':.05}
+                            on_release:
+                                app.create_order()
+                                # app.screen_capture("home")
 
 
                 Tab:
@@ -167,18 +189,16 @@ ScreenManager
                 id: studs
                 key_viewclass: 'viewclass'
                 key_size: 'height'
-                pos_hint:{"center_x":.5,"top":.8}
-                RecycleBoxLayout:
-                    id:wali
-                    cols: 3
-                    spacing:dp(5)
+                pos_hint:{"center_x":.6,"top":.8}
+                RecycleGridLayout:
+                    id:grid
+                    cols:2
+                    spacing:dp(10)
                     padding: dp(10)
                     default_size: None, dp(45)
-                    #default_size_hint: .3, None
-                    default_size_hint: 1, None
+                    default_size_hint: None, None
                     size_hint_y: None
                     height: self.minimum_height
-                    orientation: 'vertical'
 
 
     MDScreen:
@@ -217,16 +237,16 @@ ScreenManager
                 hint_text:"Product Name:"
                 font_size: dp(16)
                 multiline: False
-            MDTextField:
-                id: quantity
-                mode: "line"
-                fill_color: 0, 0, 0, .4
-                size_hint: .4, .13
-                hint_text: "Quantity:"
-                pos_hint: {'center_x': .5, 'center_y': .52}
-                font_size: dp(16)
-                input_filter: "int"
-                multiline: False
+            #MDTextField:
+             #   id: quantity
+              #  mode: "line"
+               # fill_color: 0, 0, 0, .4
+                #size_hint: .4, .13
+                #hint_text: "Quantity:"
+                #pos_hint: {'center_x': .5, 'center_y': .52}
+                #font_size: dp(16)
+                #input_filter: "int"
+                #multiline: False
             MDTextField:
                 id:price
                 mode: "line"
@@ -248,7 +268,7 @@ ScreenManager
                 md_bg_color:80 / 225, 136 / 225, 114 / 225, 1
                 elevation:5
                 on_release:
-                    app.add_product(category.text, name.text, quantity.text, price.text)
+                    app.add_product(category.text, name.text, price.text)
 
 
     MDScreen:
@@ -279,6 +299,7 @@ ScreenManager
                 pos_hint:{'center_x':.5, 'center_y':.2}
                 on_release:
                     app.screen_capture("home")
+                    app.clear_login()
 
     MDScreen:
         name:"orders"
@@ -307,31 +328,6 @@ ScreenManager
                 pos_hint:{'center_x':.5, 'center_y':.74}
                 size:app.size_x/1.2, app.size_y/12
 
-            MDFlatButton:
-                id:pend
-                md_bg_color: "#ffd241"
-                text:"Pending(5)"
-                font_size:"18sp"
-                pos_hint:{'center_x':.18, 'center_y':.74}
-                on_release:
-                    app.button_color(self)
-                    #app.orders()
-            MDFlatButton:
-                id:pre
-                md_bg_color: "white"
-                text:"Preparing(2)"
-                font_size:"18sp"
-                pos_hint:{'center_x':.5, 'center_y':.74}
-                on_release:
-                    app.button_color(self)
-            MDFlatButton:
-                id:comp
-                md_bg_color: "white"
-                text:"Completed(0)"
-                font_size:"18sp"
-                pos_hint:{'center_x':.83, 'center_y':.74}
-                on_release:
-                    app.button_color(self)
 
         BoxLayout:
             RecycleView:
@@ -447,7 +443,7 @@ ScreenManager
                 pos_hint:{"center_x":.25, "center_y":.75}
             Table:
                 on_release:
-                    app.screen_capture("food")
+                    app.screen_capture("Menu")
                 guest:"6"
                 number:"02"
                 pos_hint:{"center_x":.7, "center_y":.75}
@@ -543,6 +539,32 @@ ScreenManager
     ripple_color:.9, .9, .95, 1
     ripple_behavior: True
 
+<Nofood@MDCard>:
+    #orientation: "vertical"
+    padding: "10dp"
+    md_bg_color: "#f4f5f7"
+    #spacing: "5dp"
+    border_radius: 3
+    border_color_a: .5
+    border_color_a: 1
+    adaptive_height:True
+    radius: [12]
+    name: ""
+    size_hint: None, None
+    size:app.size_x/2.1, app.size_y/12
+    focus_behavior: False
+    ripple_color:.9, .9, .95, 1
+    ripple_behavior: False
+
+    FloatLayout:
+        MDLabel:
+            id: fname
+            text:root.name
+            halign:"left"
+            font_size:"16sp"
+            pos_hint:{'center_x':.51, 'center_y':.5}
+
+
 <Food@MDCard>:
     #orientation: "vertical"
     padding: "10dp"
@@ -565,14 +587,14 @@ ScreenManager
             id: fname
             text:root.name
             halign:"left"
-            font_size:"20sp"
+            font_size:"16sp"
             pos_hint:{'center_x':.51, 'center_y':.5}
         MDLabel:
             id:fprice
-            text:"$15"
+            text:"500" + "/Tsh"
             halign:"center"
             font_size:"16sp"
-            pos_hint:{'center_x':.5, 'center_y':.5}
+            pos_hint:{'center_x':.55, 'center_y':.5}
         MDFillRoundFlatButton:
             id:ad
             text:"Add"
@@ -610,7 +632,7 @@ ScreenManager
                 app.quantity(self)
                 app.add_to_order(root.name, quantity.text, fprice.text)
 
-<Selected@MDCard>:
+<Noselected@MDCard>
     #orientation: "vertical"
     padding: "10dp"
     md_bg_color: "#f4f5f7"
@@ -630,20 +652,48 @@ ScreenManager
     FloatLayout:
         MDLabel:
             id: fname
-            text:"root.name"
+            text:root.name
             halign:"left"
-            font_size:"20sp"
+            font_size:"16sp"
+            pos_hint:{'center_x':.51, 'center_y':.5}
+
+
+<Selected@MDCard>:
+    #orientation: "vertical"
+    padding: "10dp"
+    md_bg_color: "#f4f5f7"
+    #spacing: "5dp"
+    border_radius: 3
+    border_color_a: .5
+    border_color_a: 1
+    adaptive_height:True
+    radius: [12]
+    name: ""
+    price: ""
+    quantity: ""
+    size_hint: None, None
+    size:app.size_x/2.1, app.size_y/12
+    focus_behavior: False
+    ripple_color:.9, .9, .95, 1
+    ripple_behavior: False
+
+    FloatLayout:
+        MDLabel:
+            id: fname
+            text:root.name
+            halign:"left"
+            font_size:"16sp"
             pos_hint:{'center_x':.51, 'center_y':.5}
         MDLabel:
             id:fprice
-            text:"$15"
+            text:root.price
             halign:"center"
             font_size:"16sp"
             pos_hint:{'center_x':.5, 'center_y':.5}
 
         MDLabel:
             id:fprice
-            text:"x2"
+            text:"x" + root.quantity
             halign:"center"
             font_size:"16sp"
             pos_hint:{'center_x':.7, 'center_y':.5}
@@ -655,6 +705,8 @@ ScreenManager
             text_color: "#0F0A0A"
             md_bg_color:"#ffd241"
             pos_hint:{'center_x':.89, 'center_y':.5}
+            on_release:
+                app.remove_from_order(fname.text)
 
 <RowCard>:
     #orientation: "vertical"

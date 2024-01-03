@@ -94,6 +94,8 @@ class Main(MDApp):
 
     # product
     quantity_text = StringProperty("1")
+    item_selected = StringProperty("0")
+    total_price = StringProperty("")
 
     def update_text(self, button_text):
         text_input = self.root.ids.input
@@ -152,7 +154,7 @@ class Main(MDApp):
         if not users_data:
             self.root.ids.food.data.append(
                 {
-                    "viewclass": "Food",
+                    "viewclass": "Nofood",
                     "name": "No data Yet!",
                 }
             )
@@ -174,19 +176,33 @@ class Main(MDApp):
         if not users_data:
             self.root.ids.selected.data.append(
                 {
-                    "viewclass": "Selected",
+                    "viewclass": "Noselected",
                     "name": "No data Yet!",
                 }
             )
+            self.total_cost()
         else:
             for i in users_data:
                 self.root.ids.selected.data.append(
                     {
                         "viewclass": "Selected",
                         "name": i["product_name"],
+                        "price": i["price"],
+                        "quantity": i["quantity"],
                         "id": str(i)
                     }
                 )
+            self.total_cost()
+
+    def total_cost(self):
+        # Calculate and return the total cost of products in the order
+        self.total_price = str(
+            sum(int(order_item['quantity']) * int(order_item['price'].strip().split("/")[0]) for order_item in
+                self.orders))
+
+        product_names = set(order_item['product_name'] for order_item in self.orders)
+
+        self.item_selected = str(len(product_names))
 
     def quantity(self, id):
         if "minus-circle" in id.icon:
@@ -211,6 +227,7 @@ class Main(MDApp):
                 # Update the quantity if the product is found
                 order_item['quantity'] = quantity
                 print(self.orders)
+                self.selected_item()
                 return
 
         # If the product is not in the order, add a new entry
@@ -220,7 +237,32 @@ class Main(MDApp):
             'price': price
         }
         self.orders.append(order_item)
+        self.selected_item()
         print(self.orders)
+
+    def remove_from_order(self, product_name):
+        # Remove the product from the order by filtering it out
+        self.orders = [item for item in self.orders if item['product_name'] != product_name]
+        print("test", self.orders)
+        self.selected_item()
+
+    def create_order(self):
+        if network.ping_net():
+            if self.orders:
+                FB.register_order(FB(), "waiter", self.orders, self.item_selected, self.total_price)
+                self.caller()
+
+            else:
+                toast("Select item first!")
+
+        else:
+            toast("No internet")
+
+    def caller(self):
+        print("caller")
+        self.display_food()
+        self.orders.clear()
+        self.selected_item()
 
     def check(self, input):
         self.get_data()
@@ -228,6 +270,7 @@ class Main(MDApp):
         if len(input) > 3:
             if input == self.password:
                 self.screen_capture("orders")
+                self.clear_login()
             else:
                 toast("Wrong password")
 
@@ -317,19 +360,18 @@ class Main(MDApp):
         self.theme_cls.primary_palette = "Orange"
         self.theme_cls.theme_style = "Dark"""""
 
-    def add_product(self, category, name, quantity, price):
+    def add_product(self, category, name, price):
         if network.ping_net():
             if category == "":
                 toast("Please select category")
             elif name == "":
                 toast("Please enter name")
-            elif quantity == "":
-                toast("Please enter quantity")
+
             elif price == "":
                 toast("Please enter price")
 
             else:
-                if FB.register(FB(), category, name, quantity, price):
+                if FB.register_product(FB(), category, name, price):
                     toast("Product Added successfully")
                     self.clear_form()
                 else:
@@ -340,6 +382,12 @@ class Main(MDApp):
     def clear_form(self):
         # Iterate through input fields and reset their values
         for input_field_id in ['category', 'price', 'quantity', 'name']:
+            input_field = self.root.ids[input_field_id]
+            input_field.text = ""
+
+    def clear_login(self):
+        # Iterate through input fields and reset their values
+        for input_field_id in ['input']:
             input_field = self.root.ids[input_field_id]
             input_field.text = ""
 

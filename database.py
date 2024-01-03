@@ -1,5 +1,10 @@
+from datetime import datetime
+
+from kivymd.toast import toast
+
+
 class FireBase:
-    def Register_user(self, phone, username, password):
+    def register_user(self, phone, username, password):
         import firebase_admin
         firebase_admin._apps.clear()
         from firebase_admin import credentials, initialize_app, db
@@ -30,7 +35,7 @@ class FireBase:
             except:
                 return "No Internet!"
 
-    def register(self, category, name, quantity, price):
+    def register_product(self, category, name, price):
         import firebase_admin
         firebase_admin._apps.clear()
         from firebase_admin import credentials, initialize_app, db
@@ -48,11 +53,58 @@ class FireBase:
                 ref.set(
                     {
                         "name": name,
-                        "quantity": quantity,
                         "price": price,
 
                     }
                 )
         return True
 
+    def register_order(self, user, order, total_item, total_price):
+        import firebase_admin
+        firebase_admin._apps.clear()
+        from firebase_admin import credentials, initialize_app, db
+        if not firebase_admin._apps:
+            cred = credentials.Certificate("credential/farmzon-abdcb-c4c57249e43b.json")
+            initialize_app(cred, {'databaseURL': 'https://farmzon-abdcb.firebaseio.com/'})
+            ref = db.reference("Restaurant").child("Users").child("category").child(user).child(self.year()).child(
+                self.month_date()).child(self.generate_id())
+            ref.set(
+                {
+                    "total_item": total_item,
+                    "total_price": total_price,
+                }
+            )
 
+            for i in order:
+                order_ref = ref.push()
+                order_ref.set(
+                    {
+                        "name": i["product_name"],
+                        "price": i["price"],
+                        "quantity": i["quantity"],
+                    }
+                )
+
+                toast("Order Successful")
+
+    def generate_id(self):
+        # Generate a unique order ID based on timestamp and counter
+        timestamp = datetime.now().strftime('%Y%m%d%H%M%S%f')
+        order_id = timestamp
+        return order_id
+
+    def year(self):
+        current_time = str(datetime.now())
+        date, time = current_time.strip().split()
+        y, m, d = date.strip().split("-")
+
+        return y
+
+    def month_date(self):
+        current_time = str(datetime.now())
+        date, time = current_time.strip().split()
+        y, m, d = date.strip().split("-")
+
+        return f"{m}_{d}"
+
+# FireBase.register_order(FireBase(), "lul", [{'product_name': 'john_doe', 'quantity': '1', 'price': '500'}, {'product_name': 'jane_smith', 'quantity': '1', 'price': '500'}, {'product_name': 'bob_jones', 'quantity': '1', 'price': '500'}])
