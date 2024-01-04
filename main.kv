@@ -5,6 +5,52 @@ ScreenManager
     transition:sm.FadeTransition(duration=.0)
 
     MDScreen:
+        name:"manage_product"
+        #md_bg_color: "#424242", #3e3e42
+        md_bg_color: "#f4f5f7"
+        FloatLayout:
+            Image:
+                source:app.nodata
+                pos_hint:{"center_x":.5,"center_y":.5}
+            MDLabel:
+                bold:True
+                text:"Select product to manage"
+                halign:"center"
+                font_style:'H6'
+                pos_hint:{'center_x':.5, 'center_y':.98}
+
+            MDTextField:
+                id:search
+                hint_text: "search product"
+                mode: "round"
+                helper_text: "Search Product"
+                line_color_focus: "#ABBEC4"
+                icon_left_color_normal: "#ABBEC4"
+                size_hint: .3, .07
+                font_size: dp(16)
+                height: "90dp"
+                icon_left: "magnify"
+                pos_hint:{"center_x":.5,"center_y":.9}
+                on_text:
+                    print(self.text)
+                    app.search_live(self.text)
+
+            RecycleView:
+                id: all
+                key_viewclass: 'viewclass'
+                key_size: 'height'
+                pos_hint:{"center_x":.6,"top":.85}
+                RecycleGridLayout:
+                    id:grid
+                    cols:2
+                    spacing:dp(6)
+                    padding: dp(10)
+                    default_size: None, dp(45)
+                    default_size_hint: None, None
+                    size_hint_y: None
+                    height: self.minimum_height
+
+    MDScreen:
         name:"Menu"
         #md_bg_color: "#424242", #3e3e42
         md_bg_color: "#f4f5f7"
@@ -140,7 +186,6 @@ ScreenManager
                             pos_hint:{'center_x':.962, 'center_y':.05}
                             on_release:
                                 app.create_order()
-                                # app.screen_capture("home")
 
 
                 Tab:
@@ -202,7 +247,7 @@ ScreenManager
 
 
     MDScreen:
-        name:'add'
+        name:"add"
         FloatLayout:
             orientation:'vertical'
             MDLabel:
@@ -218,22 +263,54 @@ ScreenManager
             MDLabel:
                 halign: "center"
                 text: "category"
-                pos_hint:{'center_x':.5, 'center_y':.76}
-            MDTextField:
-                id:category
-                mode: "line"
-                fill_color: 0, 0, 0, .4
-                size_hint: .4, .13
-                pos_hint:{'center_x':.5, 'center_y':.76}
-                hint_text:"Category:"
-                font_size: dp(16)
-                multiline: False
+                pos_hint:{'center_x':.5, 'center_y':.75}
+            Order
+                pos_hint:{'center_x':.5, 'center_y':.65}
+                size:app.size_x/2.1, app.size_y/17
+                ripple_behavior: False
+                #md_bg_color: "#3e3e42"
+                radius: [0]
+                FloatLayout:
+                    Card
+                        pos_hint:{'center_x':.5, 'center_y':.3}
+                        size:app.size_x/2.1, app.size_y/17
+                    MDFlatButton:
+                        id:main
+                        md_bg_color: "white"
+                        text:"Main Dish"
+                        theme_text_color: "Custom"
+                        text_color: "black"
+                        font_size:"18sp"
+                        pos_hint:{'center_x':.25, 'center_y':.5}
+                        on_release:
+                            app.product_color(self)
+                            #app.orders()
+                    MDFlatButton:
+                        id:extra
+                        md_bg_color: "white"
+                        text:"Extra"
+                        theme_text_color: "Custom"
+                        text_color: "black"
+                        font_size:"18sp"
+                        pos_hint:{'center_x':.5, 'center_y':.5}
+                        on_release:
+                            app.product_color(self)
+                    MDFlatButton:
+                        id:fish
+                        md_bg_color: "white"
+                        text:"Fish"
+                        theme_text_color: "Custom"
+                        text_color: "black"
+                        font_size:"18sp"
+                        pos_hint:{'center_x':.75, 'center_y':.5}
+                        on_release:
+                            app.product_color(self)
             MDTextField:
                 id:name
                 mode: "line"
                 fill_color: 0, 0, 0, .4
                 size_hint: .4, .13
-                pos_hint:{'center_x':.5, 'center_y':.64}
+                pos_hint: {'center_x': .5, 'center_y': .5}
                 hint_text:"Product Name:"
                 font_size: dp(16)
                 multiline: False
@@ -253,7 +330,7 @@ ScreenManager
                 fill_color: 0, 0, 0, .4
                 size_hint: .4, .13
                 hint_text:"Price Tsh:"
-                pos_hint:{'center_x':.5, 'center_y':.4}
+                pos_hint:{'center_x':.5, 'center_y':.37}
                 font_size: dp(16)
                 input_filter: "int"
                 multiline: False
@@ -268,7 +345,14 @@ ScreenManager
                 md_bg_color:80 / 225, 136 / 225, 114 / 225, 1
                 elevation:5
                 on_release:
-                    app.add_product(category.text, name.text, price.text)
+                    app.add_product(name.text, price.text)
+
+            MDIconButton:
+                icon: "food"
+                icon_size: "40sp"
+                pos_hint:{'center_x':.9, 'center_y':.9}
+                on_release:
+                    app.screen_capture("food")
 
 
     MDScreen:
@@ -576,6 +660,7 @@ ScreenManager
     adaptive_height:True
     radius: [12]
     name: ""
+    price: ""
     size_hint: None, None
     size:app.size_x/2.1, app.size_y/12
     focus_behavior: False
@@ -591,7 +676,7 @@ ScreenManager
             pos_hint:{'center_x':.51, 'center_y':.5}
         MDLabel:
             id:fprice
-            text:"500" + "/Tsh"
+            text:root.price + "/Tsh"
             halign:"center"
             font_size:"16sp"
             pos_hint:{'center_x':.55, 'center_y':.5}
@@ -748,6 +833,38 @@ ScreenManager
 			text_color:"#ffd241"
 			pos_hint:{"center_x":.9,"center_y":.5}
 
+<Allow@MDCard>:
+    #orientation: "vertical"
+    padding: "10dp"
+    md_bg_color: "#f4f5f7"
+    #spacing: "5dp"
+    border_radius: 3
+    border_color_a: .5
+    border_color_a: 1
+    adaptive_height:True
+    radius: [12]
+    name: ""
+    size_hint: None, None
+    size:app.size_x/2.1, app.size_y/12
+    focus_behavior: False
+    ripple_color:.9, .9, .95, 1
+    ripple_behavior: False
+
+    FloatLayout:
+        MDLabel:
+            id: fname
+            text:root.name
+            halign:"left"
+            font_size:"16sp"
+            pos_hint:{'center_x':.51, 'center_y':.5}
+
+        MDFillRoundFlatButton:
+            text:"Manage"
+            size_hint: .2, .02
+            theme_text_color: "Custom"
+            text_color: "#0F0A0A"
+            md_bg_color:"#ffd241"
+            pos_hint:{'center_x':.89, 'center_y':.5}
 
 <Table>:
     adaptive_height:True
@@ -921,5 +1038,6 @@ ScreenManager
             halign:"left"
             font_size:"20sp"
             pos_hint:{'center_x':.51, 'center_y':.5}
+
 
 

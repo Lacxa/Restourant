@@ -42,13 +42,13 @@ class FireBase:
         if not firebase_admin._apps:
             cred = credentials.Certificate("credential/farmzon-abdcb-c4c57249e43b.json")
             initialize_app(cred, {'databaseURL': 'https://farmzon-abdcb.firebaseio.com/'})
-            ref = db.reference("Restaurant").child("Products").child(category)
+            ref = db.reference("Restaurant").child("Products").child("category").child(category)
             data = ref.get()
-            if data and category in data:
+            if data and name in data:
                 return False
 
             else:
-                ref = db.reference("Restaurant").child("Products").child(category).child(name)
+                ref = db.reference("Restaurant").child("Products").child("category").child(category).child(name)
                 print("uploaded")
                 ref.set(
                     {
@@ -58,6 +58,18 @@ class FireBase:
                     }
                 )
         return True
+
+    def get_main(self):
+        import firebase_admin
+        firebase_admin._apps.clear()
+        from firebase_admin import credentials, initialize_app, db
+        if not firebase_admin._apps:
+            cred = credentials.Certificate("credential/farmzon-abdcb-c4c57249e43b.json")
+            initialize_app(cred, {'databaseURL': 'https://farmzon-abdcb.firebaseio.com/'})
+            ref = db.reference("Restaurant").child("Products").child("category").child("Main Dish")
+            data = ref.get()
+
+            return data
 
     def register_order(self, user, order, total_item, total_price):
         import firebase_admin
@@ -108,3 +120,4 @@ class FireBase:
         return f"{m}_{d}"
 
 # FireBase.register_order(FireBase(), "lul", [{'product_name': 'john_doe', 'quantity': '1', 'price': '500'}, {'product_name': 'jane_smith', 'quantity': '1', 'price': '500'}, {'product_name': 'bob_jones', 'quantity': '1', 'price': '500'}])
+#FireBase.get_main(FireBase())

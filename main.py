@@ -97,6 +97,9 @@ class Main(MDApp):
     item_selected = StringProperty("0")
     total_price = StringProperty("")
 
+    category = StringProperty("")
+    nodata = StringProperty("")
+
     def update_text(self, button_text):
         text_input = self.root.ids.input
         current_text = text_input.text
@@ -108,9 +111,11 @@ class Main(MDApp):
         text_input.text = current_text[:-1]
 
     def on_start(self):
-        self.display_users()
+        #self.display_users()
         self.display_food()
-        self.selected_item()
+        #self.display_main()
+        #self.selected_item()
+        pass
 
     def get_user_data(self):
         # Load user data from the JSON file
@@ -152,7 +157,7 @@ class Main(MDApp):
         users_data = self.get_user_data()
 
         if not users_data:
-            self.root.ids.food.data.append(
+            self.root.ids.all.data.append(
                 {
                     "viewclass": "Nofood",
                     "name": "No data Yet!",
@@ -161,13 +166,34 @@ class Main(MDApp):
         else:
             users = users_data["users"]
             for i, user in enumerate(users):
-                self.root.ids.food.data.append(
+                self.root.ids.all.data.append(
                     {
-                        "viewclass": "Food",
+                        "viewclass": "Allow",
                         "name": user["username"],
                         "id": str(i)
                     }
                 )
+
+    def display_main(self):
+        self.root.ids.food.data = {}
+        data = FB.get_main(FB())
+
+        if data:
+            for i, y in data.items():
+                self.root.ids.food.data.append(
+                    {
+                        "viewclass": "Food",
+                        "name": y["name"],
+                        "price": y["price"],
+                    }
+                )
+        else:
+            self.root.ids.food.data.append(
+                {
+                    "viewclass": "Nofood",
+                    "name": "No data Yet!",
+                }
+            )
 
     def selected_item(self):
         self.root.ids.selected.data = {}
@@ -193,6 +219,25 @@ class Main(MDApp):
                     }
                 )
             self.total_cost()
+
+    def search_live(self, text):
+        self.root.ids.all.data = {}
+        users_data = self.get_user_data()
+        text = text.upper()
+        users = users_data["users"]
+        for i, user in enumerate(users):
+            if text in user["username"]:
+                self.nodata = ""
+                self.root.ids.all.data.append(
+                    {
+                        "viewclass": "Allow",
+                        "name": user["username"],
+                    }
+                )
+
+            else:
+                self.nodata = "components/no-data-found.png"
+
 
     def total_cost(self):
         # Calculate and return the total cost of products in the order
@@ -292,10 +337,38 @@ class Main(MDApp):
 
         if "Main Dish" in button_name.text:
             pend.md_bg_color = "#ffd241"
+            self.display_main()
         elif "Fish" in button_name.text:
             comp.md_bg_color = "#ffd241"
+            self.display_food()
         elif "Extra" in button_name.text:
             pre.md_bg_color = "#ffd241"
+
+    def product_color(self, button_name):
+        pend = self.root.ids.main
+        pre = self.root.ids.extra
+        comp = self.root.ids.fish
+
+        pend.md_bg_color = "white"
+        pre.md_bg_color = "white"
+        comp.md_bg_color = "white"
+
+        pend.text_color = "black"
+        pre.text_color = "black"
+        comp.text_color = "black"
+
+        if "Main Dish" in button_name.text:
+            pend.md_bg_color = 80 / 225, 136 / 225, 114 / 225, 1
+            pend.text_color = "white"
+            self.category = "Main Dish"
+        elif "Fish" in button_name.text:
+            comp.md_bg_color = 80 / 225, 136 / 225, 114 / 225, 1
+            comp.text_color = "white"
+            self.category = "Fish"
+        elif "Extra" in button_name.text:
+            pre.md_bg_color = 80 / 225, 136 / 225, 114 / 225, 1
+            pre.text_color = "white"
+            self.category = "Extra"
 
     """ KEYBOARD INTEGRATION """
 
@@ -334,7 +407,6 @@ class Main(MDApp):
                 toast("Wrong Password")
         else:
             toast("Waiter Not Available")
-            self.end_spine()
 
     """
                 LOGIN FUNCTIONS
@@ -360,9 +432,9 @@ class Main(MDApp):
         self.theme_cls.primary_palette = "Orange"
         self.theme_cls.theme_style = "Dark"""""
 
-    def add_product(self, category, name, price):
+    def add_product(self, name, price):
         if network.ping_net():
-            if category == "":
+            if self.category == "":
                 toast("Please select category")
             elif name == "":
                 toast("Please enter name")
@@ -371,7 +443,7 @@ class Main(MDApp):
                 toast("Please enter price")
 
             else:
-                if FB.register_product(FB(), category, name, price):
+                if FB.register_product(FB(), self.category, name, price):
                     toast("Product Added successfully")
                     self.clear_form()
                 else:
@@ -381,7 +453,7 @@ class Main(MDApp):
 
     def clear_form(self):
         # Iterate through input fields and reset their values
-        for input_field_id in ['category', 'price', 'quantity', 'name']:
+        for input_field_id in ['price', 'name']:
             input_field = self.root.ids[input_field_id]
             input_field.text = ""
 
