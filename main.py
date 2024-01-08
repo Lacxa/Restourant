@@ -98,7 +98,11 @@ class Main(MDApp):
     total_price = StringProperty("")
 
     category = StringProperty("")
+
+    # user
     nodata = StringProperty("")
+    user_category = StringProperty("")
+    user_type = StringProperty("")
 
     def update_text(self, button_text):
         text_input = self.root.ids.input
@@ -111,10 +115,12 @@ class Main(MDApp):
         text_input.text = current_text[:-1]
 
     def on_start(self):
-        #self.display_users()
-        self.display_food()
-        #self.display_main()
-        #self.selected_item()
+        self.keyboard_hooker()
+        # self.display_users()
+        self.get_users()
+        # self.display_manage()
+        # self.display_main()
+        # self.selected_item()
         pass
 
     def get_user_data(self):
@@ -152,7 +158,7 @@ class Main(MDApp):
                     }
                 )
 
-    def display_food(self):
+    def display_manage(self):
         self.root.ids.food.data = {}
         users_data = self.get_user_data()
 
@@ -238,7 +244,6 @@ class Main(MDApp):
             else:
                 self.nodata = "components/no-data-found.png"
 
-
     def total_cost(self):
         # Calculate and return the total cost of products in the order
         self.total_price = str(
@@ -264,6 +269,8 @@ class Main(MDApp):
         # Initialize an empty list to store orders
         super().__init__(**kwargs)
         self.orders = []
+        self.waiter_list = FB.get_waiter(FB())
+        self.admin_list = FB.get_admin(FB())
 
     def add_to_order(self, product_name, quantity, price):
         # Check if the product is already in the order
@@ -294,7 +301,7 @@ class Main(MDApp):
     def create_order(self):
         if network.ping_net():
             if self.orders:
-                FB.register_order(FB(), "waiter", self.orders, self.item_selected, self.total_price)
+                FB.register_order(FB(), self.username, self.orders, self.item_selected, self.total_price, self.user_type)
                 self.caller()
 
             else:
@@ -305,19 +312,30 @@ class Main(MDApp):
 
     def caller(self):
         print("caller")
-        self.display_food()
         self.orders.clear()
         self.selected_item()
 
-    def check(self, input):
-        self.get_data()
+    def check(self, text):
+        if len(text) > 3:
+            if text == self.admin():
+                """
+                sm = self.root
+                sm.current = "add_product"
+                """
+                self.screen_capture("add_product")
+                self.user_type = "Admin"
+                self.clear_login()
 
-        if len(input) > 3:
-            if input == self.password:
+            elif text == self.waiter():
+                """
+                sm = self.root
+                sm.current = "orders
+                """
                 self.screen_capture("orders")
+                self.user_type = "Waiter"
                 self.clear_login()
             else:
-                toast("Wrong password")
+                toast("Wrong pin")
 
     def get_data(self):
         with open('users.json', 'r') as file:
@@ -325,6 +343,26 @@ class Main(MDApp):
             user = next((user for user in data.get('users', []) if user['username'] == self.username), None)
 
             self.password = user["password"]
+
+    def admin(self):
+        for user_info in self.admin_list:
+            for key, value in user_info.items():
+                if value.get('Info', {}).get('user_name') == self.username:
+                    return value['Info']['user_pin']
+        return None
+
+    def waiter(self):
+        for user_info in self.waiter_list:
+            for key, value in user_info.items():
+                if value.get('Info', {}).get('user_name') == self.username:
+                    return value['Info']['user_pin']
+        return None
+
+    """ 
+    
+        CATEGORY SELECTION  FUNCTION
+     
+    """
 
     def button_color(self, button_name):
         pend = self.root.ids.one
@@ -340,7 +378,6 @@ class Main(MDApp):
             self.display_main()
         elif "Fish" in button_name.text:
             comp.md_bg_color = "#ffd241"
-            self.display_food()
         elif "Extra" in button_name.text:
             pre.md_bg_color = "#ffd241"
 
@@ -370,7 +407,37 @@ class Main(MDApp):
             pre.text_color = "white"
             self.category = "Extra"
 
-    """ KEYBOARD INTEGRATION """
+    def user_color(self, button_name):
+        pend = self.root.ids.wai
+        pre = self.root.ids.adm
+
+        pend.md_bg_color = "white"
+        pre.md_bg_color = "white"
+
+        pend.text_color = "black"
+        pre.text_color = "black"
+
+        if "Waiter" in button_name.text:
+            pend.md_bg_color = 80 / 225, 136 / 225, 114 / 225, 1
+            pend.text_color = "white"
+            self.user_category = "Waiter"
+
+        elif "Admin" in button_name.text:
+            pre.md_bg_color = 80 / 225, 136 / 225, 114 / 225, 1
+            pre.text_color = "white"
+            self.user_category = "Admin"
+
+    """ 
+    
+        ENDS CATEGORY FUNCTON
+        
+    """
+
+    """ 
+    
+        KEYBOARD INTEGRATION
+        
+    """
 
     def keyboard_hooker(self, *args):
         EventLoop.window.bind(on_keyboard=self.hook_keyboard)
@@ -408,25 +475,39 @@ class Main(MDApp):
         else:
             toast("Waiter Not Available")
 
+    def get_users(self):
+        # Assuming FB is a class with a get_user method
+        data = FB.get_user(FB())
+        users_data = []
+
+        for user_dict in data:
+            for user_key, user_info in user_dict.items():
+                users_data.append(user_info['Info'])
+
+        if not users_data:
+            self.root.ids.studs.data.append(
+                {
+                    "viewclass": "Deco",
+                    "name": "No data Yet!",
+                }
+            )
+        else:
+            for i, user in enumerate(users_data):
+                self.root.ids.studs.data.append(
+                    {
+                        "viewclass": "Deco",
+                        "name": user["user_name"],
+                    }
+                )
+
     """
-                LOGIN FUNCTIONS
+                END LOGIN FUNCTIONS
     """
 
     """
             ORDER FUNCTIONS
     
     """
-
-    def add_item(self):
-        for i in range(3):
-            self.root.ids.customers.data.append(
-                {
-                    "viewclass": "RowCard",
-                    "name": str(i),
-                    "price": "3",
-                    "id": i
-                }
-            )
 
     """def build(self):
         self.theme_cls.primary_palette = "Orange"
@@ -451,6 +532,27 @@ class Main(MDApp):
         else:
             toast("No internet")
 
+    def add_user(self, name, pin):
+        if network.ping_net():
+            if self.user_category == "":
+                toast("Please select category")
+            elif name == "":
+                toast("Please enter username")
+            elif pin == "":
+                toast("Please enter pin")
+            else:
+                FB.register_user(FB(), self.user_category, name, pin)
+                self.clear_input()
+
+        else:
+            toast("No internet")
+
+    def clear_input(self):
+        # Iterate through input fields and reset their values
+        for input_field_id in ['user', 'pin']:
+            input_field = self.root.ids[input_field_id]
+            input_field.text = ""
+
     def clear_form(self):
         # Iterate through input fields and reset their values
         for input_field_id in ['price', 'name']:
@@ -468,7 +570,11 @@ class Main(MDApp):
     
     """
 
-    """ SCREEN FUNCTIONS """
+    """ 
+    
+        SCREEN FUNCTIONS
+     
+    """
 
     def screen_capture(self, screen):
         sm = self.root
@@ -491,6 +597,12 @@ class Main(MDApp):
         self.screens_size = len(self.screens) - 1
         self.current = self.screens[len(self.screens) - 1]
         self.screen_capture(self.current)
+
+    """ 
+
+           END SCREEN FUNCTIONS
+
+    """
 
 
 Main().run()

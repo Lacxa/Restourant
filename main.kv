@@ -5,6 +5,91 @@ ScreenManager
     transition:sm.FadeTransition(duration=.0)
 
     MDScreen:
+        name:"add_user"
+        FloatLayout:
+            orientation:'vertical'
+            MDLabel:
+                bold:True
+                text:'Fill User Credentials'
+                halign:"center"
+                font_style:'H6'
+                pos_hint:{'center_x':.5, 'center_y':.85}
+                theme_text_color: "Custom"
+                text_color: 80 / 225, 136 / 225, 114 / 225, 1
+                height: self.texture_size[1]
+                width: self.texture_size[1]
+            MDLabel:
+                halign: "center"
+                text: "category"
+                pos_hint:{'center_x':.5, 'center_y':.75}
+            Order
+                pos_hint:{'center_x':.5, 'center_y':.65}
+                size:app.size_x/2.1, app.size_y/17
+                ripple_behavior: False
+                #md_bg_color: "#3e3e42"
+                radius: [0]
+                FloatLayout:
+                    Card
+                        pos_hint:{'center_x':.5, 'center_y':.3}
+                        size:app.size_x/2.1, app.size_y/17
+                    MDFlatButton:
+                        id:wai
+                        md_bg_color: "white"
+                        text:"Waiter"
+                        theme_text_color: "Custom"
+                        text_color: "black"
+                        font_size:"18sp"
+                        pos_hint:{'center_x':.3, 'center_y':.5}
+                        on_release:
+                            app.user_color(self)
+
+                    MDFlatButton:
+                        id:adm
+                        md_bg_color: "white"
+                        text:"Admin"
+                        theme_text_color: "Custom"
+                        text_color: "black"
+                        font_size:"18sp"
+                        pos_hint:{'center_x':.7, 'center_y':.5}
+                        on_release:
+                            app.user_color(self)
+
+            MDTextField:
+                id:user
+                mode: "line"
+                fill_color: 0, 0, 0, .4
+                size_hint: .4, .13
+                pos_hint: {'center_x': .5, 'center_y': .5}
+                hint_text:"User Name:"
+                font_size: dp(16)
+                multiline: False
+
+            MDTextField:
+                id:pin
+                mode: "line"
+                fill_color: 0, 0, 0, .4
+                size_hint: .4, .13
+                hint_text:"Pin:"
+                pos_hint:{'center_x':.5, 'center_y':.37}
+                font_size: dp(16)
+                input_filter: "int"
+                multiline: False
+                max_text_length: 4
+
+
+            MDFillRoundFlatButton:
+                id:additem
+                text: "Add User"
+                size_hint: .4, .06
+                text_color: 1, 1, 1, 1
+                pos_hint:{'center_x':.5, 'center_y':.15}
+                md_bg_color:80 / 225, 136 / 225, 114 / 225, 1
+                elevation:5
+                on_release:
+                    #app.add_user(user.text, pin.text)
+                    app.screen_capture('home')
+
+    MDScreen:
         name:"manage_product"
         #md_bg_color: "#424242", #3e3e42
         md_bg_color: "#f4f5f7"
@@ -247,7 +332,7 @@ ScreenManager
 
 
     MDScreen:
-        name:"add"
+        name:"add_product"
         FloatLayout:
             orientation:'vertical'
             MDLabel:
@@ -352,7 +437,7 @@ ScreenManager
                 icon_size: "40sp"
                 pos_hint:{'center_x':.9, 'center_y':.9}
                 on_release:
-                    app.screen_capture("food")
+                    #app.screen_capture("food")
 
 
     MDScreen:
