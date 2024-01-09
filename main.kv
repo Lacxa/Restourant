@@ -5,6 +5,127 @@ ScreenManager
     transition:sm.FadeTransition(duration=.0)
 
     MDScreen:
+        name:"admin"
+        md_bg_color: "#28241e"
+        FloatLayout:
+            AsyncImage:
+                source:app.graph
+                pos_hint:{'center_x':.3, 'center_y':.3}
+                size_hint: None, None
+                size: "350dp", "300dp"
+            AsyncImage:
+                source:app.bar
+                pos_hint:{'center_x':.7, 'center_y':.3}
+                size_hint: None, None
+                size: "350dp", "300dp"
+            MDLabel:
+                text:"Dashboard"
+                font_style:"H6"
+                color:"white"
+                halign:"center"
+                pos_hint:{"center_x":.08,"center_y":.95}
+            MDLabel:
+                text:app.today_time
+                color:"white"
+                halign:"left"
+                font_size:"12sp"
+                pos_hint:{"center_x":.53,"center_y":.9}
+
+            MD3Card:
+                pos_hint:{"center_x":.13,"center_y":.7}
+                ripple_behavior:True
+                FloatLayout:
+                    MDLabel:
+                        text:"Total Menus"
+                        halign:"center"
+                        color:"white"
+                        pos_hint:{"center_x":.3,"center_y":.8}
+                    MDLabel:
+                        id:table
+                        text:"124"
+                        font_style:"H6"
+                        halign:"center"
+                        color:"white"
+                        pos_hint:{"center_x":.5,"center_y":.45}
+                    MDIcon:
+                        icon: "food"
+                        font_size:"40sp"
+                        theme_text_color: "Custom"
+                        text_color: "#ffd241"
+                        pos_hint:{'center_x':.88, 'center_y':.2}
+
+            MD3Card:
+                pos_hint:{"center_x":.38,"center_y":.7}
+                ripple_behavior:True
+                FloatLayout:
+                    MDLabel:
+                        text:"Total Users"
+                        halign:"center"
+                        color:"white"
+                        pos_hint:{"center_x":.3,"center_y":.8}
+                    MDLabel:
+                        id:table
+                        text:"15"
+                        font_style:"H6"
+                        halign:"center"
+                        color:"white"
+                        pos_hint:{"center_x":.5,"center_y":.45}
+                    MDIcon:
+                        icon: "account-group"
+                        font_size:"40sp"
+                        theme_text_color: "Custom"
+                        text_color: "#ffd241"
+                        pos_hint:{'center_x':.88, 'center_y':.2}
+
+            MD3Card:
+                pos_hint:{"center_x":.63,"center_y":.7}
+                ripple_behavior:True
+                FloatLayout:
+                    MDLabel:
+                        text:"Total Orders"
+                        halign:"center"
+                        color:"white"
+                        pos_hint:{"center_x":.3,"center_y":.8}
+                    MDLabel:
+                        id:table
+                        text:"150"
+                        font_style:"H6"
+                        halign:"center"
+                        color:"white"
+                        pos_hint:{"center_x":.5,"center_y":.45}
+                    MDIcon:
+                        icon: "shopping"
+                        font_size:"40sp"
+                        theme_text_color: "Custom"
+                        text_color: "#ffd241"
+                        pos_hint:{'center_x':.88, 'center_y':.2}
+
+            MD3Card:
+                pos_hint:{"center_x":.88,"center_y":.7}
+                ripple_behavior:True
+                FloatLayout:
+                    MDLabel:
+                        text:"Create Report"
+                        halign:"center"
+                        color:"white"
+                        pos_hint:{"center_x":.3,"center_y":.8}
+                    MDLabel:
+                        id:table
+                        text:"130"
+                        font_style:"H6"
+                        halign:"center"
+                        color:"white"
+                        pos_hint:{"center_x":.5,"center_y":.45}
+                    MDIcon:
+                        icon: "list-box"
+                        font_size:"40sp"
+                        theme_text_color: "Custom"
+                        text_color: "#ffd241"
+                        pos_hint:{'center_x':.88, 'center_y':.2}
+
+
+
+    MDScreen:
         name:"add_user"
         FloatLayout:
             orientation:'vertical'
@@ -86,8 +207,8 @@ ScreenManager
                 md_bg_color:80 / 225, 136 / 225, 114 / 225, 1
                 elevation:5
                 on_release:
-                    #app.add_user(user.text, pin.text)
-                    app.screen_capture('home')
+                    app.add_user(user.text, pin.text)
+
 
     MDScreen:
         name:"manage_product"
@@ -438,7 +559,6 @@ ScreenManager
                 pos_hint:{'center_x':.9, 'center_y':.9}
                 on_release:
                     #app.screen_capture("food")
-
 
     MDScreen:
         name:"sign"
@@ -1124,5 +1244,14 @@ ScreenManager
             font_size:"20sp"
             pos_hint:{'center_x':.51, 'center_y':.5}
 
+<MD3Card@MDCard>:
+    md_bg_color: "#5C381E"
+    #padding: 4
+    size_hint: None, None
+    #radius: ("30sp")
+    size: "200dp", "125dp"
+    ripple_behavior: True
+    elevation:3
+    ripple_color:.9, .9, .95, 1
 
 

@@ -165,8 +165,6 @@ class FireBase:
 
                 toast("Order Successful")
 
-
-
     def generate_id(self):
         # Generate a unique order ID based on timestamp and counter
         timestamp = datetime.now().strftime('%Y%m%d%H%M%S%f')

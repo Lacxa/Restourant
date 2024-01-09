@@ -1,7 +1,9 @@
 import json
 import re
 
+from datetime import datetime
 from kivy.base import EventLoop
+from kivy.clock import Clock
 from kivy.core.window import Window
 from kivy.properties import NumericProperty, StringProperty, DictProperty
 from kivy.uix.floatlayout import FloatLayout
@@ -98,11 +100,15 @@ class Main(MDApp):
     total_price = StringProperty("")
 
     category = StringProperty("")
+    today_time = StringProperty("")
 
     # user
     nodata = StringProperty("")
     user_category = StringProperty("")
     user_type = StringProperty("")
+
+    graph = StringProperty("")
+    bar = StringProperty("")
 
     def update_text(self, button_text):
         text_input = self.root.ids.input
@@ -115,12 +121,13 @@ class Main(MDApp):
         text_input.text = current_text[:-1]
 
     def on_start(self):
-        self.keyboard_hooker()
+        Clock.schedule_once(self.keyboard_hooker, .1)
         # self.display_users()
-        self.get_users()
+        #self.get_users()
         # self.display_manage()
         # self.display_main()
         # self.selected_item()
+        self.time_updater()
         pass
 
     def get_user_data(self):
@@ -129,6 +136,14 @@ class Main(MDApp):
             data = json.load(file)
 
         return data
+
+    def time_updater(self):
+        current_time = datetime.now()
+        self.graph = "components/pie_chart.png"
+        self.bar = "components/stacked_bar_chart.png"
+
+        formatted_time = current_time.strftime("%a %d %b %Y")
+        self.today_time = formatted_time
 
     def print(self):
         user_data = self.get_user_data()
@@ -269,8 +284,8 @@ class Main(MDApp):
         # Initialize an empty list to store orders
         super().__init__(**kwargs)
         self.orders = []
-        self.waiter_list = FB.get_waiter(FB())
-        self.admin_list = FB.get_admin(FB())
+        #self.waiter_list = FB.get_waiter(FB())
+        #self.admin_list = FB.get_admin(FB())
 
     def add_to_order(self, product_name, quantity, price):
         # Check if the product is already in the order
@@ -320,9 +335,9 @@ class Main(MDApp):
             if text == self.admin():
                 """
                 sm = self.root
-                sm.current = "add_product"
+                sm.current = "admin"
                 """
-                self.screen_capture("add_product")
+                self.screen_capture("admin")
                 self.user_type = "Admin"
                 self.clear_login()
 
