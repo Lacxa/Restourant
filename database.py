@@ -165,6 +165,18 @@ class FireBase:
 
                 toast("Order Successful")
 
+    def get_all_orders(self,):
+        import firebase_admin
+        firebase_admin._apps.clear()
+        from firebase_admin import credentials, initialize_app, db
+        if not firebase_admin._apps:
+            cred = credentials.Certificate("credential/farmzon-abdcb-c4c57249e43b.json")
+            initialize_app(cred, {'databaseURL': 'https://farmzon-abdcb.firebaseio.com/'})
+            store = (db.reference("Restaurant").child("Orders").child(self.year()).child(self.month_date()))
+            data = store.get()
+
+            return data
+
     def generate_id(self):
         # Generate a unique order ID based on timestamp and counter
         timestamp = datetime.now().strftime('%Y%m%d%H%M%S%f')
@@ -189,3 +201,4 @@ class FireBase:
 # FireBase.get_main(FireBase())
 # FireBase.register_user(FireBase(), "Admin", "joe", "9060")
 # FireBase.get_user(FireBase())
+#FireBase.get_all_orders(FireBase())

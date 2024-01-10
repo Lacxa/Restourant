@@ -34,6 +34,8 @@ ScreenManager
             MD3Card:
                 pos_hint:{"center_x":.13,"center_y":.7}
                 ripple_behavior:True
+                on_release:
+                    app.screen_capture("add_product")
                 FloatLayout:
                     MDLabel:
                         text:"Total Menus"
@@ -57,6 +59,8 @@ ScreenManager
             MD3Card:
                 pos_hint:{"center_x":.38,"center_y":.7}
                 ripple_behavior:True
+                on_release:
+                    app.screen_capture("add_user")
                 FloatLayout:
                     MDLabel:
                         text:"Total Users"
@@ -65,7 +69,7 @@ ScreenManager
                         pos_hint:{"center_x":.3,"center_y":.8}
                     MDLabel:
                         id:table
-                        text:"15"
+                        text:app.total_users
                         font_style:"H6"
                         halign:"center"
                         color:"white"
@@ -80,6 +84,8 @@ ScreenManager
             MD3Card:
                 pos_hint:{"center_x":.63,"center_y":.7}
                 ripple_behavior:True
+                on_release:
+                    app.screen_capture("orders")
                 FloatLayout:
                     MDLabel:
                         text:"Total Orders"
@@ -88,7 +94,7 @@ ScreenManager
                         pos_hint:{"center_x":.3,"center_y":.8}
                     MDLabel:
                         id:table
-                        text:"150"
+                        text:app.total_orders
                         font_style:"H6"
                         halign:"center"
                         color:"white"
@@ -123,7 +129,31 @@ ScreenManager
                         text_color: "#ffd241"
                         pos_hint:{'center_x':.88, 'center_y':.2}
 
+    MDScreen:
+        name:"home"
+        md_bg_color: "#f4f5f7"
+        FloatLayout:
+            MDLabel:
+                bold:True
+                text:"Choose your account"
+                halign:"center"
+                font_style:'H6'
+                pos_hint:{'center_x':.5, 'center_y':.93}
 
+            RecycleView:
+                id: studs
+                key_viewclass: 'viewclass'
+                key_size: 'height'
+                pos_hint:{"center_x":.6,"top":.8}
+                RecycleGridLayout:
+                    id:grid
+                    cols:2
+                    spacing:dp(10)
+                    padding: dp(10)
+                    default_size: None, dp(45)
+                    default_size_hint: None, None
+                    size_hint_y: None
+                    height: self.minimum_height
 
     MDScreen:
         name:"add_user"
@@ -208,6 +238,15 @@ ScreenManager
                 elevation:5
                 on_release:
                     app.add_user(user.text, pin.text)
+
+            MDIconButton:
+                icon: "account-group"
+                icon_size: "40sp"
+                text_color: 80 / 225, 136 / 225, 114 / 225, 1
+                theme_text_color: "Custom"
+                pos_hint:{'center_x':.9, 'center_y':.9}
+                on_release:
+                    #app.screen_capture("manage_users")
 
 
     MDScreen:
@@ -426,33 +465,6 @@ ScreenManager
 
 
     MDScreen:
-        name:"home"
-        md_bg_color: "#f4f5f7"
-        FloatLayout:
-            MDLabel:
-                bold:True
-                text:"Choose your account"
-                halign:"center"
-                font_style:'H6'
-                pos_hint:{'center_x':.5, 'center_y':.93}
-
-            RecycleView:
-                id: studs
-                key_viewclass: 'viewclass'
-                key_size: 'height'
-                pos_hint:{"center_x":.6,"top":.8}
-                RecycleGridLayout:
-                    id:grid
-                    cols:2
-                    spacing:dp(10)
-                    padding: dp(10)
-                    default_size: None, dp(45)
-                    default_size_hint: None, None
-                    size_hint_y: None
-                    height: self.minimum_height
-
-
-    MDScreen:
         name:"add_product"
         FloatLayout:
             orientation:'vertical'
@@ -556,9 +568,11 @@ ScreenManager
             MDIconButton:
                 icon: "food"
                 icon_size: "40sp"
+                text_color: 80 / 225, 136 / 225, 114 / 225, 1
+                theme_text_color: "Custom"
                 pos_hint:{'center_x':.9, 'center_y':.9}
                 on_release:
-                    #app.screen_capture("food")
+                    app.screen_capture("manage_product")
 
     MDScreen:
         name:"sign"
@@ -601,9 +615,9 @@ ScreenManager
                 font_style:'H4'
                 pos_hint:{'center_x':.5, 'center_y':.93}
             MDIconButton:
-                icon:"segment"
+                icon:"account-circle"
                 icon_size: "45sp"
-                pos_hint:{"center_x":.9, "center_y":.93}
+                pos_hint:{"center_x":.95, "center_y":.93}
             MDFillRoundFlatButton:
                 id:order
                 text: "Make New Order"
@@ -616,6 +630,22 @@ ScreenManager
             Card
                 pos_hint:{'center_x':.5, 'center_y':.74}
                 size:app.size_x/1.2, app.size_y/12
+
+            RecycleView:
+                id: sales
+                key_viewclass: 'viewclass'
+                key_size: 'height'
+                pos_hint:{"center_x":.55,"top":.65}
+                #pos_hint:{"center_x":.25, "center_y":.60}
+                RecycleGridLayout:
+                    id:br
+                    cols:1
+                    spacing:dp(10)
+                    padding: dp(10)
+                    default_size: None, dp(45)
+                    default_size_hint: None, None
+                    size_hint_y: None
+                    height: self.minimum_height
 
 
         BoxLayout:

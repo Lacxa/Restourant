@@ -107,6 +107,10 @@ class Main(MDApp):
     user_category = StringProperty("")
     user_type = StringProperty("")
 
+    # overall
+    total_users = StringProperty("")
+    total_orders = StringProperty("")
+
     graph = StringProperty("")
     bar = StringProperty("")
 
@@ -122,7 +126,7 @@ class Main(MDApp):
 
     def on_start(self):
         Clock.schedule_once(self.keyboard_hooker, .1)
-        # self.display_users()
+        # self.display_sales()
         #self.get_users()
         # self.display_manage()
         # self.display_main()
@@ -151,12 +155,12 @@ class Main(MDApp):
         for user in user_data:
             print(f"Username: {user['username']}, Password: {user['password']}")
 
-    def display_users(self):
-        self.root.ids.studs.data = {}
+    def display_sales(self):
+        self.root.ids.sales.data = {}
         users_data = self.get_user_data()
 
         if not users_data:
-            self.root.ids.studs.data.append(
+            self.root.ids.sales.data.append(
                 {
                     "viewclass": "Deco",
                     "name": "No data Yet!",
@@ -165,7 +169,7 @@ class Main(MDApp):
         else:
             users = users_data["users"]
             for i, user in enumerate(users):
-                self.root.ids.studs.data.append(
+                self.root.ids.sales.data.append(
                     {
                         "viewclass": "Deco",
                         "name": user["username"],
@@ -284,8 +288,36 @@ class Main(MDApp):
         # Initialize an empty list to store orders
         super().__init__(**kwargs)
         self.orders = []
-        #self.waiter_list = FB.get_waiter(FB())
-        #self.admin_list = FB.get_admin(FB())
+        self.waiter_list = FB.get_waiter(FB())
+        self.admin_list = FB.get_admin(FB())
+        self.orders_list = FB.get_all_orders(FB())
+        self.count_data()
+
+    def count_data(self, ):
+        # Count occurrences of 'Info' key
+        if self.waiter_list:
+            waiter_count = sum('Info' in user_info for user_dict in self.waiter_list for user_info in user_dict.values())
+        else:
+            waiter_count = 0
+
+        if self.admin_list:
+            admin_count = sum('Info' in user_info for user_dict in self.admin_list for user_info in user_dict.values())
+
+        else:
+            admin_count = 0
+
+        total = waiter_count + admin_count
+        self.total_users = str(total)
+
+        order_ids = set()
+        if self.orders_list:
+            for order_id, order_info in self.orders_list.items():
+                order_ids.add(order_id)
+                data = len(order_ids)
+                self.total_orders = str(data)
+
+        else:
+            self.total_orders = "0"
 
     def add_to_order(self, product_name, quantity, price):
         # Check if the product is already in the order
@@ -316,7 +348,8 @@ class Main(MDApp):
     def create_order(self):
         if network.ping_net():
             if self.orders:
-                FB.register_order(FB(), self.username, self.orders, self.item_selected, self.total_price, self.user_type)
+                FB.register_order(FB(), self.username, self.orders, self.item_selected, self.total_price,
+                                  self.user_type)
                 self.caller()
 
             else:
