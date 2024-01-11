@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 import json
 import re
 
@@ -107,9 +108,11 @@ class Main(MDApp):
     user_category = StringProperty("")
     user_type = StringProperty("")
 
-    # overall
+    # overall admin
     total_users = StringProperty("")
     total_orders = StringProperty("")
+    total_main = StringProperty("")
+    yes_day = StringProperty("")
 
     graph = StringProperty("")
     bar = StringProperty("")
@@ -127,9 +130,10 @@ class Main(MDApp):
     def on_start(self):
         Clock.schedule_once(self.keyboard_hooker, .1)
         # self.display_sales()
-        #self.get_users()
-        # self.display_manage()
-        # self.display_main()
+        self.get_users()
+        self.generate_pie_chart()
+        self.display_manage()
+        self.display_main()
         # self.selected_item()
         self.time_updater()
         pass
@@ -204,6 +208,9 @@ class Main(MDApp):
         data = FB.get_main(FB())
 
         if data:
+            no = len(data)
+            self.total_main = str(no)
+
             for i, y in data.items():
                 self.root.ids.food.data.append(
                     {
@@ -213,6 +220,7 @@ class Main(MDApp):
                     }
                 )
         else:
+            self.total_main = "0"
             self.root.ids.food.data.append(
                 {
                     "viewclass": "Nofood",
@@ -248,18 +256,17 @@ class Main(MDApp):
     def search_live(self, text):
         self.root.ids.all.data = {}
         users_data = self.get_user_data()
-        text = text.upper()
         users = users_data["users"]
-        for i, user in enumerate(users):
-            if text in user["username"]:
+
+        for x, y in enumerate(users):
+            if text.lower() in y["username"]:
                 self.nodata = ""
                 self.root.ids.all.data.append(
                     {
                         "viewclass": "Allow",
-                        "name": user["username"],
+                        "name": y["username"],
                     }
                 )
-
             else:
                 self.nodata = "components/no-data-found.png"
 
@@ -296,7 +303,8 @@ class Main(MDApp):
     def count_data(self, ):
         # Count occurrences of 'Info' key
         if self.waiter_list:
-            waiter_count = sum('Info' in user_info for user_dict in self.waiter_list for user_info in user_dict.values())
+            waiter_count = sum(
+                'Info' in user_info for user_dict in self.waiter_list for user_info in user_dict.values())
         else:
             waiter_count = 0
 
@@ -310,14 +318,27 @@ class Main(MDApp):
         self.total_users = str(total)
 
         order_ids = set()
-        if self.orders_list:
-            for order_id, order_info in self.orders_list.items():
+        if self.orders_list[0]:
+            today = self.orders_list[0]
+            for order_id, order_info in today.items():
                 order_ids.add(order_id)
                 data = len(order_ids)
                 self.total_orders = str(data)
 
         else:
             self.total_orders = "0"
+
+        if self.orders_list[1]:
+            yesterday = self.orders_list[1]
+            for idd, info in yesterday.items():
+                order_ids.add(idd)
+                data = len(order_ids)
+                self.yes_day = str(data)
+
+        else:
+            self.yes_day = "0"
+
+        self.generate_pie_chart()
 
     def add_to_order(self, product_name, quantity, price):
         # Check if the product is already in the order
@@ -362,6 +383,10 @@ class Main(MDApp):
         print("caller")
         self.orders.clear()
         self.selected_item()
+        self.admin_list = FB.get_admin(FB())
+        self.orders_list = FB.get_all_orders(FB())
+        self.orders_list = FB.get_all_orders(FB())
+        self.count_data()
 
     def check(self, text):
         if len(text) > 3:
@@ -407,6 +432,52 @@ class Main(MDApp):
         return None
 
     """ 
+                    GRAPH AND CHART
+    
+    """
+
+    def generate_pie_chart(self, ):
+        total = int(self.total_orders) + int(self.yes_day)
+
+        # Calculate the percentages
+        percentage1 = (int(self.total_orders) / total) * 100
+        percentage2 = (int(self.yes_day) / total) * 100
+
+        # Data for the pie chart
+        labels = ["Today", "Yesterday"]
+        values = [percentage1, percentage2]
+
+        # Partial Pie and Donut combination
+        fig, ax = plt.subplots(facecolor='#5C381E')
+        ax.set_facecolor('#5C381E')
+
+        # Set the color of the labels to white
+        label_colors = 'black'
+
+        ax.pie(values, labels=labels, autopct='%1.1f%%', startangle=90, pctdistance=0.85,
+               wedgeprops=dict(width=0.4, edgecolor='w'), textprops=dict(fontsize=10, color=label_colors),
+               counterclock=False)
+
+        # Draw a white circle at the center to create a hole
+        centre_circle = plt.Circle((0, 0), 0.70, fc='#5C381E')
+        fig = plt.gcf()
+        fig.gca().add_artist(centre_circle)
+
+        ax.set_xlabel('Orders by day', fontsize=14)
+        ax.xaxis.label.set_color('white')
+
+        # Equal aspect ratio ensures that pie is drawn as a circle.
+        ax.axis('equal')
+
+        # Save the image
+        plt.savefig("components/pie_chart.png")
+
+    """ 
+                        GRAPH AND CHART
+
+    """
+
+    """ 
     
         CATEGORY SELECTION  FUNCTION
      
@@ -434,9 +505,9 @@ class Main(MDApp):
         pre = self.root.ids.extra
         comp = self.root.ids.fish
 
-        pend.md_bg_color = "white"
-        pre.md_bg_color = "white"
-        comp.md_bg_color = "white"
+        pend.md_bg_color = "#424242"
+        pre.md_bg_color = "#424242"
+        comp.md_bg_color = "#424242"
 
         pend.text_color = "black"
         pre.text_color = "black"
@@ -459,8 +530,8 @@ class Main(MDApp):
         pend = self.root.ids.wai
         pre = self.root.ids.adm
 
-        pend.md_bg_color = "white"
-        pre.md_bg_color = "white"
+        pend.md_bg_color = "#424242"
+        pre.md_bg_color = "#424242"
 
         pend.text_color = "black"
         pre.text_color = "black"

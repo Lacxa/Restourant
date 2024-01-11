@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from kivymd.toast import toast
 
 
@@ -165,17 +165,30 @@ class FireBase:
 
                 toast("Order Successful")
 
-    def get_all_orders(self,):
+    def get_all_orders(self, ):
         import firebase_admin
         firebase_admin._apps.clear()
         from firebase_admin import credentials, initialize_app, db
         if not firebase_admin._apps:
             cred = credentials.Certificate("credential/farmzon-abdcb-c4c57249e43b.json")
             initialize_app(cred, {'databaseURL': 'https://farmzon-abdcb.firebaseio.com/'})
-            store = (db.reference("Restaurant").child("Orders").child(self.year()).child(self.month_date()))
-            data = store.get()
+            today = (db.reference("Restaurant").child("Orders").child(self.year()).child(self.month_date()))
+            data1 = today.get()
 
-            return data
+            current_date_obj = datetime.strptime(self.month_date(), "%m_%d")
+
+            # Calculate the previous date
+            previous_date_obj = current_date_obj - timedelta(days=1)
+
+            # Format the previous date as a string in the same format
+            previous_date_str = previous_date_obj.strftime("%m_%d")
+
+            yesterday = (db.reference("Restaurant").child("Orders").child(self.year()).child(previous_date_str))
+            data2 = yesterday.get()
+
+            comp = data1, data2
+
+            return comp
 
     def generate_id(self):
         # Generate a unique order ID based on timestamp and counter
@@ -196,6 +209,7 @@ class FireBase:
         y, m, d = date.strip().split("-")
 
         return f"{m}_{d}"
+
 
 # FireBase.register_order(FireBase(), "lul", [{'product_name': 'john_doe', 'quantity': '1', 'price': '500'}, {'product_name': 'jane_smith', 'quantity': '1', 'price': '500'}, {'product_name': 'bob_jones', 'quantity': '1', 'price': '500'}])
 # FireBase.get_main(FireBase())
