@@ -116,6 +116,7 @@ class Main(MDApp):
 
     graph = StringProperty("")
     bar = StringProperty("")
+    user_graph = StringProperty("")
 
     def update_text(self, button_text):
         text_input = self.root.ids.input
@@ -129,7 +130,6 @@ class Main(MDApp):
 
     def on_start(self):
         Clock.schedule_once(self.keyboard_hooker, .1)
-        # self.display_sales()
         self.get_users()
         self.generate_pie_chart()
         self.display_manage()
@@ -160,26 +160,32 @@ class Main(MDApp):
             print(f"Username: {user['username']}, Password: {user['password']}")
 
     def display_sales(self):
-        self.root.ids.sales.data = {}
-        users_data = self.get_user_data()
+        if network:
+            self.root.ids.sales.data = {}
+            users_data = FB.get_user_sales(FB(), self.username, self.user_type)
+            today = users_data[0]
+            yes_day = users_data[1]
+            self.generate_user_pie_chart(today, yes_day)
 
-        if not users_data:
-            self.root.ids.sales.data.append(
-                {
-                    "viewclass": "Deco",
-                    "name": "No data Yet!",
-                }
-            )
-        else:
-            users = users_data["users"]
-            for i, user in enumerate(users):
+            if not today:
                 self.root.ids.sales.data.append(
                     {
-                        "viewclass": "Deco",
-                        "name": user["username"],
-                        "id": str(i)
+                        "viewclass": "Daily",
+                        "name": "No data Yet!",
                     }
                 )
+            else:
+                for user_id, user_info in today.items():
+                    self.root.ids.sales.data.append(
+                        {
+                            "viewclass": "Daily",
+                            "item": user_info["total_item"],
+                            "price": user_info["total_price"],
+                            "idd": user_id
+                        }
+                    )
+        else:
+            toast("No internet!")
 
     def display_manage(self):
         self.root.ids.food.data = {}
@@ -204,29 +210,33 @@ class Main(MDApp):
                 )
 
     def display_main(self):
-        self.root.ids.food.data = {}
-        data = FB.get_main(FB())
+        if network:
+            self.root.ids.food.data = {}
+            data = FB.get_main(FB())
 
-        if data:
-            no = len(data)
-            self.total_main = str(no)
+            if data:
+                no = len(data)
+                self.total_main = str(no)
 
-            for i, y in data.items():
+                for i, y in data.items():
+                    self.root.ids.food.data.append(
+                        {
+                            "viewclass": "Food",
+                            "name": y["name"],
+                            "price": y["price"],
+                        }
+                    )
+            else:
+                self.total_main = "0"
                 self.root.ids.food.data.append(
                     {
-                        "viewclass": "Food",
-                        "name": y["name"],
-                        "price": y["price"],
+                        "viewclass": "Nofood",
+                        "name": "No data Yet!",
                     }
                 )
+
         else:
-            self.total_main = "0"
-            self.root.ids.food.data.append(
-                {
-                    "viewclass": "Nofood",
-                    "name": "No data Yet!",
-                }
-            )
+            toast("no internet!")
 
     def selected_item(self):
         self.root.ids.selected.data = {}
@@ -385,7 +395,6 @@ class Main(MDApp):
         self.selected_item()
         self.admin_list = FB.get_admin(FB())
         self.orders_list = FB.get_all_orders(FB())
-        self.orders_list = FB.get_all_orders(FB())
         self.count_data()
 
     def check(self, text):
@@ -471,6 +480,56 @@ class Main(MDApp):
 
         # Save the image
         plt.savefig("components/pie_chart.png")
+
+    def generate_user_pie_chart(self, today, yes_day):
+
+        if today:
+            one = len(today)
+
+        else:
+            one = 1
+        if yes_day:
+            two = len(yes_day)
+
+        else:
+            two = 1
+
+        total = one + two
+
+        # Calculate the percentages
+        percentage1 = (one / total) * 100
+        percentage2 = (two / total) * 100
+
+        # Data for the pie chart
+        labels = ["Today", "Yesterday"]
+        values = [percentage1, percentage2]
+
+        # Partial Pie and Donut combination
+        fig, ax = plt.subplots(facecolor="#1e1f22")
+        ax.set_facecolor("#1e1f22")
+
+        # Set the color of the labels to white
+        label_colors = 'white'
+
+        ax.pie(values, labels=labels, autopct='%1.1f%%', startangle=90, pctdistance=0.85,
+               wedgeprops=dict(width=0.4, edgecolor='w'), textprops=dict(fontsize=10, color=label_colors),
+               counterclock=False)
+
+        # Draw a white circle at the center to create a hole
+        centre_circle = plt.Circle((0, 0), 0.70, fc="#1e1f22")
+        fig = plt.gcf()
+        fig.gca().add_artist(centre_circle)
+
+        ax.set_xlabel('Orders by day', fontsize=14)
+        ax.xaxis.label.set_color('white')
+
+        # Equal aspect ratio ensures that pie is drawn as a circle.
+        ax.axis('equal')
+
+        # Save the image
+        plt.savefig("components/user_pie_chart.png")
+
+        self.user_graph = "components/user_pie_chart.png"
 
     """ 
                         GRAPH AND CHART
@@ -596,28 +655,32 @@ class Main(MDApp):
 
     def get_users(self):
         # Assuming FB is a class with a get_user method
-        data = FB.get_user(FB())
-        users_data = []
+        if network:
+            data = FB.get_user(FB())
+            users_data = []
 
-        for user_dict in data:
-            for user_key, user_info in user_dict.items():
-                users_data.append(user_info['Info'])
+            for user_dict in data:
+                for user_key, user_info in user_dict.items():
+                    users_data.append(user_info['Info'])
 
-        if not users_data:
-            self.root.ids.studs.data.append(
-                {
-                    "viewclass": "Deco",
-                    "name": "No data Yet!",
-                }
-            )
-        else:
-            for i, user in enumerate(users_data):
+            if not users_data:
                 self.root.ids.studs.data.append(
                     {
                         "viewclass": "Deco",
-                        "name": user["user_name"],
+                        "name": "No data Yet!",
                     }
                 )
+            else:
+                for i, user in enumerate(users_data):
+                    self.root.ids.studs.data.append(
+                        {
+                            "viewclass": "Deco",
+                            "name": user["user_name"],
+                        }
+                    )
+
+        else:
+            toast("no internet")
 
     """
                 END LOGIN FUNCTIONS

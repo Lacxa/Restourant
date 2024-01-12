@@ -190,8 +190,36 @@ class FireBase:
 
             return comp
 
+    def get_user_sales(self, user, category):
+        import firebase_admin
+        firebase_admin._apps.clear()
+        from firebase_admin import credentials, initialize_app, db
+        if not firebase_admin._apps:
+            cred = credentials.Certificate("credential/farmzon-abdcb-c4c57249e43b.json")
+            initialize_app(cred, {'databaseURL': 'https://farmzon-abdcb.firebaseio.com/'})
+            ref = (db.reference("Restaurant").child("Users").child(category).child(user).child("Orders")
+                   .child(self.year()).child(self.month_date()))
+
+            data1 = ref.get()
+
+            current_date_obj = datetime.strptime(self.month_date(), "%m_%d")
+
+            # Calculate the previous date
+            previous_date_obj = current_date_obj - timedelta(days=1)
+
+            # Format the previous date as a string in the same format
+            previous_date_str = previous_date_obj.strftime("%m_%d")
+
+            store = (db.reference("Restaurant").child("Users").child(category).child(user).child("Orders")
+                     .child(self.year()).child(previous_date_str))
+
+            data2 = store.get()
+
+            comp = data1, data2
+
+            return comp
+
     def generate_id(self):
-        # Generate a unique order ID based on timestamp and counter
         timestamp = datetime.now().strftime('%Y%m%d%H%M%S%f')
         order_id = timestamp
         return order_id
@@ -210,9 +238,6 @@ class FireBase:
 
         return f"{m}_{d}"
 
-
-# FireBase.register_order(FireBase(), "lul", [{'product_name': 'john_doe', 'quantity': '1', 'price': '500'}, {'product_name': 'jane_smith', 'quantity': '1', 'price': '500'}, {'product_name': 'bob_jones', 'quantity': '1', 'price': '500'}])
-# FireBase.get_main(FireBase())
-# FireBase.register_user(FireBase(), "Admin", "joe", "9060")
 # FireBase.get_user(FireBase())
-#FireBase.get_all_orders(FireBase())
+# FireBase.get_all_orders(FireBase())
+# FireBase.get_user_sales(FireBase(), "joo", "Waiter")

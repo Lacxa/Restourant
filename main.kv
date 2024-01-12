@@ -116,7 +116,7 @@ ScreenManager
                     app.screen_capture("orders")
                 FloatLayout:
                     MDLabel:
-                        text:"Total Orders"
+                        text:"Today Orders"
                         halign:"center"
                         color:"white"
                         pos_hint:{"center_x":.3,"center_y":.8}
@@ -619,6 +619,9 @@ ScreenManager
     MDScreen:
         name:"orders"
         md_bg_color: "#1e1f22"
+        on_enter:
+            app.display_sales()
+
         FloatLayout:
             MDLabel:
                 bold:True
@@ -643,38 +646,28 @@ ScreenManager
                 pos_hint:{'center_x':.5, 'center_y':.74}
                 size:app.size_x/1.2, app.size_y/12
 
+
             RecycleView:
                 id: sales
                 key_viewclass: 'viewclass'
                 key_size: 'height'
-                pos_hint:{"center_x":.55,"top":.65}
+                pos_hint:{"center_x":.55,"top":.7}
                 #pos_hint:{"center_x":.25, "center_y":.60}
                 RecycleGridLayout:
-                    id:br
+                    id:gmp
                     cols:1
-                    spacing:dp(10)
+                    spacing:dp(1)
                     padding: dp(10)
                     default_size: None, dp(45)
                     default_size_hint: None, None
                     size_hint_y: None
                     height: self.minimum_height
 
-
-        BoxLayout:
-            RecycleView:
-                id:today
-                key_viewclass: 'viewclass'
-                key_size: 'height'
-                pos_hint:{"top":.61}
-                RecycleBoxLayout:
-                    id:wa
-                    spacing:dp(4)
-                    padding: dp(10)
-                    default_size: None, dp(60)
-                    default_size_hint: 1, None
-                    size_hint_y: None
-                    height: self.minimum_height
-                    orientation: 'vertical'
+            AsyncImage:
+                source:app.user_graph
+                pos_hint:{'center_x':.7, 'center_y':.4}
+                size_hint: None, None
+                size: "350dp", "300dp"
 
     MDScreen:
         name:"in_table"
@@ -1300,3 +1293,42 @@ ScreenManager
     elevation:3
     ripple_color:.9, .9, .95, 1
 
+<Daily@MDCard>:
+    #orientation: "vertical"
+    padding: "10dp"
+    md_bg_color: "#424242"
+    #spacing: "5dp"
+    #border_radius: 3
+    #border_color_a: .5
+    #border_color_a: 1
+    adaptive_height:True
+    #radius: [12]
+    idd: ""
+    price: ""
+    item: ""
+    size_hint: None, None
+    size:app.size_x/2.1, app.size_y/12
+    focus_behavior: False
+    ripple_color:.9, .9, .95, 1
+    ripple_behavior: False
+
+    FloatLayout:
+        MDLabel:
+            text:root.idd
+            halign:"left"
+            font_size:"14sp"
+            color:"white"
+            pos_hint:{'center_x':.51, 'center_y':.5}
+        MDLabel:
+            text:root.item
+            halign:"center"
+            font_size:"14sp"
+            color:"white"
+            pos_hint:{'center_x':.6, 'center_y':.5}
+
+        MDLabel:
+            text:root.price
+            halign:"center"
+            font_size:"14sp"
+            color:"white"
+            pos_hint:{'center_x':.8, 'center_y':.5}
