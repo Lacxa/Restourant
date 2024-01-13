@@ -167,14 +167,7 @@ class Main(MDApp):
             yes_day = users_data[1]
             self.generate_user_pie_chart(today, yes_day)
 
-            if not today:
-                self.root.ids.sales.data.append(
-                    {
-                        "viewclass": "Daily",
-                        "name": "No data Yet!",
-                    }
-                )
-            else:
+            if today:
                 for user_id, user_info in today.items():
                     self.root.ids.sales.data.append(
                         {
@@ -184,6 +177,14 @@ class Main(MDApp):
                             "idd": user_id
                         }
                     )
+
+            else:
+                self.root.ids.sales.data.append(
+                    {
+                        "viewclass": "Nodaily",
+                        "idd": "No oder Yet!",
+                    }
+                )
         else:
             toast("No internet!")
 
