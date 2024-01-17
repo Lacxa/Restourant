@@ -145,6 +145,13 @@ class Main(MDApp):
 
         return data
 
+    def get_json_data(self):
+        # Load user data from the JSON file
+        with open('users.json', 'r') as file:
+            data = json.load(file)
+
+        return data
+
     def time_updater(self):
         current_time = datetime.now()
         self.graph = "components/pie_chart.png"
@@ -786,6 +793,8 @@ class Main(MDApp):
            END SCREEN FUNCTIONS
 
     """
+
+
 
 
 Main().run()
