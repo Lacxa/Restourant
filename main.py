@@ -241,7 +241,7 @@ class Main(MDApp):
             self.root.ids.profile.data = {}
             users_data = FB.get_user_sales(FB(), self.username, self.user_type)
             today = users_data[0]
-            if users_data:
+            if today:
                 for user_id, user_info in today.items():
                     self.root.ids.profile.data.append(
                         {
