@@ -107,14 +107,14 @@ class FireBase:
                 )
         return True
 
-    def get_main(self):
+    def get_food(self, name):
         import firebase_admin
         firebase_admin._apps.clear()
         from firebase_admin import credentials, initialize_app, db
         if not firebase_admin._apps:
             cred = credentials.Certificate("credential/farmzon-abdcb-c4c57249e43b.json")
             initialize_app(cred, {'databaseURL': 'https://farmzon-abdcb.firebaseio.com/'})
-            ref = db.reference("Restaurant").child("Products").child("category").child("Main Dish")
+            ref = db.reference("Restaurant").child("Products").child("category").child(name)
             data = ref.get()
 
             return data
@@ -218,6 +218,21 @@ class FireBase:
             comp = data1, data2
 
             return comp
+
+    def user_sales(self, user, category, year, my_time):
+        import firebase_admin
+        firebase_admin._apps.clear()
+        from firebase_admin import credentials, initialize_app, db
+        if not firebase_admin._apps:
+            cred = credentials.Certificate("credential/farmzon-abdcb-c4c57249e43b.json")
+            initialize_app(cred, {'databaseURL': 'https://farmzon-abdcb.firebaseio.com/'})
+            ref = (db.reference("Restaurant").child("Users").child(category).child(user).child("Orders")
+                   .child(year).child(my_time))
+
+            data = ref.get()
+
+            return data
+
 
     def generate_id(self):
         timestamp = datetime.now().strftime('%Y%m%d%H%M%S%f')

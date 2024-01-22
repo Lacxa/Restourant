@@ -13,6 +13,7 @@ from kivymd.toast import toast
 from kivymd.uix.card import MDCard
 from kivymd.uix.floatlayout import MDFloatLayout
 from kivymd.uix.list import OneLineIconListItem
+from kivymd.uix.pickers import MDDatePicker
 from kivymd.uix.tab import MDTabsBase
 from kivymd.uix.textfield import MDTextField
 
@@ -99,6 +100,7 @@ class Main(MDApp):
     quantity_text = StringProperty("1")
     item_selected = StringProperty("0")
     total_price = StringProperty("")
+    drink = StringProperty("")
 
     category = StringProperty("")
     today_time = StringProperty("")
@@ -108,15 +110,27 @@ class Main(MDApp):
     user_category = StringProperty("")
     user_type = StringProperty("")
 
+    user_nodata = StringProperty("")
+
     # overall admin
     total_users = StringProperty("")
     total_orders = StringProperty("")
     total_main = StringProperty("")
     yes_day = StringProperty("")
 
+    # graph
     graph = StringProperty("")
     bar = StringProperty("")
     user_graph = StringProperty("")
+
+    # date
+    today_date = StringProperty("")
+    year = StringProperty("")
+    selected_date = StringProperty("Open date picker")
+
+    # orders
+    orders_no = StringProperty("")
+    order_price = StringProperty("")
 
     def update_text(self, button_text):
         text_input = self.root.ids.input
@@ -131,11 +145,9 @@ class Main(MDApp):
     def on_start(self):
         Clock.schedule_once(self.keyboard_hooker, .1)
         self.get_users()
-        self.generate_pie_chart()
         self.display_manage()
-        self.display_main()
+        self.display_food("Main Dish")
         # self.selected_item()
-        self.time_updater()
         pass
 
     def get_user_data(self):
@@ -156,9 +168,38 @@ class Main(MDApp):
         current_time = datetime.now()
         self.graph = "components/pie_chart.png"
         self.bar = "components/stacked_bar_chart.png"
-
+        self.generate_pie_chart()
         formatted_time = current_time.strftime("%a %d %b %Y")
         self.today_time = formatted_time
+
+    def on_save(self, instance, value, date_range):
+        self.selected_date = str(value)
+        two = self.selected_date.strip().split('-')
+        year = (f"{two[0]}")
+        datep = (f"{two[1]}_{two[2]}")
+        self.display_presales(year, datep)
+
+    def on_savu(self, instance, value, date_range):
+        pass
+
+    def on_cancel(self, instance, value):
+        '''Events called when the "CANCEL" dialog box button is clicked.'''
+
+    def show_date_picker(self):
+        self.theme_cls.theme_style = "Dark"
+        self.theme_cls.primary_palette = "Orange"
+
+        date_dialog = MDDatePicker()
+        date_dialog.bind(on_save=self.on_save, on_cancel=self.on_cancel)
+        date_dialog.open()
+
+    def report_date_picker(self):
+        self.theme_cls.theme_style = "Dark"
+        self.theme_cls.primary_palette = "Orange"
+
+        date_dialog = MDDatePicker()
+        date_dialog.bind(on_save=self.on_savu, on_cancel=self.on_cancel)
+        date_dialog.open()
 
     def print(self):
         user_data = self.get_user_data()
@@ -195,6 +236,58 @@ class Main(MDApp):
         else:
             toast("No internet!")
 
+    def presales(self, ):
+        if network:
+            self.root.ids.profile.data = {}
+            users_data = FB.get_user_sales(FB(), self.username, self.user_type)
+            today = users_data[0]
+            if users_data:
+                for user_id, user_info in today.items():
+                    self.root.ids.profile.data.append(
+                        {
+                            "viewclass": "Daily",
+                            "item": user_info["total_item"],
+                            "price": user_info["total_price"],
+                            "idd": user_id
+                        }
+                    )
+
+            else:
+                self.root.ids.profile.data.append(
+                    {
+                        "viewclass": "Nodaily",
+                        "idd": "No oder Yet!",
+                    }
+                )
+        else:
+            toast("No internet!")
+
+    def display_presales(self, year, my_date):
+        if network:
+            self.root.ids.profile.data = {}
+            users_data = FB.user_sales(FB(), self.username, self.user_type, year, my_date)
+
+            if users_data:
+                for user_id, user_info in users_data.items():
+                    self.root.ids.profile.data.append(
+                        {
+                            "viewclass": "Daily",
+                            "item": user_info["total_item"],
+                            "price": user_info["total_price"],
+                            "idd": user_id
+                        }
+                    )
+
+            else:
+                self.root.ids.profile.data.append(
+                    {
+                        "viewclass": "Nodaily",
+                        "idd": "No oder Yet!",
+                    }
+                )
+        else:
+            toast("No internet!")
+
     def display_manage(self):
         self.root.ids.food.data = {}
         users_data = self.get_user_data()
@@ -217,10 +310,10 @@ class Main(MDApp):
                     }
                 )
 
-    def display_main(self):
+    def display_food(self, name):
         if network:
             self.root.ids.food.data = {}
-            data = FB.get_main(FB())
+            data = FB.get_food(FB(), name)
 
             if data:
                 no = len(data)
@@ -288,6 +381,23 @@ class Main(MDApp):
             else:
                 self.nodata = "components/no-data-found.png"
 
+    def search_user(self, text):
+        self.root.ids.user.data = {}
+        users_data = self.get_user_data()
+        users = users_data["users"]
+
+        for x, y in enumerate(users):
+            if text.lower() in y["username"]:
+                self.user_nodata = ""
+                self.root.ids.user.data.append(
+                    {
+                        "viewclass": "User_allow",
+                        "name": y["username"],
+                    }
+                )
+            else:
+                self.user_nodata = "components/no-data-found.png"
+
     def total_cost(self):
         # Calculate and return the total cost of products in the order
         self.total_price = str(
@@ -297,6 +407,16 @@ class Main(MDApp):
         product_names = set(order_item['product_name'] for order_item in self.orders)
 
         self.item_selected = str(len(product_names))
+
+    def order_count(self):
+        # total cost of products in the order
+        self.total_price = str(
+            sum(int(order_item['quantity']) * int(order_item['price'].strip().split("/")[0]) for order_item in
+                self.orders))
+
+        product_names = set(order_item['product_name'] for order_item in self.orders)
+
+        self.orders_no = str(len(product_names))
 
     def quantity(self, id):
         if "minus-circle" in id.icon:
@@ -317,6 +437,22 @@ class Main(MDApp):
         self.admin_list = FB.get_admin(FB())
         self.orders_list = FB.get_all_orders(FB())
         self.count_data()
+        self.get_current_date()
+
+        # self.waiter_list = []  # FB.get_waiter(FB())
+        # self.admin_list = []  # FB.get_admin(FB())
+        # self.orders_list = [[], []]  # FB.get_all_orders(FB())
+
+    def get_current_date(self, ):
+        current_datetime = datetime.now()
+        current_date = str(current_datetime.date())
+        current_year = current_datetime.year
+
+        date_object = datetime.strptime(current_date, "%Y-%m-%d")
+        formatted_date = date_object.strftime("%m-%d")
+
+        self.today_date = str(formatted_date)
+        self.year = str(current_year)
 
     def count_data(self, ):
         # Count occurrences of 'Info' key
@@ -421,7 +557,7 @@ class Main(MDApp):
                 sm = self.root
                 sm.current = "orders
                 """
-                self.screen_capture("orders")
+                self.screen_capture("sales")
                 self.user_type = "Waiter"
                 self.clear_login()
             else:
@@ -454,10 +590,17 @@ class Main(MDApp):
     """
 
     def generate_pie_chart(self, ):
-        total = int(self.total_orders) + int(self.yes_day)
+        if int(self.total_orders) > 1 and self.yes_day:
+            total = int(self.total_orders) + int(self.yes_day)
+        else:
+            total = 1
 
         # Calculate the percentages
-        percentage1 = (int(self.total_orders) / total) * 100
+        if int(self.total_orders) < 1:
+            percentage1 = (int(self.total_orders) / total) * 100
+        else:
+            percentage1 = (1 / total) * 100
+
         percentage2 = (int(self.yes_day) / total) * 100
 
         # Data for the pie chart
@@ -488,6 +631,8 @@ class Main(MDApp):
 
         # Save the image
         plt.savefig("components/pie_chart.png")
+
+        self.graph = "components/pie_chart.png"
 
     def generate_user_pie_chart(self, today, yes_day):
 
@@ -561,11 +706,13 @@ class Main(MDApp):
 
         if "Main Dish" in button_name.text:
             pend.md_bg_color = "#ffd241"
-            self.display_main()
+            self.display_food("Main Dish")
         elif "Fish" in button_name.text:
             comp.md_bg_color = "#ffd241"
+            self.display_food("Fish")
         elif "Extra" in button_name.text:
             pre.md_bg_color = "#ffd241"
+            self.display_food("Extra")
 
     def product_color(self, button_name):
         pend = self.root.ids.main
@@ -592,6 +739,43 @@ class Main(MDApp):
             pre.md_bg_color = 80 / 225, 136 / 225, 114 / 225, 1
             pre.text_color = "white"
             self.category = "Extra"
+
+    def dcolor(self, name):
+        pend = self.root.ids.agua
+        pre = self.root.ids.pan
+
+        pend.md_bg_color = "white"
+        pre.md_bg_color = "white"
+
+        if "Soft Drink" in name.text:
+            pend.md_bg_color = "#ffd241"
+            pre.md_bg_color = "white"
+            self.display_food("Soft Drink")
+
+        elif "Beverages" in name.text:
+            pend.md_bg_color = "white"
+            pre.md_bg_color = "#ffd241"
+            self.display_food("Beverages")
+
+    def drink_color(self, button_name):
+        pend = self.root.ids.soft
+        pre = self.root.ids.brave
+
+        pend.md_bg_color = "#424242"
+        pre.md_bg_color = "#424242"
+
+        pend.text_color = "black"
+        pre.text_color = "black"
+
+        if "Soft Drink" in button_name.text:
+            pend.md_bg_color = 80 / 225, 136 / 225, 114 / 225, 1
+            pend.text_color = "white"
+            self.drink = "Soft Drink"
+
+        elif "Beverages" in button_name.text:
+            pre.md_bg_color = 80 / 225, 136 / 225, 114 / 225, 1
+            pre.text_color = "white"
+            self.drink = "Beverages"
 
     def user_color(self, button_name):
         pend = self.root.ids.wai
@@ -722,6 +906,25 @@ class Main(MDApp):
         else:
             toast("No internet")
 
+    def add_drinks(self, name, price):
+        if network.ping_net():
+            if self.drink == "":
+                toast("Please select category")
+            elif name == "":
+                toast("Please enter name")
+
+            elif price == "":
+                toast("Please enter price")
+
+            else:
+                if FB.register_product(FB(), self.drink, name, price):
+                    toast("Product Added successfully")
+                    self.clear_drink()
+                else:
+                    toast("Product already exist")
+        else:
+            toast("No internet")
+
     def add_user(self, name, pin):
         if network.ping_net():
             if self.user_category == "":
@@ -746,6 +949,12 @@ class Main(MDApp):
     def clear_form(self):
         # Iterate through input fields and reset their values
         for input_field_id in ['price', 'name']:
+            input_field = self.root.ids[input_field_id]
+            input_field.text = ""
+
+    def clear_drink(self):
+        # Iterate through input fields and reset their values
+        for input_field_id in ['drink', 'peace']:
             input_field = self.root.ids[input_field_id]
             input_field.text = ""
 
@@ -793,8 +1002,6 @@ class Main(MDApp):
            END SCREEN FUNCTIONS
 
     """
-
-
 
 
 Main().run()
