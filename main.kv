@@ -32,13 +32,21 @@ ScreenManager
                     size_hint_y: None
                     height: self.minimum_height
 
-
     MDScreen:
         name:"account"
         md_bg_color: "#1e1f22"
         on_enter:
             app.presales()
         FloatLayout:
+            MDIconButton:
+                icon:"chevron-left"
+                pos_hint:{"center_x":.03,"center_y":.95}
+                theme_text_color: "Custom"
+                text_color: "#ffd241"
+                halign:"center"
+                icon_size: "34sp"
+                on_release:
+                    manager.current= "sales"
             MDLabel:
                 text:"John coman"
                 pos_hint:{'center_x':.76, 'center_y':.8}
@@ -74,7 +82,7 @@ ScreenManager
                 color: "white"
 
             AsyncImage:
-                source:app.graph
+                source:app.bar
                 pos_hint:{'center_x':.76, 'center_y':.9}
                 size_hint: None, None
                 size: "100dp", "100dp"
@@ -158,11 +166,33 @@ ScreenManager
         on_enter:
             app.time_updater()
         FloatLayout:
-            AsyncImage:
-                source:app.graph
-                pos_hint:{'center_x':.3, 'center_y':.3}
-                size_hint: None, None
-                size: "350dp", "300dp"
+            MDIconButton:
+                icon:"chevron-left"
+                pos_hint:{"center_x":.03,"center_y":.95}
+                theme_text_color: "Custom"
+                text_color: "#ffd241"
+                halign:"center"
+                icon_size: "34sp"
+                on_release:
+                    manager.current= "home"
+            MDLabel:
+                text: 'Orders by ratio'
+                font_size: 16
+                halign:"center"
+                color:"white"
+                pos_hint: {'center_x': .1, 'center_y': .3}
+                canvas.before:
+                    PushMatrix
+                    Rotate:
+                        angle: 90
+                        origin: self.center
+                canvas.after:
+                    PopMatrix
+
+            FloatLayout:
+                id: admin_box
+                pos_hint: {'center_x': .25, 'center_y': .3}
+
             AsyncImage:
                 source:app.bar
                 pos_hint:{'center_x':.7, 'center_y':.3}
@@ -173,13 +203,13 @@ ScreenManager
                 font_style:"H6"
                 color:"white"
                 halign:"center"
-                pos_hint:{"center_x":.08,"center_y":.95}
+                pos_hint:{"center_x":.93,"center_y":.95}
             MDLabel:
                 text:app.today_time
                 color:"white"
-                halign:"left"
+                halign:"center"
                 font_size:"12sp"
-                pos_hint:{"center_x":.53,"center_y":.9}
+                pos_hint:{"center_x":.93,"center_y":.9}
 
             MD3Card:
                 pos_hint:{"center_x":.13,"center_y":.7}
@@ -285,6 +315,15 @@ ScreenManager
         md_bg_color: "#1e1f22"
         FloatLayout:
             orientation:'vertical'
+            MDIconButton:
+                icon:"chevron-left"
+                pos_hint:{"center_x":.03,"center_y":.95}
+                theme_text_color: "Custom"
+                text_color: "#ffd241"
+                halign:"center"
+                icon_size: "34sp"
+                on_release:
+                    manager.current= "admin"
             MDLabel:
                 bold:True
                 text:'Fill User Credentials'
@@ -304,11 +343,11 @@ ScreenManager
                 size:app.size_x/2.1, app.size_y/17
                 ripple_behavior: False
                 md_bg_color: "#1e1f22"
-                radius: [0]
+                radius: [12]
                 FloatLayout:
                     Card
                         pos_hint:{'center_x':.5, 'center_y':.3}
-                        size:app.size_x/2.1, app.size_y/17
+                        size:app.size_x/2.1, app.size_y/14
                         md_bg_color: 80 / 225, 136 / 225, 114 / 225, 1
                     MDFlatButton:
                         id:wai
@@ -335,20 +374,21 @@ ScreenManager
             MDTextField:
                 id:user
                 mode: "line"
-                fill_color: 1, 1, 1, 1
                 line_color_normal: 1, 1, 1, 1
                 size_hint: .4, .13
                 pos_hint: {'center_x': .5, 'center_y': .5}
+                hint_text_color_normal: "white"
                 hint_text:"User Name:"
                 font_size: dp(16)
                 multiline: False
+                active: True
 
             MDTextField:
                 id:pin
                 mode: "line"
-                fill_color: 1, 1, 1, 1
                 size_hint: .4, .13
                 hint_text:"Pin:"
+                hint_text_color_normal: "white"
                 pos_hint:{'center_x':.5, 'center_y':.37}
                 font_size: dp(16)
                 input_filter: "int"
@@ -381,10 +421,20 @@ ScreenManager
         name:"manage_users"
         md_bg_color: "#1e1f22"
         FloatLayout:
-            md_bg_color: "#1e1f22"
-            Image:
+            MDIconButton:
+                icon:"chevron-left"
+                pos_hint:{"center_x":.03,"center_y":.95}
+                theme_text_color: "Custom"
+                text_color: "#ffd241"
+                halign:"center"
+                icon_size: "34sp"
+                on_release:
+                    manager.current= "add_user"
+
+            AsyncImage:
                 source:app.user_nodata
                 pos_hint:{"center_x":.5,"center_y":.5}
+
             MDLabel:
                 bold:True
                 text:"Select user to manage"
@@ -422,12 +472,24 @@ ScreenManager
                     size_hint_y: None
                     height: self.minimum_height
 
+
+
     MDScreen:
         name:"orders"
         md_bg_color: "#1e1f22"
         FloatLayout:
             MDIconButton:
-                icon: "account-group"
+                icon:"chevron-left"
+                pos_hint:{"center_x":.03,"center_y":.95}
+                theme_text_color: "Custom"
+                text_color: "#ffd241"
+                halign:"center"
+                icon_size: "34sp"
+                on_release:
+                    manager.current= "admin"
+
+            MDIconButton:
+                icon: "cash"
                 icon_size: "40sp"
                 text_color: 80 / 225, 136 / 225, 114 / 225, 1
                 theme_text_color: "Custom"
@@ -445,7 +507,15 @@ ScreenManager
         name:"manage_product"
         md_bg_color: "#1e1f22"
         FloatLayout:
-            md_bg_color: "#1e1f22"
+            MDIconButton:
+                icon:"chevron-left"
+                pos_hint:{"center_x":.03,"center_y":.95}
+                theme_text_color: "Custom"
+                text_color: "#ffd241"
+                halign:"center"
+                icon_size: "34sp"
+                on_release:
+                    manager.current= "add_product"
             Image:
                 source:app.nodata
                 pos_hint:{"center_x":.5,"center_y":.5}
@@ -490,6 +560,15 @@ ScreenManager
         name:"menu"
         md_bg_color: "#1e1f22"
         FloatLayout:
+            MDIconButton:
+                icon:"chevron-left"
+                pos_hint:{"center_x":.03,"center_y":.95}
+                theme_text_color: "Custom"
+                text_color: "#ffd241"
+                halign:"center"
+                icon_size: "34sp"
+                on_release:
+                    manager.current= "sales"
             MDFillRoundFlatButton:
                 id:fbtn
                 text: "Food"
@@ -687,8 +766,6 @@ ScreenManager
                                     app.dcolor(self)
 
 
-
-
     MDScreen:
         name:"add_product"
         md_bg_color: "#1e1f22"
@@ -705,6 +782,15 @@ ScreenManager
                 title: "Food"
                 FloatLayout:
                     orientation:'vertical'
+                    MDIconButton:
+                        icon:"chevron-left"
+                        pos_hint:{"center_x":.03,"center_y":.95}
+                        theme_text_color: "Custom"
+                        text_color: "#ffd241"
+                        halign:"center"
+                        icon_size: "34sp"
+                        on_release:
+                            manager.current= "admin"
                     MDLabel:
                         bold:True
                         text:'Fill Food Details'
@@ -724,11 +810,11 @@ ScreenManager
                         size:app.size_x/2.1, app.size_y/17
                         ripple_behavior: False
                         md_bg_color: "#1e1f22"
-                        radius: [0]
+                        radius: [12]
                         FloatLayout:
                             Card
                                 pos_hint:{'center_x':.5, 'center_y':.3}
-                                size:app.size_x/2.1, app.size_y/17
+                                size:app.size_x/2.1, app.size_y/14
                                 md_bg_color: 80 / 225, 136 / 225, 114 / 225, 1
                             MDFlatButton:
                                 id:main
@@ -764,8 +850,8 @@ ScreenManager
                     MDTextField:
                         id:name
                         mode: "line"
-                        fill_color: 1, 1, 1, 1
                         line_color_normal: 1, 1, 1, 1
+                        hint_text_color_normal: "white"
                         size_hint: .4, .13
                         pos_hint: {'center_x': .5, 'center_y': .5}
                         hint_text:"Product Name:"
@@ -784,8 +870,8 @@ ScreenManager
                     MDTextField:
                         id:price
                         mode: "line"
-                        fill_color: 1, 1, 1, 1
                         line_color_normal: 1, 1, 1, 1
+                        hint_text_color_normal: "white"
                         size_hint: .4, .13
                         hint_text:"Price Tsh:"
                         pos_hint:{'center_x':.5, 'center_y':.37}
@@ -819,6 +905,15 @@ ScreenManager
                 title: "Drink"
                 FloatLayout:
                     orientation:'vertical'
+                    MDIconButton:
+                        icon:"chevron-left"
+                        pos_hint:{"center_x":.03,"center_y":.95}
+                        theme_text_color: "Custom"
+                        text_color: "#ffd241"
+                        halign:"center"
+                        icon_size: "34sp"
+                        on_release:
+                            manager.current= "admin"
                     MDLabel:
                         bold:True
                         text:'Fill Drinks Details'
@@ -838,11 +933,11 @@ ScreenManager
                         size:app.size_x/2.1, app.size_y/17
                         ripple_behavior: False
                         md_bg_color: "#1e1f22"
-                        radius: [0]
+                        radius: [12]
                         FloatLayout:
                             Card
                                 pos_hint:{'center_x':.5, 'center_y':.3}
-                                size:app.size_x/2.1, app.size_y/17
+                                size:app.size_x/2.1, app.size_y/14
                                 md_bg_color: 80 / 225, 136 / 225, 114 / 225, 1
                             MDFlatButton:
                                 id:soft
@@ -868,8 +963,8 @@ ScreenManager
                     MDTextField:
                         id:drink
                         mode: "line"
-                        fill_color: 1, 1, 1, 1
                         line_color_normal: 1, 1, 1, 1
+                        hint_text_color_normal: "white"
                         size_hint: .4, .13
                         pos_hint: {'center_x': .5, 'center_y': .5}
                         hint_text:"Product Name:"
@@ -888,8 +983,8 @@ ScreenManager
                     MDTextField:
                         id:peace
                         mode: "line"
-                        fill_color: 1, 1, 1, 1
                         line_color_normal: 1, 1, 1, 1
+                        hint_text_color_normal: "white"
                         size_hint: .4, .13
                         hint_text:"Price Tsh:"
                         pos_hint:{'center_x':.5, 'center_y':.37}
@@ -967,6 +1062,8 @@ ScreenManager
             MDIconButton:
                 icon:"account-circle"
                 icon_size: "45sp"
+                theme_text_color: "Custom"
+                text_color: "#ffd241"
                 pos_hint:{"center_x":.95, "center_y":.93}
                 on_release: app.screen_capture("account")
 
@@ -999,11 +1096,17 @@ ScreenManager
                     size_hint_y: None
                     height: self.minimum_height
 
-            AsyncImage:
-                source:app.user_graph
+            FloatLayout:
+                id: user_box
                 pos_hint:{'center_x':.75, 'center_y':.5}
-                size_hint: None, None
-                size: "500dp", "300dp"
+
+            MDLabel:
+                text: 'Orders by ratio'
+                font_size: 16
+                halign:"center"
+                color:"white"
+                pos_hint: {'center_x': .75, 'center_y': .15}
+
 
     MDScreen:
         name:"in_table"
@@ -1448,7 +1551,8 @@ ScreenManager
             md_bg_color:"#ffd241"
             pos_hint:{'center_x':.89, 'center_y':.5}
             on_release:
-                app.screen_capture("products")
+                app.print()
+                #app.screen_capture("products")
 
 <User_allow@MDCard>:
     #orientation: "vertical"
@@ -1483,7 +1587,8 @@ ScreenManager
             md_bg_color:"#ffd241"
             pos_hint:{'center_x':.89, 'center_y':.5}
             on_release:
-                app.screen_capture("users")
+                app.print()
+                #app.screen_capture("users")
 
 <Table>:
     adaptive_height:True

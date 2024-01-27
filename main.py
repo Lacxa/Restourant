@@ -1,4 +1,3 @@
-import matplotlib.pyplot as plt
 import json
 import re
 
@@ -9,6 +8,7 @@ from kivy.core.window import Window
 from kivy.properties import NumericProperty, StringProperty, DictProperty
 from kivy.uix.floatlayout import FloatLayout
 from kivymd.app import MDApp
+from kivy import utils
 from kivymd.toast import toast
 from kivymd.uix.card import MDCard
 from kivymd.uix.floatlayout import MDFloatLayout
@@ -17,11 +17,17 @@ from kivymd.uix.pickers import MDDatePicker
 from kivymd.uix.tab import MDTabsBase
 from kivymd.uix.textfield import MDTextField
 
+from kivy.metrics import dp
+from kivymd_extensions.akivymd.uix.charts import AKPieChart
+
 import network
 from database import FireBase as FB
 
-# Window.size = [1280, 800]
-Window.size = [1000, 520]
+from pdf import Pdf
+
+if utils.platform != 'android':
+    # Window.size = [1280, 800]
+    Window.size = [1000, 520]
 
 
 class Tab(MDFloatLayout, MDTabsBase):
@@ -110,7 +116,7 @@ class Main(MDApp):
     user_category = StringProperty("")
     user_type = StringProperty("")
 
-    user_nodata = StringProperty("")
+    user_nodata = StringProperty("components/open.png")
 
     # overall admin
     total_users = StringProperty("")
@@ -121,7 +127,6 @@ class Main(MDApp):
     # graph
     graph = StringProperty("")
     bar = StringProperty("")
-    user_graph = StringProperty("")
 
     # date
     today_date = StringProperty("")
@@ -131,6 +136,68 @@ class Main(MDApp):
     # orders
     orders_no = StringProperty("")
     order_price = StringProperty("")
+
+    def on_start(self):
+        Clock.schedule_once(self.keyboard_hooker, .1)
+        self.get_users()
+        self.display_manage()
+        self.bar = "components/stacked_bar_chart.png"
+        self.display_food("Main Dish")
+        # self.selected_item()
+        pass
+
+    def __init__(self, **kwargs):
+        # Initialize an empty list to store orders
+        super().__init__(**kwargs)
+        self.orders = []
+        self.waiter_list = FB.get_waiter(FB())
+        self.admin_list = FB.get_admin(FB())
+        self.orders_list = FB.get_all_orders(FB())
+        self.count_data()
+        self.get_current_date()
+
+        # self.waiter_list = []  # FB.get_waiter(FB())
+        # self.admin_list = []  # FB.get_admin(FB())
+        # self.orders_list = [[], []]  # FB.get_all_orders(FB())
+        # self.count_data()
+
+    def print(self):
+        toast("Under construction")
+
+    """
+
+            LOGIN FUNCTIONS
+
+    """
+
+    def get_users(self):
+        # Assuming FB is a class with a get_user method
+        if network:
+            data = FB.get_user(FB())
+            users_data = []
+
+            for user_dict in data:
+                for user_key, user_info in user_dict.items():
+                    users_data.append(user_info['Info'])
+
+            if not users_data:
+                self.root.ids.studs.data.append(
+                    {
+                        "viewclass": "Deco",
+                        "name": "No data Yet!",
+                    }
+                )
+            else:
+                for i, user in enumerate(users_data):
+                    self.root.ids.studs.data.append(
+                        {
+                            "viewclass": "Deco",
+                            "name": user["user_name"],
+                        }
+                    )
+
+        else:
+            toast("no internet")
 
     def update_text(self, button_text):
         text_input = self.root.ids.input
@@ -142,41 +209,63 @@ class Main(MDApp):
         current_text = text_input.text
         text_input.text = current_text[:-1]
 
-    def on_start(self):
-        Clock.schedule_once(self.keyboard_hooker, .1)
-        self.get_users()
-        self.display_manage()
-        self.display_food("Main Dish")
-        # self.selected_item()
-        pass
+    def check(self, text):
+        if len(text) > 3:
+            if text == self.admin():
+                """
+                sm = self.root
+                sm.current = "admin"
+                """
+                self.screen_capture("admin")
+                self.user_type = "Admin"
+                self.clear_login()
 
-    def get_user_data(self):
-        # Load user data from the JSON file
-        with open('users.json', 'r') as file:
-            data = json.load(file)
+            elif text == self.waiter():
+                """
+                sm = self.root
+                sm.current = "orders
+                """
+                self.screen_capture("sales")
+                self.user_type = "Waiter"
+                self.clear_login()
+            else:
+                toast("Wrong pin")
 
-        return data
+    def admin(self):
+        for user_info in self.admin_list:
+            for key, value in user_info.items():
+                if value.get('Info', {}).get('user_name') == self.username:
+                    return value['Info']['user_pin']
+        return None
 
-    def get_json_data(self):
-        # Load user data from the JSON file
-        with open('users.json', 'r') as file:
-            data = json.load(file)
+    def waiter(self):
+        for user_info in self.waiter_list:
+            for key, value in user_info.items():
+                if value.get('Info', {}).get('user_name') == self.username:
+                    return value['Info']['user_pin']
+        return None
 
-        return data
+    def clear_login(self):
+        # Iterate through input fields and reset their values
+        for input_field_id in ['input']:
+            input_field = self.root.ids[input_field_id]
+            input_field.text = ""
 
-    def time_updater(self):
-        current_time = datetime.now()
-        self.graph = "components/pie_chart.png"
-        self.bar = "components/stacked_bar_chart.png"
-        self.generate_pie_chart()
-        formatted_time = current_time.strftime("%a %d %b %Y")
-        self.today_time = formatted_time
+    """
+                END LOGIN FUNCTIONS
+    """
+
+    """ 
+
+            DATE AND TIME FUNCTIONS
+
+    """
 
     def on_save(self, instance, value, date_range):
         self.selected_date = str(value)
         two = self.selected_date.strip().split('-')
-        year = (f"{two[0]}")
-        datep = (f"{two[1]}_{two[2]}")
+        year = f"{two[0]}"
+        datep = f"{two[1]}_{two[2]}"
         self.display_presales(year, datep)
 
     def on_savu(self, instance, value, date_range):
@@ -201,11 +290,51 @@ class Main(MDApp):
         date_dialog.bind(on_save=self.on_savu, on_cancel=self.on_cancel)
         date_dialog.open()
 
-    def print(self):
-        user_data = self.get_user_data()
+    def get_current_date(self, ):
+        current_datetime = datetime.now()
+        current_date = str(current_datetime.date())
+        current_year = current_datetime.year
 
-        for user in user_data:
-            print(f"Username: {user['username']}, Password: {user['password']}")
+        date_object = datetime.strptime(current_date, "%Y-%m-%d")
+        formatted_date = date_object.strftime("%m-%d")
+
+        self.today_date = str(formatted_date)
+        self.year = str(current_year)
+
+    def time_updater(self):
+        current_time = datetime.now()
+        self.graph = "components/pie_chart.png"
+        self.bar = "components/stacked_bar_chart.png"
+        self.admin_pie_chart()
+        formatted_time = current_time.strftime("%a %d %b %Y")
+        self.today_time = formatted_time
+
+    """ 
+
+            END OF DATE AND TIME FUNCTIONS
+
+    """
+
+    """ 
+
+                REPORT FUNCTIONS
+
+    """
+
+    def create_sales_report(self):
+        Pdf.create_sales_report()
+
+    """ 
+
+               END REPORT FUNCTIONS
+
+    """
+
+    """ 
+
+             DISPLAY FUNCTIONS
+
+    """
 
     def display_sales(self):
         if network:
@@ -213,7 +342,7 @@ class Main(MDApp):
             users_data = FB.get_user_sales(FB(), self.username, self.user_type)
             today = users_data[0]
             yes_day = users_data[1]
-            self.generate_user_pie_chart(today, yes_day)
+            self.user_pie_chart(today, yes_day)
 
             if today:
                 for user_id, user_info in today.items():
@@ -339,31 +468,6 @@ class Main(MDApp):
         else:
             toast("no internet!")
 
-    def selected_item(self):
-        self.root.ids.selected.data = {}
-        users_data = self.orders
-
-        if not users_data:
-            self.root.ids.selected.data.append(
-                {
-                    "viewclass": "Noselected",
-                    "name": "No data Yet!",
-                }
-            )
-            self.total_cost()
-        else:
-            for i in users_data:
-                self.root.ids.selected.data.append(
-                    {
-                        "viewclass": "Selected",
-                        "name": i["product_name"],
-                        "price": i["price"],
-                        "quantity": i["quantity"],
-                        "id": str(i)
-                    }
-                )
-            self.total_cost()
-
     def search_live(self, text):
         self.root.ids.all.data = {}
         users_data = self.get_user_data()
@@ -388,7 +492,7 @@ class Main(MDApp):
 
         for x, y in enumerate(users):
             if text.lower() in y["username"]:
-                self.user_nodata = ""
+                self.user_nodata = "components/open.png"
                 self.root.ids.user.data.append(
                     {
                         "viewclass": "User_allow",
@@ -398,61 +502,17 @@ class Main(MDApp):
             else:
                 self.user_nodata = "components/no-data-found.png"
 
-    def total_cost(self):
-        # Calculate and return the total cost of products in the order
-        self.total_price = str(
-            sum(int(order_item['quantity']) * int(order_item['price'].strip().split("/")[0]) for order_item in
-                self.orders))
+    """ 
 
-        product_names = set(order_item['product_name'] for order_item in self.orders)
+          END OF DISPLAY FUNCTIONS
 
-        self.item_selected = str(len(product_names))
+    """
 
-    def order_count(self):
-        # total cost of products in the order
-        self.total_price = str(
-            sum(int(order_item['quantity']) * int(order_item['price'].strip().split("/")[0]) for order_item in
-                self.orders))
+    """ 
 
-        product_names = set(order_item['product_name'] for order_item in self.orders)
+               ORDERS FUNCTION
 
-        self.orders_no = str(len(product_names))
-
-    def quantity(self, id):
-        if "minus-circle" in id.icon:
-            if int(self.quantity_text) == 1:
-                toast("Cant be below 1")
-
-            else:
-                self.quantity_text = str(int(self.quantity_text) - 1)
-
-        else:
-            self.quantity_text = str(int(self.quantity_text) + 1)
-
-    def __init__(self, **kwargs):
-        # Initialize an empty list to store orders
-        super().__init__(**kwargs)
-        self.orders = []
-        self.waiter_list = FB.get_waiter(FB())
-        self.admin_list = FB.get_admin(FB())
-        self.orders_list = FB.get_all_orders(FB())
-        self.count_data()
-        self.get_current_date()
-
-        # self.waiter_list = []  # FB.get_waiter(FB())
-        # self.admin_list = []  # FB.get_admin(FB())
-        # self.orders_list = [[], []]  # FB.get_all_orders(FB())
-
-    def get_current_date(self, ):
-        current_datetime = datetime.now()
-        current_date = str(current_datetime.date())
-        current_year = current_datetime.year
-
-        date_object = datetime.strptime(current_date, "%Y-%m-%d")
-        formatted_date = date_object.strftime("%m-%d")
-
-        self.today_date = str(formatted_date)
-        self.year = str(current_year)
+    """
 
     def count_data(self, ):
         # Count occurrences of 'Info' key
@@ -492,7 +552,61 @@ class Main(MDApp):
         else:
             self.yes_day = "0"
 
-        self.generate_pie_chart()
+    def selected_item(self):
+        self.root.ids.selected.data = {}
+        users_data = self.orders
+
+        if not users_data:
+            self.root.ids.selected.data.append(
+                {
+                    "viewclass": "Noselected",
+                    "name": "No data Yet!",
+                }
+            )
+            self.total_cost()
+        else:
+            for i in users_data:
+                self.root.ids.selected.data.append(
+                    {
+                        "viewclass": "Selected",
+                        "name": i["product_name"],
+                        "price": i["price"],
+                        "quantity": i["quantity"],
+                        "id": str(i)
+                    }
+                )
+            self.total_cost()
+
+    def total_cost(self):
+        # Calculate and return the total cost of products in the order
+        self.total_price = str(
+            sum(int(order_item['quantity']) * int(order_item['price'].strip().split("/")[0]) for order_item in
+                self.orders))
+
+        product_names = set(order_item['product_name'] for order_item in self.orders)
+
+        self.item_selected = str(len(product_names))
+
+    def order_count(self):
+        # total cost of products in the order
+        self.total_price = str(
+            sum(int(order_item['quantity']) * int(order_item['price'].strip().split("/")[0]) for order_item in
+                self.orders))
+
+        product_names = set(order_item['product_name'] for order_item in self.orders)
+
+        self.orders_no = str(len(product_names))
+
+    def quantity(self, id):
+        if "minus-circle" in id.icon:
+            if int(self.quantity_text) == 1:
+                toast("Cant be below 1")
+
+            else:
+                self.quantity_text = str(int(self.quantity_text) - 1)
+
+        else:
+            self.quantity_text = str(int(self.quantity_text) + 1)
 
     def add_to_order(self, product_name, quantity, price):
         # Check if the product is already in the order
@@ -541,100 +655,54 @@ class Main(MDApp):
         self.orders_list = FB.get_all_orders(FB())
         self.count_data()
 
-    def check(self, text):
-        if len(text) > 3:
-            if text == self.admin():
-                """
-                sm = self.root
-                sm.current = "admin"
-                """
-                self.screen_capture("admin")
-                self.user_type = "Admin"
-                self.clear_login()
+    """ 
 
-            elif text == self.waiter():
-                """
-                sm = self.root
-                sm.current = "orders
-                """
-                self.screen_capture("sales")
-                self.user_type = "Waiter"
-                self.clear_login()
-            else:
-                toast("Wrong pin")
+             END OF ORDERS FUNCTION
 
-    def get_data(self):
+    """
+
+    """ LOCAL TEST """
+
+    def get_user_data(self):
+        # Load user data from the JSON file
         with open('users.json', 'r') as file:
             data = json.load(file)
-            user = next((user for user in data.get('users', []) if user['username'] == self.username), None)
 
-            self.password = user["password"]
+        return data
 
-    def admin(self):
-        for user_info in self.admin_list:
-            for key, value in user_info.items():
-                if value.get('Info', {}).get('user_name') == self.username:
-                    return value['Info']['user_pin']
-        return None
-
-    def waiter(self):
-        for user_info in self.waiter_list:
-            for key, value in user_info.items():
-                if value.get('Info', {}).get('user_name') == self.username:
-                    return value['Info']['user_pin']
-        return None
+    """ END LOCAL TEST """
 
     """ 
                     GRAPH AND CHART
     
     """
 
-    def generate_pie_chart(self, ):
-        if int(self.total_orders) > 1 and self.yes_day:
-            total = int(self.total_orders) + int(self.yes_day)
-        else:
-            total = 1
+    piechart = None
+    items = None
 
-        # Calculate the percentages
-        if int(self.total_orders) < 1:
-            percentage1 = (int(self.total_orders) / total) * 100
-        else:
-            percentage1 = (1 / total) * 100
+    def admin_pie_chart(self):
+        total_orders = int(self.total_orders)
+        yes_day = int(self.yes_day)
+        total = total_orders + yes_day
 
-        percentage2 = (int(self.yes_day) / total) * 100
+        # Calculate the percentages with rounding
+        percentage1 = round((total_orders / total) * 100)
+        percentage2 = 100 - percentage1  # The sum will always be 100
 
-        # Data for the pie chart
-        labels = ["Today", "Yesterday"]
-        values = [percentage1, percentage2]
+        self.items = [{"Yesterday": percentage2, "Today": percentage1}]
 
-        # Partial Pie and Donut combination
-        fig, ax = plt.subplots(facecolor='#5C381E')
-        ax.set_facecolor('#5C381E')
+        self.piechart = AKPieChart(
+            items=self.items,
+            pos_hint={"center_x": 0.5, "center_y": 0.5},
+            size_hint=[None, None],
+            size=(dp(250), dp(250)),
+        )
+        self.root.ids.admin_box.add_widget(self.piechart)
 
-        # Set the color of the labels to white
-        label_colors = 'black'
+    user_chart = None
+    itemu = None
 
-        ax.pie(values, labels=labels, autopct='%1.1f%%', startangle=90, pctdistance=0.85,
-               wedgeprops=dict(width=0.4, edgecolor='w'), textprops=dict(fontsize=10, color=label_colors),
-               counterclock=False)
-
-        # Draw a white circle at the center to create a hole
-        centre_circle = plt.Circle((0, 0), 0.70, fc='#5C381E')
-        fig = plt.gcf()
-        fig.gca().add_artist(centre_circle)
-
-        ax.set_xlabel('Orders by day', fontsize=14)
-        ax.xaxis.label.set_color('white')
-
-        # Equal aspect ratio ensures that pie is drawn as a circle.
-        ax.axis('equal')
-
-        # Save the image
-        plt.savefig("components/pie_chart.png")
-
-        self.graph = "components/pie_chart.png"
-
-    def generate_user_pie_chart(self, today, yes_day):
+    def user_pie_chart(self, today, yes_day):
 
         if today:
             one = len(today)
@@ -649,40 +717,18 @@ class Main(MDApp):
 
         total = one + two
 
-        # Calculate the percentages
-        percentage1 = (one / total) * 100
-        percentage2 = (two / total) * 100
+        percentage1 = round((one / total) * 100)
+        percentage2 = 100 - percentage1  # The sum will always be 100
 
-        # Data for the pie chart
-        labels = ["Today", "Yesterday"]
-        values = [percentage1, percentage2]
+        self.itemu = [{"Yesterday": percentage2, "Today": percentage1}]
 
-        # Partial Pie and Donut combination
-        fig, ax = plt.subplots(facecolor="#1e1f22")
-        ax.set_facecolor("#1e1f22")
-
-        # Set the color of the labels to white
-        label_colors = 'white'
-
-        ax.pie(values, labels=labels, autopct='%1.1f%%', startangle=90, pctdistance=0.85,
-               wedgeprops=dict(width=0.4, edgecolor='w'), textprops=dict(fontsize=10, color=label_colors),
-               counterclock=False)
-
-        # Draw a white circle at the center to create a hole
-        centre_circle = plt.Circle((0, 0), 0.70, fc="#1e1f22")
-        fig = plt.gcf()
-        fig.gca().add_artist(centre_circle)
-
-        ax.set_xlabel('Orders by day', fontsize=14)
-        ax.xaxis.label.set_color('white')
-
-        # Equal aspect ratio ensures that pie is drawn as a circle.
-        ax.axis('equal')
-
-        # Save the image
-        plt.savefig("components/user_pie_chart.png")
-
-        self.user_graph = "components/user_pie_chart.png"
+        self.user_chart = AKPieChart(
+            items=self.itemu,
+            pos_hint={"center_x": 0.5, "center_y": 0.5},
+            size_hint=[None, None],
+            size=(dp(250), dp(250)),
+        )
+        self.root.ids.user_box.add_widget(self.user_chart)
 
     """ 
                         GRAPH AND CHART
@@ -803,89 +849,10 @@ class Main(MDApp):
         
     """
 
-    """ 
-    
-        KEYBOARD INTEGRATION
-        
     """
-
-    def keyboard_hooker(self, *args):
-        EventLoop.window.bind(on_keyboard=self.hook_keyboard)
-
-    def hook_keyboard(self, window, key, *largs):
-        print(self.screens_size)
-        if key == 27 and self.screens_size > 0:
-            print(f"your were in {self.current}")
-            last_screens = self.current
-            self.screens.remove(last_screens)
-            print(self.screens)
-            self.screens_size = len(self.screens) - 1
-            self.current = self.screens[len(self.screens) - 1]
-            self.screen_capture(self.current)
-            return True
-        elif key == 27 and self.screens_size == 0:
-            toast('Press Home button!')
-            return True
+                ADD FUNCTIONS
 
     """
-    
-            LOGIN FUNCTIONS
-    
-    """
-
-    def login_waiter(self, phone, password):
-        data = FB.get_user(FB())
-
-        if phone in data:
-            if password == data[phone]["Waiter_Info"]["user_password"]:
-                toast("Login Successfully")
-                self.screen_capture("orders")
-            else:
-                toast("Wrong Password")
-        else:
-            toast("Waiter Not Available")
-
-    def get_users(self):
-        # Assuming FB is a class with a get_user method
-        if network:
-            data = FB.get_user(FB())
-            users_data = []
-
-            for user_dict in data:
-                for user_key, user_info in user_dict.items():
-                    users_data.append(user_info['Info'])
-
-            if not users_data:
-                self.root.ids.studs.data.append(
-                    {
-                        "viewclass": "Deco",
-                        "name": "No data Yet!",
-                    }
-                )
-            else:
-                for i, user in enumerate(users_data):
-                    self.root.ids.studs.data.append(
-                        {
-                            "viewclass": "Deco",
-                            "name": user["user_name"],
-                        }
-                    )
-
-        else:
-            toast("no internet")
-
-    """
-                END LOGIN FUNCTIONS
-    """
-
-    """
-            ORDER FUNCTIONS
-    
-    """
-
-    """def build(self):
-        self.theme_cls.primary_palette = "Orange"
-        self.theme_cls.theme_style = "Dark"""""
 
     def add_product(self, name, price):
         if network.ping_net():
@@ -958,15 +925,38 @@ class Main(MDApp):
             input_field = self.root.ids[input_field_id]
             input_field.text = ""
 
-    def clear_login(self):
-        # Iterate through input fields and reset their values
-        for input_field_id in ['input']:
-            input_field = self.root.ids[input_field_id]
-            input_field.text = ""
+    """
+            END ADD FUNCTIONS
+    
+    """
+
+    """ 
+
+            KEYBOARD INTEGRATION
 
     """
-            END ORDER FUNCTIONS
-    
+
+    def keyboard_hooker(self, *args):
+        EventLoop.window.bind(on_keyboard=self.hook_keyboard)
+
+    def hook_keyboard(self, window, key, *largs):
+        print(self.screens_size)
+        if key == 27 and self.screens_size > 0:
+            print(f"your were in {self.current}")
+            last_screens = self.current
+            self.screens.remove(last_screens)
+            print(self.screens)
+            self.screens_size = len(self.screens) - 1
+            self.current = self.screens[len(self.screens) - 1]
+            self.screen_capture(self.current)
+            return True
+        elif key == 27 and self.screens_size == 0:
+            toast('Press Home button!')
+            return True
+
+    """
+            END KEYBOARD FUNCTIONS
+
     """
 
     """ 
