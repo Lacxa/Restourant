@@ -11,20 +11,20 @@ ScreenManager
         FloatLayout:
             MDLabel:
                 bold:True
-                text:"Choose your account"
+                text:"Select user"
                 halign:"center"
                 font_style:'H6'
                 color:"white"
-                pos_hint:{'center_x':.5, 'center_y':.93}
+                pos_hint:{'center_x':.17, 'center_y':.93}
 
             RecycleView:
                 id: studs
                 key_viewclass: 'viewclass'
                 key_size: 'height'
-                pos_hint:{"center_x":.6,"top":.8}
+                pos_hint:{"center_x":.62,"top":.82}
                 RecycleGridLayout:
                     id:grid
-                    cols:2
+                    cols:3
                     spacing:dp(10)
                     padding: dp(8)
                     default_size: None, dp(45)
@@ -471,8 +471,6 @@ ScreenManager
                     default_size_hint: None, None
                     size_hint_y: None
                     height: self.minimum_height
-
-
 
     MDScreen:
         name:"orders"
@@ -1037,6 +1035,7 @@ ScreenManager
                     app.check(input.text)
 
             NumericKeyboardLayout
+                pos_hint:{'center_x':.47, 'center_y':.5}
 
             MDIconButton:
                 icon: "close-circle-outline"
@@ -1237,9 +1236,6 @@ ScreenManager
                 guest:"3"
                 number:"08"
                 pos_hint:{"center_x":.7, "center_y":.15}
-
-
-
 
 
     MDScreen:
@@ -1738,16 +1734,17 @@ ScreenManager
                 md_bg_color: "#424242"
                 on_release: app.delete_last_digit()
 
-<Deco@MDCard>:
+<Deco>:
     orientation: "vertical"
     md_bg_color: 1, 1, 1, 1
-    padding: "8dp"
+    padding: "4dp"
     spacing: "5dp"
     border_radius: 3
     border_color_a: .5
-    radius: [9]
+    radius: [12]
     size_hint: None, None
-    size:app.size_x/2.5, app.size_y/12
+    #size:app.size_x/2.5, app.size_y/12
+    size: "240dp", "100dp"
     focus_behavior: False
     ripple_color:.9, .9, .95, 1
     ripple_behavior: True

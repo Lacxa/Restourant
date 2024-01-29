@@ -183,7 +183,6 @@ class Main(MDApp):
     """
 
     def get_users(self):
-        # Assuming FB is a class with a get_user method
         if network:
             data = FB.get_user(FB())
             users_data = []
