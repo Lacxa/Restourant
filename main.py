@@ -9,6 +9,8 @@ from kivy.properties import NumericProperty, StringProperty, DictProperty
 from kivy.uix.floatlayout import FloatLayout
 from kivymd.app import MDApp
 from kivy import utils
+from kivy.clock import Clock, mainthread
+from threading import Thread
 from kivymd.toast import toast
 from kivymd.uix.card import MDCard
 from kivymd.uix.floatlayout import MDFloatLayout
@@ -40,6 +42,10 @@ class RowCard(MDCard):
     cate = StringProperty("")
     name = StringProperty("")
     price = StringProperty("")
+
+
+class Deco(MDCard):
+    name = StringProperty("")
 
 
 class Order(MDCard):
@@ -137,19 +143,25 @@ class Main(MDApp):
     orders_no = StringProperty("")
     order_price = StringProperty("")
 
+    # List
+    waiter_list = None
+    admin_list = None
+    orders_list = None
+    orders = []
+
     def on_start(self):
         Clock.schedule_once(self.keyboard_hooker, .1)
-        self.get_users()
-        self.display_manage()
+        thread = Thread(target=self.get_users())
+        thread.start()
+
+        self.first()
         self.bar = "components/stacked_bar_chart.png"
         self.display_food("Main Dish")
         # self.selected_item()
         pass
 
-    def __init__(self, **kwargs):
-        # Initialize an empty list to store orders
-        super().__init__(**kwargs)
-        self.orders = []
+    @mainthread
+    def first(self):
         self.waiter_list = FB.get_waiter(FB())
         self.admin_list = FB.get_admin(FB())
         self.orders_list = FB.get_all_orders(FB())
@@ -336,6 +348,7 @@ class Main(MDApp):
 
     """
 
+    @mainthread
     def display_sales(self):
         if network:
             self.root.ids.sales.data = {}
@@ -365,6 +378,7 @@ class Main(MDApp):
         else:
             toast("No internet!")
 
+    @mainthread
     def presales(self, ):
         if network:
             self.root.ids.profile.data = {}
@@ -391,6 +405,7 @@ class Main(MDApp):
         else:
             toast("No internet!")
 
+    @mainthread
     def display_presales(self, year, my_date):
         if network:
             self.root.ids.profile.data = {}
@@ -417,28 +432,7 @@ class Main(MDApp):
         else:
             toast("No internet!")
 
-    def display_manage(self):
-        self.root.ids.food.data = {}
-        users_data = self.get_user_data()
-
-        if not users_data:
-            self.root.ids.all.data.append(
-                {
-                    "viewclass": "Nofood",
-                    "name": "No data Yet!",
-                }
-            )
-        else:
-            users = users_data["users"]
-            for i, user in enumerate(users):
-                self.root.ids.all.data.append(
-                    {
-                        "viewclass": "Allow",
-                        "name": user["username"],
-                        "id": str(i)
-                    }
-                )
-
+    @mainthread
     def display_food(self, name):
         if network:
             self.root.ids.food.data = {}
@@ -647,6 +641,7 @@ class Main(MDApp):
         else:
             toast("No internet")
 
+    @mainthread
     def caller(self):
         print("caller")
         self.orders.clear()
@@ -681,8 +676,18 @@ class Main(MDApp):
     items = None
 
     def admin_pie_chart(self):
-        total_orders = int(self.total_orders)
-        yes_day = int(self.yes_day)
+        if int(self.total_orders) > 1:
+            total_orders = int(self.total_orders)
+
+        else:
+            total_orders = 1
+
+        if int(self.yes_day) > 1:
+            yes_day = int(self.yes_day)
+
+        else:
+            yes_day = 1
+
         total = total_orders + yes_day
 
         # Calculate the percentages with rounding
