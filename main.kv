@@ -211,7 +211,7 @@ ScreenManager
                 font_size:"12sp"
                 pos_hint:{"center_x":.93,"center_y":.9}
 
-            MD3Card:
+            AdminCard:
                 pos_hint:{"center_x":.13,"center_y":.7}
                 ripple_behavior:True
                 on_release:
@@ -236,7 +236,7 @@ ScreenManager
                         text_color: "#ffd241"
                         pos_hint:{'center_x':.88, 'center_y':.2}
 
-            MD3Card:
+            AdminCard:
                 pos_hint:{"center_x":.38,"center_y":.7}
                 ripple_behavior:True
                 on_release:
@@ -261,7 +261,7 @@ ScreenManager
                         text_color: "#ffd241"
                         pos_hint:{'center_x':.88, 'center_y':.2}
 
-            MD3Card:
+            AdminCard:
                 pos_hint:{"center_x":.63,"center_y":.7}
                 ripple_behavior:True
                 on_release:
@@ -286,7 +286,7 @@ ScreenManager
                         text_color: "#ffd241"
                         pos_hint:{'center_x':.88, 'center_y':.2}
 
-            MD3Card:
+            AdminCard:
                 pos_hint:{"center_x":.88,"center_y":.7}
                 ripple_behavior:True
                 FloatLayout:
@@ -337,6 +337,7 @@ ScreenManager
             MDLabel:
                 halign: "center"
                 text: "category"
+                color: "#ffd241"
                 pos_hint:{'center_x':.5, 'center_y':.75}
             Order
                 pos_hint:{'center_x':.5, 'center_y':.65}
@@ -439,6 +440,7 @@ ScreenManager
                 bold:True
                 text:"Select user to manage"
                 halign:"center"
+                color: "#ffd241"
                 font_style:'H6'
                 pos_hint:{'center_x':.5, 'center_y':.98}
 
@@ -487,8 +489,8 @@ ScreenManager
                     manager.current= "admin"
 
             MDIconButton:
-                icon: "cash"
-                icon_size: "40sp"
+                icon: "shopping"
+                icon_size: "60sp"
                 text_color: 80 / 225, 136 / 225, 114 / 225, 1
                 theme_text_color: "Custom"
                 pos_hint:{'center_x':.5, 'center_y':.5}
@@ -498,6 +500,7 @@ ScreenManager
             MDLabel:
                 text:"Orders screen"
                 halign:"center"
+                color: "#ffd241"
                 pos_hint:{'center_x':.5, 'center_y':.3}
 
 
@@ -521,6 +524,7 @@ ScreenManager
                 bold:True
                 text:"Select product to manage"
                 halign:"center"
+                color: "#ffd241"
                 font_style:'H6'
                 pos_hint:{'center_x':.5, 'center_y':.98}
 
@@ -802,6 +806,7 @@ ScreenManager
                     MDLabel:
                         halign: "center"
                         text: "category"
+                        color: "#ffd241"
                         pos_hint:{'center_x':.5, 'center_y':.75}
                     Order
                         pos_hint:{'center_x':.5, 'center_y':.65}
@@ -925,6 +930,7 @@ ScreenManager
                     MDLabel:
                         halign: "center"
                         text: "category"
+                        color: "#ffd241"
                         pos_hint:{'center_x':.5, 'center_y':.75}
                     Order
                         pos_hint:{'center_x':.5, 'center_y':.65}
@@ -1034,12 +1040,14 @@ ScreenManager
                 on_text:
                     app.check(input.text)
 
-            NumericKeyboardLayout
+            Keyboard
                 pos_hint:{'center_x':.47, 'center_y':.5}
 
             MDIconButton:
                 icon: "close-circle-outline"
                 icon_size: "45sp"
+                theme_text_color: "Custom"
+                text_color: "white"
                 pos_hint:{'center_x':.5, 'center_y':.2}
                 on_release:
                     app.screen_capture("home")
@@ -1662,7 +1670,7 @@ ScreenManager
             pos_hint:{"center_x":.5,"center_y":.5}
 
 
-<NumericKeyboardLayout>:
+<Keyboard>:
     orientation: 'vertical'
     padding: dp(10)
 
@@ -1675,62 +1683,85 @@ ScreenManager
             cols: 3
             spacing: dp(10)
 
-            MDRaisedButton:
+            #MDRectangleFlatButton:
+            MDFlatButton:
                 text: '1'
+                theme_text_color: "Custom"
+                text_color: "white"
                 md_bg_color: "#424242"
                 on_release: app.update_text('1')
 
-            MDRaisedButton:
+            MDFlatButton:
                 text: '2'
+                theme_text_color: "Custom"
+                text_color: "white"
                 md_bg_color: "#424242"
                 on_release: app.update_text('2')
 
-            MDRaisedButton:
+            MDFlatButton:
                 text: '3'
+                theme_text_color: "Custom"
+                text_color: "white"
                 md_bg_color: "#424242"
                 on_release: app.update_text('3')
 
-            MDRaisedButton:
+            MDFlatButton:
                 text: '4'
+                theme_text_color: "Custom"
+                text_color: "white"
                 md_bg_color: "#424242"
                 on_release: app.update_text('4')
 
-            MDRaisedButton:
+            MDFlatButton:
                 text: '5'
+                theme_text_color: "Custom"
+                text_color: "white"
                 md_bg_color: "#424242"
                 on_release: app.update_text('5')
 
-            MDRaisedButton:
+            MDFlatButton:
                 text: '6'
+                theme_text_color: "Custom"
+                text_color: "white"
                 md_bg_color: "#424242"
                 on_release: app.update_text('6')
 
-            MDRaisedButton:
+            MDFlatButton:
                 text: '7'
+                theme_text_color: "Custom"
+                text_color: "white"
                 md_bg_color: "#424242"
                 on_release: app.update_text('7')
 
-            MDRaisedButton:
+            MDFlatButton:
                 text: '8'
+                theme_text_color: "Custom"
+                text_color: "white"
                 md_bg_color: "#424242"
                 on_release: app.update_text('8')
 
-            MDRaisedButton:
+            MDFlatButton:
                 text: '9'
+                theme_text_color: "Custom"
+                text_color: "white"
                 md_bg_color: "#424242"
                 on_release: app.update_text('9')
 
-            MDRaisedButton:
+            MDFlatButton:
                 text: ''
                 md_bg_color: "#424242"
 
-            MDRaisedButton:
+            MDFlatButton:
                 text: '0'
+                theme_text_color: "Custom"
+                text_color: "white"
                 md_bg_color: "#424242"
                 on_release: app.update_text('0')
 
-            MDRaisedButton:
+            MDFlatButton:
                 text: 'Del'
+                theme_text_color: "Custom"
+                text_color: "white"
                 md_bg_color: "#424242"
                 on_release: app.delete_last_digit()
 
@@ -1761,7 +1792,7 @@ ScreenManager
             color:"white"
             pos_hint:{'center_x':.5, 'center_y':.5}
 
-<MD3Card@MDCard>:
+<AdminCard>:
     md_bg_color: "#5C381E"
     #padding: 4
     size_hint: None, None

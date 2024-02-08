@@ -20,12 +20,12 @@ from kivymd.uix.tab import MDTabsBase
 from kivymd.uix.textfield import MDTextField
 
 from kivy.metrics import dp
-from kivymd_extensions.akivymd.uix.charts import AKPieChart
+# from kivymd_extensions.akivymd.uix.charts import AKPieChart
 
 import network
 from database import FireBase as FB
 
-from pdf import Pdf
+# from pdf import Pdf
 
 if utils.platform != 'android':
     # Window.size = [1280, 800]
@@ -44,6 +44,10 @@ class RowCard(MDCard):
     price = StringProperty("")
 
 
+class AdminCard(MDCard):
+    pass
+
+
 class Deco(MDCard):
     name = StringProperty("")
 
@@ -56,7 +60,7 @@ class IconListItem(OneLineIconListItem):
     icon = StringProperty()
 
 
-class NumericKeyboardLayout(FloatLayout):
+class Keyboard(FloatLayout):
     pass
 
 
@@ -118,7 +122,7 @@ class Main(MDApp):
     today_time = StringProperty("")
 
     # user
-    nodata = StringProperty("")
+    nodata = StringProperty("components/open.png")
     user_category = StringProperty("")
     user_type = StringProperty("")
 
@@ -316,7 +320,7 @@ class Main(MDApp):
         current_time = datetime.now()
         self.graph = "components/pie_chart.png"
         self.bar = "components/stacked_bar_chart.png"
-        self.admin_pie_chart()
+        # self.admin_pie_chart()
         formatted_time = current_time.strftime("%a %d %b %Y")
         self.today_time = formatted_time
 
@@ -333,7 +337,8 @@ class Main(MDApp):
     """
 
     def create_sales_report(self):
-        Pdf.create_sales_report()
+        pass
+        # Pdf.create_sales_report()
 
     """ 
 
@@ -354,7 +359,7 @@ class Main(MDApp):
             users_data = FB.get_user_sales(FB(), self.username, self.user_type)
             today = users_data[0]
             yes_day = users_data[1]
-            self.user_pie_chart(today, yes_day)
+            # self.user_pie_chart(today, yes_day)
 
             if today:
                 for user_id, user_info in today.items():
@@ -468,7 +473,7 @@ class Main(MDApp):
 
         for x, y in enumerate(users):
             if text.lower() in y["username"]:
-                self.nodata = ""
+                self.nodata = "components/open.png"
                 self.root.ids.all.data.append(
                     {
                         "viewclass": "Allow",
@@ -674,7 +679,7 @@ class Main(MDApp):
     piechart = None
     items = None
 
-    def admin_pie_chart(self):
+    """def admin_pie_chart(self):
         if int(self.total_orders) > 1:
             total_orders = int(self.total_orders)
 
@@ -732,7 +737,7 @@ class Main(MDApp):
             size_hint=[None, None],
             size=(dp(250), dp(250)),
         )
-        self.root.ids.user_box.add_widget(self.user_chart)
+        self.root.ids.user_box.add_widget(self.user_chart)"""
 
     """ 
                         GRAPH AND CHART
