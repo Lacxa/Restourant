@@ -211,9 +211,8 @@ ScreenManager
                 font_size:"12sp"
                 pos_hint:{"center_x":.93,"center_y":.9}
 
-            AdminCard:
+            Bug:
                 pos_hint:{"center_x":.13,"center_y":.7}
-                ripple_behavior:True
                 on_release:
                     app.screen_capture("add_product")
                 FloatLayout:
@@ -236,9 +235,8 @@ ScreenManager
                         text_color: "#ffd241"
                         pos_hint:{'center_x':.88, 'center_y':.2}
 
-            AdminCard:
+            Bug:
                 pos_hint:{"center_x":.38,"center_y":.7}
-                ripple_behavior:True
                 on_release:
                     app.screen_capture("add_user")
                 FloatLayout:
@@ -261,14 +259,13 @@ ScreenManager
                         text_color: "#ffd241"
                         pos_hint:{'center_x':.88, 'center_y':.2}
 
-            AdminCard:
+            Bug:
                 pos_hint:{"center_x":.63,"center_y":.7}
-                ripple_behavior:True
                 on_release:
                     app.screen_capture("orders")
                 FloatLayout:
                     MDLabel:
-                        text:"Today Orders"
+                        text:"  Today Orders"
                         halign:"center"
                         color:"white"
                         pos_hint:{"center_x":.3,"center_y":.8}
@@ -286,12 +283,11 @@ ScreenManager
                         text_color: "#ffd241"
                         pos_hint:{'center_x':.88, 'center_y':.2}
 
-            AdminCard:
+            Bug:
                 pos_hint:{"center_x":.88,"center_y":.7}
-                ripple_behavior:True
                 FloatLayout:
                     MDLabel:
-                        text:"Create Report"
+                        text:"  Create Report"
                         halign:"center"
                         color:"white"
                         pos_hint:{"center_x":.3,"center_y":.8}
@@ -421,6 +417,8 @@ ScreenManager
     MDScreen:
         name:"manage_users"
         md_bg_color: "#1e1f22"
+        on_enter:
+            app.display_users()
         FloatLayout:
             MDIconButton:
                 icon:"chevron-left"
@@ -447,8 +445,7 @@ ScreenManager
             MDTextField:
                 id:search
                 hint_text: "search user"
-                mode: "round"
-                helper_text: "Search Product"
+                mode: "fill"
                 line_color_focus: "#ABBEC4"
                 icon_left_color_normal: "#ABBEC4"
                 size_hint: .3, .07
@@ -531,8 +528,7 @@ ScreenManager
             MDTextField:
                 id:search
                 hint_text: "search product"
-                mode: "round"
-                helper_text: "Search Product"
+                mode: "fill"
                 line_color_focus: "#ABBEC4"
                 icon_left_color_normal: "#ABBEC4"
                 size_hint: .3, .07
@@ -837,7 +833,7 @@ ScreenManager
                                 theme_text_color: "Custom"
                                 text_color: "black"
                                 font_size:"18sp"
-                                pos_hint:{'center_x':.5, 'center_y':.3}
+                                pos_hint:{'center_x':.52, 'center_y':.3}
                                 on_release:
                                     app.product_color(self)
                             MDFlatButton:
@@ -855,6 +851,7 @@ ScreenManager
                         mode: "line"
                         line_color_normal: 1, 1, 1, 1
                         hint_text_color_normal: "white"
+                        hint_text_color_focus: 1, 1, 1, 1
                         size_hint: .4, .13
                         pos_hint: {'center_x': .5, 'center_y': .5}
                         hint_text:"Product Name:"
@@ -875,6 +872,7 @@ ScreenManager
                         mode: "line"
                         line_color_normal: 1, 1, 1, 1
                         hint_text_color_normal: "white"
+                        hint_text_color_focus: 1, 1, 1, 1
                         size_hint: .4, .13
                         hint_text:"Price Tsh:"
                         pos_hint:{'center_x':.5, 'center_y':.37}
@@ -969,6 +967,7 @@ ScreenManager
                         mode: "line"
                         line_color_normal: 1, 1, 1, 1
                         hint_text_color_normal: "white"
+                        hint_text_color_focus: 1, 1, 1, 1
                         size_hint: .4, .13
                         pos_hint: {'center_x': .5, 'center_y': .5}
                         hint_text:"Product Name:"
@@ -989,6 +988,7 @@ ScreenManager
                         mode: "line"
                         line_color_normal: 1, 1, 1, 1
                         hint_text_color_normal: "white"
+                        hint_text_color_focus: 1, 1, 1, 1
                         size_hint: .4, .13
                         hint_text:"Price Tsh:"
                         pos_hint:{'center_x':.5, 'center_y':.37}
@@ -1064,7 +1064,8 @@ ScreenManager
                 bold:True
                 text:"SALES"
                 halign:"center"
-                font_style:'H4'
+                font_style:'H5'
+                color:"white"
                 pos_hint:{'center_x':.5, 'center_y':.93}
             MDIconButton:
                 icon:"account-circle"
@@ -1334,7 +1335,7 @@ ScreenManager
             pos_hint:{'center_x':.51, 'center_y':.5}
 
 
-<Food@MDCard>:
+<Food>:
     #orientation: "vertical"
     padding: "8dp"
     md_bg_color: "#424242"
@@ -1343,8 +1344,6 @@ ScreenManager
     border_color_a: .5
     border_color_a: 1
     adaptive_height:True
-    name: ""
-    price: ""
     size_hint: None, None
     size:app.size_x/2.5, app.size_y/12
     focus_behavior: False
@@ -1386,11 +1385,11 @@ ScreenManager
             icon_size: "20sp"
             pos_hint:{"center_x":.82, "center_y":88}
             on_release:
-                app.quantity(self)
+                root.quantity(self)
                 app.add_to_order(root.name, quantity.text, fprice.text)
         MDLabel:
             id:quantity
-            text:app.quantity_text
+            text:root.quant
             halign:"center"
             font_size:"16sp"
             color:"white"
@@ -1401,7 +1400,7 @@ ScreenManager
             icon_size: "20sp"
             pos_hint:{"center_x":.95, "center_y":88}
             on_release:
-                app.quantity(self)
+                root.quantity(self)
                 app.add_to_order(root.name, quantity.text, fprice.text)
 
 <Noselected@MDCard>
@@ -1545,6 +1544,7 @@ ScreenManager
             text:root.name
             halign:"left"
             font_size:"16sp"
+            color:"black"
             pos_hint:{'center_x':.51, 'center_y':.5}
 
         MDFillRoundFlatButton:
@@ -1581,6 +1581,7 @@ ScreenManager
             text:root.name
             halign:"left"
             font_size:"16sp"
+            color:"black"
             pos_hint:{'center_x':.51, 'center_y':.5}
 
         MDFillRoundFlatButton:
@@ -1792,15 +1793,17 @@ ScreenManager
             color:"white"
             pos_hint:{'center_x':.5, 'center_y':.5}
 
-<AdminCard>:
-    md_bg_color: "#5C381E"
-    #padding: 4
+<Bug>
+    orientation: "vertical"
+    border_radius: 3
+    border_color_a: .5
     size_hint: None, None
-    #radius: ("30sp")
-    size: "200dp", "125dp"
-    ripple_behavior: True
-    elevation:3
+    size: app.size_x/5, app.size_y/4.3
+    focus_behavior: False
     ripple_color:.9, .9, .95, 1
+    ripple_behavior: True
+    md_bg_color: "#5C381E"
+
 
 <Title@MDCard>:
     #orientation: "vertical"

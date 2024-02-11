@@ -44,7 +44,11 @@ class RowCard(MDCard):
     price = StringProperty("")
 
 
-class AdminCard(MDCard):
+class Shop(MDCard):
+    pass
+
+
+class Bug(MDCard):
     pass
 
 
@@ -81,6 +85,25 @@ class Empty(MDCard):
     number = StringProperty("07")
 
 
+class Food(MDCard):
+    name = StringProperty()
+    price = StringProperty("100")
+
+    quantity_text = StringProperty("1")
+    quant = quantity_text
+
+    def quantity(self, id):
+        if "minus-circle" in id.icon:
+            if int(self.quantity_text) == 1:
+                toast("Cant be below 1")
+
+            else:
+                self.quantity_text = str(int(self.quantity_text) - 1)
+
+        else:
+            self.quantity_text = str(int(self.quantity_text) + 1)
+
+
 class NumberOnlyField(MDTextField):
     pat = re.compile('[^0-9]')
 
@@ -113,7 +136,6 @@ class Main(MDApp):
     username = StringProperty("")
 
     # product
-    quantity_text = StringProperty("1")
     item_selected = StringProperty("0")
     total_price = StringProperty("")
     drink = StringProperty("")
@@ -150,6 +172,7 @@ class Main(MDApp):
     # List
     waiter_list = None
     admin_list = None
+    users_list = None
     orders_list = None
     orders = []
 
@@ -194,6 +217,8 @@ class Main(MDApp):
             for user_dict in data:
                 for user_key, user_info in user_dict.items():
                     users_data.append(user_info['Info'])
+
+            self.users_list = users_data
 
             if not users_data:
                 self.root.ids.studs.data.append(
@@ -337,8 +362,8 @@ class Main(MDApp):
     """
 
     def create_sales_report(self):
-        pass
         # Pdf.create_sales_report()
+        pass
 
     """ 
 
@@ -483,6 +508,16 @@ class Main(MDApp):
             else:
                 self.nodata = "components/no-data-found.png"
 
+    def display_users(self):
+        self.root.ids.user.data = {}
+        for i, user in enumerate(self.users_list):
+            self.root.ids.user.data.append(
+                {
+                    "viewclass": "User_allow",
+                    "name": user["user_name"],
+                }
+            )
+
     def search_user(self, text):
         self.root.ids.user.data = {}
         users_data = self.get_user_data()
@@ -594,17 +629,6 @@ class Main(MDApp):
         product_names = set(order_item['product_name'] for order_item in self.orders)
 
         self.orders_no = str(len(product_names))
-
-    def quantity(self, id):
-        if "minus-circle" in id.icon:
-            if int(self.quantity_text) == 1:
-                toast("Cant be below 1")
-
-            else:
-                self.quantity_text = str(int(self.quantity_text) - 1)
-
-        else:
-            self.quantity_text = str(int(self.quantity_text) + 1)
 
     def add_to_order(self, product_name, quantity, price):
         # Check if the product is already in the order
@@ -784,15 +808,15 @@ class Main(MDApp):
 
         if "Main Dish" in button_name.text:
             pend.md_bg_color = 80 / 225, 136 / 225, 114 / 225, 1
-            pend.text_color = "white"
+            pend.text_color = "#ffd241"
             self.category = "Main Dish"
         elif "Fish" in button_name.text:
             comp.md_bg_color = 80 / 225, 136 / 225, 114 / 225, 1
-            comp.text_color = "white"
+            comp.text_color = "#ffd241"
             self.category = "Fish"
         elif "Extra" in button_name.text:
             pre.md_bg_color = 80 / 225, 136 / 225, 114 / 225, 1
-            pre.text_color = "white"
+            pre.text_color = "#ffd241"
             self.category = "Extra"
 
     def dcolor(self, name):
@@ -844,12 +868,12 @@ class Main(MDApp):
 
         if "Waiter" in button_name.text:
             pend.md_bg_color = 80 / 225, 136 / 225, 114 / 225, 1
-            pend.text_color = "white"
+            pend.text_color = "#ffd241"
             self.user_category = "Waiter"
 
         elif "Admin" in button_name.text:
             pre.md_bg_color = 80 / 225, 136 / 225, 114 / 225, 1
-            pre.text_color = "white"
+            pre.text_color = "#ffd241"
             self.user_category = "Admin"
 
     """ 

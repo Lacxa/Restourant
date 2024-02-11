@@ -47,6 +47,34 @@ class FireBase:
             except:
                 return "No Internet!"
 
+    def get_user_detail(self, name):
+        import firebase_admin
+        firebase_admin._apps.clear()
+        from firebase_admin import credentials, initialize_app, db
+        if not firebase_admin._apps:
+            try:
+                cred = credentials.Certificate("credential/farmzon-abdcb-c4c57249e43b.json")
+                initialize_app(cred, {'databaseURL': 'https://farmzon-abdcb.firebaseio.com/'})
+                list = db.reference("Restaurant").child("Users").child("Waiter")
+                waiter = list.get()
+
+                if name in waiter:
+                    low = db.reference("Restaurant").child("Users").child("Waiter").child(name)
+                    row = low.get()
+                    print("waiter", row)
+
+                ref = db.reference("Restaurant").child("Users").child("Admin")
+                admin = ref.get()
+
+                if name in admin:
+                    up = db.reference("Restaurant").child("Users").child("Admin")
+                    upp = up.get()
+                    print("admin", upp)
+
+            except:
+                return "No Internet!"
+
+
     def get_waiter(self):
         import firebase_admin
         firebase_admin._apps.clear()
@@ -233,9 +261,8 @@ class FireBase:
 
             return data
 
-
     def generate_id(self):
-        timestamp = datetime.now().strftime('%Y%m%d%H%M%S%f')
+        timestamp = datetime.now().strftime('%m%d%H%M%S%f')
         order_id = timestamp
         return order_id
 
@@ -253,6 +280,7 @@ class FireBase:
 
         return f"{m}_{d}"
 
-# FireBase.get_user(FireBase())
+FireBase.get_user_detail(FireBase() , "koko")
 # FireBase.get_all_orders(FireBase())
 # FireBase.get_user_sales(FireBase(), "joo", "Waiter")
+
