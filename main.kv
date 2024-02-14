@@ -81,11 +81,13 @@ ScreenManager
                 halign:'left'
                 color: "white"
 
-            AsyncImage:
-                source:app.bar
+            MDIcon:
+                icon:"account-circle"
+                size: "45sp"
+                theme_text_color: "Custom"
+                text_color: "#ffd241"
                 pos_hint:{'center_x':.76, 'center_y':.9}
-                size_hint: None, None
-                size: "100dp", "100dp"
+
 
             Title
                 pos_hint:{"center_x":.26,"top":.87}
@@ -285,6 +287,8 @@ ScreenManager
 
             Bug:
                 pos_hint:{"center_x":.88,"center_y":.7}
+                on_release:
+                    app.print()
                 FloatLayout:
                     MDLabel:
                         text:"  Create Report"
@@ -504,6 +508,8 @@ ScreenManager
     MDScreen:
         name:"manage_product"
         md_bg_color: "#1e1f22"
+        on_enter:
+            app.display_products()
         FloatLayout:
             MDIconButton:
                 icon:"chevron-left"
@@ -537,7 +543,7 @@ ScreenManager
                 icon_left: "magnify"
                 pos_hint:{"center_x":.5,"center_y":.9}
                 on_text:
-                    app.search_live(self.text)
+                    app.search_product(self.text)
 
             RecycleView:
                 id: all
@@ -683,6 +689,8 @@ ScreenManager
             MDIconButton:
                 icon: "printer-wireless"
                 icon_size: "40sp"
+                theme_text_color:"Custom"
+                text_color: "#ffd241"
                 pos_hint:{'center_x':.962, 'center_y':.05}
                 on_release:
                     app.create_order()

@@ -20,12 +20,12 @@ from kivymd.uix.tab import MDTabsBase
 from kivymd.uix.textfield import MDTextField
 
 from kivy.metrics import dp
-# from kivymd_extensions.akivymd.uix.charts import AKPieChart
+from kivymd_extensions.akivymd.uix.charts import AKPieChart
 
 import network
 from database import FireBase as FB
 
-# from pdf import Pdf
+from pdf import Pdf
 
 if utils.platform != 'android':
     # Window.size = [1280, 800]
@@ -175,6 +175,7 @@ class Main(MDApp):
     users_list = None
     orders_list = None
     orders = []
+    products = None
 
     def on_start(self):
         Clock.schedule_once(self.keyboard_hooker, .1)
@@ -362,8 +363,8 @@ class Main(MDApp):
     """
 
     def create_sales_report(self):
-        # Pdf.create_sales_report()
-        pass
+        Pdf.create_sales_report()
+
 
     """ 
 
@@ -462,7 +463,8 @@ class Main(MDApp):
             toast("No internet!")
 
     @mainthread
-    def display_food(self, name):
+    def display_food(self, instance, name):
+        print(instance.state)
         if network:
             self.root.ids.food.data = {}
             data = FB.get_food(FB(), name)
@@ -491,22 +493,42 @@ class Main(MDApp):
         else:
             toast("no internet!")
 
-    def search_live(self, text):
-        self.root.ids.all.data = {}
-        users_data = self.get_user_data()
-        users = users_data["users"]
+    def display_products(self):
+        if network:
+            self.root.ids.all.data = {}
+            data = FB.get_all_products(FB())
 
-        for x, y in enumerate(users):
-            if text.lower() in y["username"]:
-                self.nodata = "components/open.png"
-                self.root.ids.all.data.append(
-                    {
-                        "viewclass": "Allow",
-                        "name": y["username"],
-                    }
-                )
-            else:
-                self.nodata = "components/no-data-found.png"
+            self.products = data
+
+            for product_dict in data:
+                for product_name, product_info in product_dict.items():
+                    self.root.ids.all.data.append(
+                        {
+                            "viewclass": "Allow",
+                            "name": product_info["name"],
+                            "price": product_info["price"],
+                        }
+                    )
+
+        else:
+            toast("no internet")
+
+    def search_product(self, text):
+        self.root.ids.all.data = {}
+
+        for product_dict in self.products:
+            for product_name, product_info in product_dict.items():
+                if text.lower() in product_info["name"]:
+                    self.nodata = "components/open.png"
+                    self.root.ids.all.data.append(
+                        {
+                            "viewclass": "Allow",
+                            "name": product_info["name"],
+                            "price": product_info["price"],
+                        }
+                    )
+                else:
+                    self.nodata = "components/no-data-found.png"
 
     def display_users(self):
         self.root.ids.user.data = {}
@@ -520,16 +542,13 @@ class Main(MDApp):
 
     def search_user(self, text):
         self.root.ids.user.data = {}
-        users_data = self.get_user_data()
-        users = users_data["users"]
-
-        for x, y in enumerate(users):
-            if text.lower() in y["username"]:
+        for x, y in enumerate(self.users_list):
+            if text.lower() in y["user_name"]:
                 self.user_nodata = "components/open.png"
                 self.root.ids.user.data.append(
                     {
                         "viewclass": "User_allow",
-                        "name": y["username"],
+                        "name": y["user_name"],
                     }
                 )
             else:
@@ -703,7 +722,7 @@ class Main(MDApp):
     piechart = None
     items = None
 
-    """def admin_pie_chart(self):
+    def admin_pie_chart(self):
         if int(self.total_orders) > 1:
             total_orders = int(self.total_orders)
 
@@ -761,7 +780,7 @@ class Main(MDApp):
             size_hint=[None, None],
             size=(dp(250), dp(250)),
         )
-        self.root.ids.user_box.add_widget(self.user_chart)"""
+        self.root.ids.user_box.add_widget(self.user_chart)
 
     """ 
                         GRAPH AND CHART

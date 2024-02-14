@@ -74,6 +74,40 @@ class FireBase:
             except:
                 return "No Internet!"
 
+    def get_all_products(self):
+        import firebase_admin
+        firebase_admin._apps.clear()
+        from firebase_admin import credentials, initialize_app, db
+        if not firebase_admin._apps:
+            try:
+                cred = credentials.Certificate("credential/farmzon-abdcb-c4c57249e43b.json")
+                initialize_app(cred, {'databaseURL': 'https://farmzon-abdcb.firebaseio.com/'})
+                main_list = []
+
+                store = db.reference("Restaurant").child("Products").child("category").child("Main Dish")
+                main_dish = store.get()
+                main_list.append(main_dish)
+
+                fish = db.reference("Restaurant").child("Products").child("category").child("Fish")
+                fish_list = fish.get()
+                main_list.append(fish_list)
+
+                beverage = db.reference("Restaurant").child("Products").child("category").child("Beverages")
+                beverage_list = beverage.get()
+                main_list.append(beverage_list)
+
+                extra = db.reference("Restaurant").child("Products").child("category").child("Extra")
+                extra_list = extra.get()
+                main_list.append(extra_list)
+
+                soft = db.reference("Restaurant").child("Products").child("category").child("Soft Drink")
+                soft_list = soft.get()
+                main_list.append(soft_list)
+
+                return main_list
+
+            except:
+                return "No Internet!"
 
     def get_waiter(self):
         import firebase_admin
@@ -280,7 +314,8 @@ class FireBase:
 
         return f"{m}_{d}"
 
-FireBase.get_user_detail(FireBase() , "koko")
+
+#        FireBase.get_user_detail(FireBase(), "koko")
+FireBase.get_all_products(FireBase())
 # FireBase.get_all_orders(FireBase())
 # FireBase.get_user_sales(FireBase(), "joo", "Waiter")
-
